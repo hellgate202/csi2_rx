@@ -29,9 +29,7 @@ task apply_reset;
   rst <= 1'b0;
 endtask
 
-dphy_clk_lane #(
-  .ENABLE_TERMINATION ( 1             )
-) DUT (
+dphy_hs_clk_lane DUT (
   .dphy_clk_p_i       ( dphy_clk_p    ),
   .dphy_clk_n_i       ( dphy_clk_n    ),
   .rst_i              ( rst           ),

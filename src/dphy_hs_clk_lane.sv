@@ -1,4 +1,4 @@
-module dphy_clk_lane 
+module dphy_hs_clk_lane 
 (
   input        dphy_clk_p_i,
   input        dphy_clk_n_i,
