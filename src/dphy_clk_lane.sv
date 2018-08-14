@@ -1,6 +1,5 @@
-module dphy_clk_lane #(
-  parameter ENABLE_TERMINATION = 1
-)(
+module dphy_clk_lane 
+(
   input        dphy_clk_p_i,
   input        dphy_clk_n_i,
   input        rst_i,
@@ -12,13 +11,13 @@ module dphy_clk_lane #(
 logic bit_clk;
 
 IBUFDS #(
-  .DIFF_TERM    ( ENABLE_TERMINATION ),
-  .IBUF_LOW_PWR ( 0                  ),
-  .IOSTANDARD   ( "DEFAULT"          )
+  .DIFF_TERM    ( 1            ),
+  .IBUF_LOW_PWR ( 0            ),
+  .IOSTANDARD   ( "DEFAULT"    )
 ) clk_diff_input (
-  .O            ( bit_clk            ),
-  .I            ( dphy_clk_p_i       ),
-  .IB           ( dphy_clk_n_i       )
+  .O            ( bit_clk      ),
+  .I            ( dphy_clk_p_i ),
+  .IB           ( dphy_clk_n_i )
 );
 
 BUFIO clk_buf (
