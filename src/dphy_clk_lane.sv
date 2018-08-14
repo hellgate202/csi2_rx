@@ -1,5 +1,5 @@
 module dphy_clk_lane #(
-  parameter ENABLE_TERMINATION = TRUE
+  parameter ENABLE_TERMINATION = 1
 )(
   input        dphy_clk_p_i,
   input        dphy_clk_n_i,
@@ -13,7 +13,7 @@ logic bit_clk;
 
 IBUFDS #(
   .DIFF_TERM    ( ENABLE_TERMINATION ),
-  .IBUF_LOW_PWR ( FALSE              ),
+  .IBUF_LOW_PWR ( 0                  ),
   .IOSTANDARD   ( "DEFAULT"          )
 ) clk_diff_input (
   .O            ( bit_clk            ),
