@@ -1,5 +1,5 @@
 module dphy_clk_lane #(
-  parameter ENABLE_TERMINATION = TRUE;
+  parameter ENABLE_TERMINATION = TRUE
 )(
   input        dphy_clk_p_i,
   input        dphy_clk_n_i,
