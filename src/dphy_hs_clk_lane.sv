@@ -26,8 +26,8 @@ BUFIO clk_buf (
 );
 
 BUFR #(
-  .BUFR_DIVIDE ( "4"         ),
-  .SIM_DEVICE  ( "7SERIES"   )
+  .BUFR_DIVIDE ( "4"        ),
+  .SIM_DEVICE  ( "7SERIES"  )
 ) clk_divider (
   .O           ( byte_clk_o ),
   .CE          ( 1'b1       ),

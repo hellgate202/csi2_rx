@@ -11,8 +11,8 @@ logic bit_clk;
 logic bit_clk_inv;
 
 task clk_gen;
-  dphy_clk_p = 1'b0;
-  dphy_clk_n = 1'b1;
+  dphy_clk_p <= 1'b0;
+  dphy_clk_n <= 1'b1;
   forever
     begin
       #(CLOCK_PERIOD / 2);
@@ -22,7 +22,7 @@ task clk_gen;
 endtask
 
 task apply_reset;
-  rst = 1'b0;
+  rst <= 1'b0;
   @( posedge bit_clk );
   rst <= 1'b1;
   @( posedge bit_clk );
