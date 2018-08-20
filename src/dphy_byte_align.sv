@@ -36,7 +36,7 @@ always_comb
     sync_offset = 4'd0;
     found_sync  = 1'b0;
     for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
-      if( {unaligned_byte_d1,unaligned_byte_d2} == {SYNC_PATTERN,8'd0} >> i )
+      if( {unaligned_byte_d1,unaligned_byte_d2} == {8'd0,SYNC_PATTERN} << i )
         begin
           sync_offset = i;
           found_sync  = 1'b1;
@@ -65,6 +65,7 @@ always_ff @( posedge clk_i )
     aligned_byte_o <= '0;
   else
     for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
-      aligned_byte_o <= {unaligned_byte_d1,unaligned_byte_d2} >> i;
+      if( i == align_shift )
+        aligned_byte_o <= {unaligned_byte_d1,unaligned_byte_d2} >> i;
       
 endmodule

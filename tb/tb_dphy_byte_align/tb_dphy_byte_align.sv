@@ -21,6 +21,7 @@ logic [7:0] unaligned_byte;
 // DUT signals
 logic [7:0] aligned_byte;
 logic       valid;
+logic       wait_for_sync;
 
 task automatic clk_gen;
   dphy_clk_p <= 1'b0;
@@ -53,15 +54,26 @@ task automatic send_byte
 );
   for( int i = 0; i < 8; i = i + 2 )
     begin
+      @( posedge bit_clk );
       dphy_data_p <= input_byte[i];
       dphy_data_n <= ~input_byte[i];
       @( posedge bit_clk_inv );
       dphy_data_p <= input_byte[i+1];
       dphy_data_n <= ~input_byte[i+1];
     end
-  @( posedge bit_clk );  
-  dphy_data_p <= 1'b0;
-  dphy_data_n <= 1'b1;
+endtask
+
+task automatic wfs;
+  wait_for_sync <= 1'b1;
+  forever
+    begin
+      if( valid )
+        begin
+          @( posedge byte_clk );
+          wait_for_sync <= 1'b0;
+        end
+      @( posedge byte_clk );
+    end  
 endtask
 
 dphy_hs_clk_lane clk_phy (
@@ -91,7 +103,7 @@ dphy_byte_align DUT (
   .rst_i            ( rst_data       ),
   .enable_i         ( 1'b1           ),
   .unaligned_byte_i ( unaligned_byte ),
-  .wait_for_sync_i  ( 1'b1           ),
+  .wait_for_sync_i  ( wait_for_sync  ),
   .packet_done_i    ( 1'b0           ),
   .valid_o          ( valid          ),
   .aligned_byte_o   ( aligned_byte   )
@@ -102,13 +114,17 @@ initial
     fork
       clk_gen;
       apply_reset;
+      wfs;
     join_none
     repeat( 10 )
       @( posedge bit_clk );
     repeat(10)
         send_byte(8'd0);
-    send_byte(8'd184);
-    repeat( 10 )
+    send_byte(8'hb8);
+    repeat(10)
+      for( byte i = 0; i < 10; i++ )
+        send_byte(i);
+    repeat( 20 )
       @( posedge bit_clk );
     $stop;
   end
