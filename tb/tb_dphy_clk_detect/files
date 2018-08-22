@@ -1,0 +1,4 @@
+dphy_hs_clk_lane.sv
+dphy_clk_detect.sv
+dphy_clk_detect_cdc.sv
+tb_dphy_clk_detect.sv

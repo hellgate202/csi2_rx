@@ -6,7 +6,7 @@ module dphy_clk_detect
   input        rst_i,
   output logic rst_o
 );
-//TODO: Move clock detection to gray counters from sampling
+
 logic [3:0] clk_presence_cnt;
 logic [7:0] clk_absent_cnt;
 logic       byte_clk_d1;
