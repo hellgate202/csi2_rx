@@ -3,6 +3,7 @@ module dphy_hs_data_lane #(
 )(
   input              bit_clk_i,
   input              bit_clk_inv_i,
+  input              ref_clk_i,
   input              byte_clk_i,
   input              enable_i,
   input              rst_i,
@@ -52,6 +53,13 @@ IDELAYE2 #(
   .LD                    ( 1'b0          ),
   .LDPIPEEN              ( 1'b0          ),
   .REGRST                ( 1'b0          )
+);
+
+IDELAYCTRL delay_ctrl
+(
+  .RDY    (           ),
+  .REFCLK ( ref_clk_i ),
+  .RST    ( rst_i     )
 );
 
 ISERDESE2 #(
