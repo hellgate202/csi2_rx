@@ -1,0 +1,3 @@
+[submodule "ip/synthesis/dphy_pkg"]
+	path = ip/synthesis/dphy_pkg
+	url = https://github.com/hellgate202/dphy_pkg
