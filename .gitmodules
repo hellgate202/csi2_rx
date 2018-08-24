@@ -1,3 +1,0 @@
-[submodule "src/ip/dphy_pkg"]
-	path = src/ip/dphy_pkg
-	url = https://github.com/hellgate202/dphy_pkg.git
