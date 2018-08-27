@@ -1,9 +1,9 @@
 vlib work
 set proj_dir [pwd]/../../
 set vivado_sim_lib $::env(QSYS_ROOTDIR)/../../../modelsim_ase/xilinx/
-set inc_dir "$proj_dir/src/ $proj_dir/tb/"
-set dirs "$proj_dir/src/ $proj_dir/tb/tb_dphy_word_align $vivado_sim_lib"   
-set files "$proj_dir/tb/tb_dphy_word_align/files" 
+set inc_dir "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/"
+set dirs "$proj_dir/src/ $proj_dir/tb/tb_dphy_slave/ $proj_dir/ip/verification/dphy_pkg/ $vivado_sim_lib"   
+set files "$proj_dir/tb/tb_dphy_slave/files" 
 
 vmap work $vivado_sim_lib/unisims_ver
 vmap work $vivado_sim_lib/unisim
@@ -19,39 +19,20 @@ foreach files $files {
   foreach file $FILE_LIST {
     foreach path $dirs {
       set file_path     [exec find $path -name $file]
-      set file_path_num [exec echo $file_path | wc -l]
       set file_dir [string trimright $file_path $file]
       
-      #File found or not?
       if { [llength $file_path] > 0 } {
-
-      #There is only one file name?
-        if { $file_path_num == "1" } {
-            if [regexp {.vhdl?} $file] {
-              #puts "vcom -work work $file_path"
-              vcom -work work $file_path
-            } else {
-              #puts "vlog -sv -work work +incdir+$file_dir $file_path"
-              vlog -sv -incr -work work +incdir+$file_dir $file_path
-            }
+        if [regexp {.vhdl?} $file] {
+          vcom -work work $file_path
         } else {
-          echo ########################################################
-          echo !!!! Error: files with the same names !!!!
-          echo file_path="$file_path"
-          echo file_dir="$file_dir"
-          echo file_path_num="$file_path_num"
-          echo ########################################################
-          quit
+          vlog -sv -incr -work work +incdir+$file_dir $file_path
         }
       }
     }
   }
 }
 
-vsim -novopt tb_dphy_word_align
+vsim -novopt tb_dphy_slave
 do wave.do
-
-# toggle leaf names
-# config wave -signalnamewidth 1
 
 run -all

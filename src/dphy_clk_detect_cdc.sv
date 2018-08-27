@@ -1,4 +1,4 @@
-module dphy_clk_detect_cdc
+module dphy_clk_detect
 (
   input        ref_clk_i,
   input        byte_clk_i,

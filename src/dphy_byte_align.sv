@@ -12,11 +12,12 @@ module dphy_byte_align
 
 localparam [7:0] SYNC_PATTERN = 8'b10111000;
  
-logic [7:0] unaligned_byte_d1;
-logic [7:0] unaligned_byte_d2;
-logic [3:0] sync_offset;
-logic [3:0] align_shift;
-logic       found_sync;
+logic [7:0]  unaligned_byte_d1;
+logic [7:0]  unaligned_byte_d2;
+logic [3:0]  sync_offset;
+logic [3:0]  align_shift;
+logic        found_sync;
+logic [15:0] compare_window;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -35,12 +36,17 @@ always_comb
   begin
     sync_offset = 4'd0;
     found_sync  = 1'b0;
+    compare_window = {unaligned_byte_d1,unaligned_byte_d2};
     for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
-      if( {unaligned_byte_d1,unaligned_byte_d2} == {8'd0,SYNC_PATTERN} << i )
-        begin
-          sync_offset = i;
-          found_sync  = 1'b1;
-        end
+      begin
+        compare_window = {unaligned_byte_d1,unaligned_byte_d2} >> i;
+        if( compare_window[7:0] == SYNC_PATTERN )
+          begin
+            sync_offset = i;
+            found_sync  = 1'b1;
+            break;
+          end
+      end
   end
 
 always_ff @( posedge clk_i )
