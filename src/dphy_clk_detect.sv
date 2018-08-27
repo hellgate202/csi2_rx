@@ -7,37 +7,51 @@ module dphy_clk_detect
   output logic rst_o
 );
 
-logic [3:0] clk_presence_cnt;
-logic [7:0] clk_absent_cnt;
-logic       byte_clk_d1;
-logic       byte_clk_d2;
+logic       toggle_byte;
+logic       toggle_byte_s1;
+logic       toggle_byte_s2;
+logic       toggle_byte_s3;
+logic [7:0] clk_absence_cnt;
+logic [1:0] clk_presence_cnt;
 logic       clk_absent;
+logic       clk_edge;
 
+assign clk_absent = ( clk_absence_cnt >= 8'd200 );
+assign clk_edge   = ( toggle_byte_s2 ^ toggle_byte_s3 );
 
 always_ff @( posedge byte_clk_i, posedge rst_i )
+  if( rst_i )
+    toggle_byte <= 1'b0;
+  else
+    toggle_byte <= ~toggle_byte;
+
+always_ff @( posedge ref_clk_i )
+  begin
+    toggle_byte_s1 <= toggle_byte;
+    toggle_byte_s2 <= toggle_byte_s1;
+    toggle_byte_s3 <= toggle_byte_s2;
+  end
+
+always_ff @( posedge ref_clk_i )
+  if( rst_i )
+    clk_absence_cnt <= '0;
+  else
+    if( clk_edge )
+      clk_absence_cnt <= '0;
+    else
+      if( clk_absence_cnt < 8'd250 )
+        clk_absence_cnt <= clk_absence_cnt + 1'b1;
+
+always_ff @( posedge ref_clk_i )
   if( rst_i )
     clk_presence_cnt <= '0;
   else
     if( clk_absent )
       clk_presence_cnt <= '0;
     else
-      if( enable_i && clk_presence_cnt < 4'd3 )
+      if( enable_i && clk_presence_cnt < 2'd3 && clk_edge )
         clk_presence_cnt <= clk_presence_cnt + 1'b1;
 
-always_ff @( posedge ref_clk_i )
-  begin
-    byte_clk_d1 <= byte_clk_i;
-    byte_clk_d2 <= byte_clk_d1;
-  end
-
-always_ff @( posedge ref_clk_i )
-  if( byte_clk_d1 != byte_clk_d2 )
-    clk_absent_cnt <= '0;
-  else
-    if( clk_absent_cnt < 8'd250 )
-      clk_absent_cnt <= clk_absent_cnt + 1'b1;
-
-assign clk_absent = ( clk_absent_cnt >= 8'd200 );
-assign rst_o      = ( clk_presence_cnt < 4'd2 );
+assign rst_o = ( clk_presence_cnt < 2'd2 );
 
 endmodule
