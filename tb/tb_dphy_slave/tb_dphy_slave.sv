@@ -4,7 +4,7 @@ import dphy_pkg::*;
 
 module tb_dphy_slave;
 
-parameter     DATA_LANES = 4;
+parameter     DATA_LANES = 1;
 parameter int DELAY[4]   = '{0,0,0,0};
 parameter     DPHY_CLK_T = 3000;
 parameter     REF_CLK_T  = 5000;
@@ -19,7 +19,7 @@ logic                       rst;
 logic                       wait_for_sync;
 logic                       pkt_done;
 logic                       rst_o;
-logic [DATA_LANES-1:0][7:0] data_o;
+logic [31:0]                data_o;
 logic                       clk_o;
 logic                       valid_o;
 

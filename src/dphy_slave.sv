@@ -12,7 +12,7 @@ module dphy_slave #(
   input                        wait_for_sync_i,
   input                        pkt_done_i,
   output                       rst_o,
-  output [DATA_LANES-1:0][7:0] data_o,
+  output [31:0]                data_o,
   output                       clk_o,
   output                       valid_o
 );
@@ -25,6 +25,8 @@ logic [DATA_LANES-1:0][7:0] byte_data;
 logic [DATA_LANES-1:0][7:0] aligned_byte_data;
 logic                       reset_aligner;
 logic [DATA_LANES-1:0]      byte_valid;
+logic [DATA_LANES-1:0][7:0] word_data;
+logic                       word_valid;
 
 assign rst_o = serdes_rst;
 assign clk_o = byte_clk;
@@ -88,15 +90,26 @@ dphy_word_align #(
   .DATA_LANES      ( DATA_LANES        )
 ) word_aligner (
   .byte_clk_i      ( byte_clk          ),
-  .rst_i           ( serdes_rst       ),
+  .rst_i           ( serdes_rst        ),
   .enable_i        ( enable_i          ),
   .pkt_done_i      ( pkt_done_i        ),
   .wait_for_sync_i ( wait_for_sync_i   ),
   .byte_data_i     ( aligned_byte_data ),
   .valid_i         ( byte_valid        ),
   .pkt_done_o      ( reset_aligner     ),
-  .word_o          ( data_o            ),
-  .valid_o         ( valid_o           )
+  .word_o          ( word_data         ),
+  .valid_o         ( word_valid        )
+);
+
+dphy_32b_map #(
+  .DATA_LANES   ( DATA_LANES )
+) mapper (
+  .byte_clk_i   ( byte_clk   ),
+  .rst_i        ( serdes_rst ),
+  .word_data_i  ( word_data  ),
+  .valid_i      ( word_valid ),
+  .maped_data_o ( data_o     ),
+  .valid_o      ( valid_o    )
 );
 
 endmodule

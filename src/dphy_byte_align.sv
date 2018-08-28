@@ -17,6 +17,7 @@ logic [7:0]  unaligned_byte_d2;
 logic [3:0]  sync_offset;
 logic [3:0]  align_shift;
 logic        found_sync;
+logic        sync_reg;
 logic [15:0] compare_window;
 
 always_ff @( posedge clk_i )
@@ -51,10 +52,16 @@ always_comb
 
 always_ff @( posedge clk_i )
   if( rst_i )
-    align_shift <= 3'd0;
+    begin
+      align_shift <= 3'd0;
+      sync_reg    <= 1'b0;
+    end
   else
     if( wait_for_sync_i && found_sync && ~valid_o )
-      align_shift <= sync_offset;
+      begin
+        align_shift <= sync_offset;
+        sync_reg    <= 1'b1;
+      end
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -63,7 +70,7 @@ always_ff @( posedge clk_i )
     if( packet_done_i )
       valid_o <= found_sync;
     else
-      if( wait_for_sync_i && found_sync && ~valid_o )
+      if( wait_for_sync_i && sync_reg && ~valid_o )
         valid_o <= 1'b1;
 
 always_ff @( posedge clk_i )
