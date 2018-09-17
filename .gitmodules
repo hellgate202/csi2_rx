@@ -7,3 +7,6 @@
 [submodule "ip/synthesis/dual_port_ram"]
 	path = ip/synthesis/dual_port_ram
 	url = https://github.com/hellgate202/dual_port_ram.git
+[submodule "ip/synthesis/crc_calc"]
+	path = ip/synthesis/crc_calc
+	url = https://github.com/hellgate202/crc_calc
