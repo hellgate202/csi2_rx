@@ -78,8 +78,7 @@ generate
         .rst_i            ( serdes_rst           ),
         .enable_i         ( enable_i             ),
         .unaligned_byte_i ( byte_data[i]         ),
-        .wait_for_sync_i  ( wait_for_sync_i      ),
-        .packet_done_i    ( reset_aligner        ),
+        .sync_reset_i     ( reset_aligner        ),
         .valid_o          ( byte_valid[i]        ),
         .aligned_byte_o   ( aligned_byte_data[i] )
       );
