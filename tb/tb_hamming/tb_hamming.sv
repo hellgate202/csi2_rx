@@ -1,3 +1,4 @@
+`timescale 1 ps / 1 ps
 module tb_hamming;
 
 parameter LUT_REG_OUTPUT = 1;
