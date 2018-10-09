@@ -11,7 +11,7 @@ add wave -noupdate /tb_dphy_slave/DUT/enable_i
 add wave -noupdate /tb_dphy_slave/DUT/wait_for_sync_i
 add wave -noupdate /tb_dphy_slave/DUT/pkt_done_i
 add wave -noupdate /tb_dphy_slave/DUT/rst_o
-add wave -noupdate /tb_dphy_slave/DUT/data_o
+add wave -noupdate -radix hexadecimal /tb_dphy_slave/DUT/data_o
 add wave -noupdate /tb_dphy_slave/DUT/clk_o
 add wave -noupdate /tb_dphy_slave/DUT/valid_o
 add wave -noupdate /tb_dphy_slave/DUT/bit_clk
@@ -62,8 +62,6 @@ add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/clk_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/rst_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/enable_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/unaligned_byte_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/wait_for_sync_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/packet_done_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/valid_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/aligned_byte_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[0]/byte_aligner/unaligned_byte_d1}
@@ -90,8 +88,6 @@ add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/clk_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/rst_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/enable_i}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/unaligned_byte_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/wait_for_sync_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/packet_done_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/valid_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/aligned_byte_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[1]/byte_aligner/unaligned_byte_d1}
@@ -118,8 +114,6 @@ add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/clk_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/rst_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/enable_i}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/unaligned_byte_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/wait_for_sync_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/packet_done_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/valid_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/aligned_byte_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[2]/byte_aligner/unaligned_byte_d1}
@@ -146,8 +140,6 @@ add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/clk_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/rst_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/enable_i}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/unaligned_byte_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/wait_for_sync_i}
-add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/packet_done_i}
 add wave -noupdate {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/valid_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/aligned_byte_o}
 add wave -noupdate -radix hexadecimal {/tb_dphy_slave/DUT/byte_align/genblk1[3]/byte_aligner/unaligned_byte_d1}
@@ -163,7 +155,6 @@ add wave -noupdate /tb_dphy_slave/DUT/word_aligner/pkt_done_i
 add wave -noupdate /tb_dphy_slave/DUT/word_aligner/wait_for_sync_i
 add wave -noupdate /tb_dphy_slave/DUT/word_aligner/byte_data_i
 add wave -noupdate /tb_dphy_slave/DUT/word_aligner/valid_i
-add wave -noupdate /tb_dphy_slave/DUT/word_aligner/pkt_done_o
 add wave -noupdate /tb_dphy_slave/DUT/word_aligner/word_o
 add wave -noupdate /tb_dphy_slave/DUT/word_aligner/valid_o
 add wave -noupdate -radix hexadecimal /tb_dphy_slave/DUT/word_aligner/word_d1
@@ -182,7 +173,7 @@ add wave -noupdate /tb_dphy_slave/sender_if/hs_clk_n
 add wave -noupdate /tb_dphy_slave/sender_if/hs_data_p
 add wave -noupdate /tb_dphy_slave/sender_if/hs_data_n
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {372000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {423200 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 559
 configure wave -valuecolwidth 100
@@ -198,4 +189,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {16864 ps} {1220149 ps}
+WaveRestoreZoom {400837 ps} {501638 ps}

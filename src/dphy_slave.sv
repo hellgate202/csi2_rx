@@ -95,7 +95,7 @@ dphy_word_align #(
   .wait_for_sync_i ( wait_for_sync_i   ),
   .byte_data_i     ( aligned_byte_data ),
   .valid_i         ( byte_valid        ),
-  .pkt_done_o      ( reset_aligner     ),
+  .sync_reset_o    ( reset_aligner     ),
   .word_o          ( word_data         ),
   .valid_o         ( word_valid        )
 );

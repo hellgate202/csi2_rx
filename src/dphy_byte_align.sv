@@ -1,4 +1,4 @@
-// This module is purposed for finding synchronization sequencence in input data dlow
+// This module is purposed for finding synchronization sequencence in input data flow
 // and then align output data as much as synchronization sequence was disaligned
 module dphy_byte_align
 (
