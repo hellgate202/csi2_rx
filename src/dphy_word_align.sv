@@ -79,7 +79,7 @@ always_ff @( posedge byte_clk_i )
     if( pkt_done_i )
       valid_o <= 1'b0;
     else
-      if( all_lanes_valid )
+      if( all_lanes_valid && &valid_i )
         valid_o <= 1'b1;
 
 // Shows if at least one data lane is valid for 3 clock cycles

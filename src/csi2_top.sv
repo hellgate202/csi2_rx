@@ -1,11 +1,11 @@
 module csi2_top #(
-  parameter     DATA_LANES = 2,
+  parameter     DATA_LANES = 4,
   parameter int DELAY [4]  = '{0,0,0,0}
 )(
   input                   dphy_clk_p_i,
   input                   dphy_clk_n_i,
   input  [DATA_LANES-1:0] dphy_data_p_i,
-  input  [DATA_LANES_1:0] dphy_data_n_i,
+  input  [DATA_LANES-1:0] dphy_data_n_i,
   input                   ref_clk_i,
   input                   rst_i,
   input                   enable_i,
@@ -22,7 +22,7 @@ module csi2_top #(
  
   output [31:0]           long_pkt_payload_o,
   output                  long_pkt_payload_valid_o,
-  output                  long_pkt_payload_be_o
+  output [3:0]            long_pkt_payload_be_o
 );
 
 // Interconnect
@@ -59,7 +59,7 @@ csi2_hamming_dec #(
 ) header_corrector (
   .clk_i             ( int_clk                  ),
   .rst_i             ( int_rst                  ),
-  .valid_i           ( phy_valid                ),
+  .valid_i           ( phy_data_valid           ),
   .data_i            ( phy_data                 ),
   .pkt_done_i        ( pkt_done                 ),
   .error_o           ( header_error             ),
@@ -75,7 +75,7 @@ csi2_pkt_handler pkt_handler
   .valid_i                  ( corrected_phy_data_valid ),
   .data_i                   ( corrected_phy_data       ),
   .error_i                  ( header_error             ),
-  .error_corrected          ( header_error_corrected   ),
+  .error_corrected_i        ( header_error_corrected   ),
   .short_pkt_valid_o        ( short_pkt_valid_o        ),
   .short_pkt_v_channel_o    ( short_pkt_v_channel_o    ),
   .short_pkt_data_type_o    ( short_pkt_data_type_o    ),

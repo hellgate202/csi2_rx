@@ -68,8 +68,8 @@ assign header_valid = ( ( valid_i && ~valid_d1 ) && // First positive edge of va
                         ( ~error_i || ( error_i && error_corrected_i ) ) && // If header is correct
                         ~pkt_running ); // If we didnt capture any headers before
 
-assign long_pkt     = ( header_valid && data_i[29:24] > 6'hf );
-assign short_pkt    = ( header_valid && data_i[29:24] < 6'h10 );
+assign long_pkt     = ( header_valid && data_i[5:0] > 6'hf );
+assign short_pkt    = ( header_valid && data_i[5:0] < 6'h10 );
 
 // Headers parsing
 always_ff @( posedge clk_i )
@@ -84,8 +84,8 @@ always_ff @( posedge clk_i )
     if( short_pkt )
       begin
         short_pkt_valid_o      <= 1'b1;
-        short_pkt_v_channel_o  <= data_i[31:30];
-        short_pkt_data_type_o  <= data_i[29:24];
+        short_pkt_v_channel_o  <= data_i[7:6];
+        short_pkt_data_type_o  <= data_i[5:0];
         short_pkt_data_field_o <= data_i[23:8];
       end
     else
@@ -108,8 +108,8 @@ always_ff @( posedge clk_i )
     if( long_pkt )
       begin
         long_pkt_header_valid_o  <= 1'b1;
-        long_pkt_v_channel_o     <= data_i[31:30];
-        long_pkt_data_type_o     <= data_i[29:24];
+        long_pkt_v_channel_o     <= data_i[7:6];
+        long_pkt_data_type_o     <= data_i[5:0];
         long_pkt_word_cnt_o      <= data_i[23:8];
       end
     else
