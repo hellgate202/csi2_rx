@@ -2,19 +2,18 @@ module dphy_slave #(
   parameter     DATA_LANES = 2,
   parameter int DELAY [4]  = '{0,0,0,0}
 )(
-  input                        dphy_clk_p_i,
-  input                        dphy_clk_n_i,
-  input  [DATA_LANES-1:0]      dphy_data_p_i,
-  input  [DATA_LANES-1:0]      dphy_data_n_i,
-  input                        ref_clk_i,
-  input                        rst_i,
-  input                        enable_i,
-  input                        wait_for_sync_i,
-  input                        pkt_done_i,
-  output                       rst_o,
-  output [31:0]                data_o,
-  output                       clk_o,
-  output                       valid_o
+  input                   dphy_clk_p_i,
+  input                   dphy_clk_n_i,
+  input  [DATA_LANES-1:0] dphy_data_p_i,
+  input  [DATA_LANES-1:0] dphy_data_n_i,
+  input                   ref_clk_i,
+  input                   rst_i,
+  input                   enable_i,
+  input                   pkt_done_i,
+  output                  rst_o,
+  output [31:0]           data_o,
+  output                  clk_o,
+  output                  valid_o
 );
 
 logic                       bit_clk;
@@ -92,7 +91,6 @@ dphy_word_align #(
   .rst_i           ( serdes_rst        ),
   .enable_i        ( enable_i          ),
   .pkt_done_i      ( pkt_done_i        ),
-  .wait_for_sync_i ( wait_for_sync_i   ),
   .byte_data_i     ( aligned_byte_data ),
   .valid_i         ( byte_valid        ),
   .sync_reset_o    ( reset_aligner     ),

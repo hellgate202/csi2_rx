@@ -22,7 +22,6 @@ module dphy_word_align #(
   input                              rst_i,
   input                              enable_i,
   input                              pkt_done_i,
-  input                              wait_for_sync_i,
   input        [DATA_LANES-1:0][7:0] byte_data_i,
   input        [DATA_LANES-1:0]      valid_i,
   output logic                       sync_reset_o,

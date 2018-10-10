@@ -52,6 +52,6 @@ always_ff @( posedge ref_clk_i )
       if( enable_i && clk_presence_cnt < 2'd3 && clk_edge )
         clk_presence_cnt <= clk_presence_cnt + 1'b1;
 
-assign rst_o = ( clk_presence_cnt < 2'd2 );
+assign rst_o = ( clk_presence_cnt < 2'd2 ) || rst_i;
 
 endmodule
