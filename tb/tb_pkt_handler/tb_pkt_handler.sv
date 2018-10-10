@@ -7,16 +7,21 @@ logic        clk;
 logic        rst;
 logic        valid;
 logic [31:0] data;
-logic        short_pkt_o;
-logic        long_pkt_o;
-logic [1:0]  virtual_channel_o;
-logic [5:0]  data_type_o;
-logic [31:0] payload_data_o;
-logic        valid_o;
-logic        pkt_done_o;
-logic        crc_check_o;
 logic        error;
 logic        error_corrected;
+
+logic        short_pkt_valid;
+logic [1:0]  short_pkt_v_channel;
+logic [5:0]  short_pkt_data_type;
+logic [15:0] short_pkt_data_field;
+logic        long_pkt_header_valid;
+logic [1:0]  long_pkt_v_channel;
+logic [5:0]  long_pkt_data_type;
+logic [15:0] long_pkt_word_cnt;
+logic [31:0] long_pkt_payload;
+logic        long_pkt_payload_valid;
+logic [3:0]  long_pkt_payload_be;
+logic        pkt_done_o;
 
 initial
   begin
@@ -44,20 +49,23 @@ task automatic apply_reset;
 endtask
 
 csi2_pkt_handler DUT (
-  .clk_i             ( clk               ),
-  .rst_i             ( rst               ),
-  .valid_i           ( valid             ),
-  .data_i            ( data              ),
-  .error_i           ( error             ),
-  .error_corrected_i ( error_corrected   ),
-  .short_pkt_o       ( short_pkt_o       ),
-  .long_pkt_o        ( long_pkt_o        ),
-  .virtual_channel_o ( virtual_channel_o ),
-  .data_type_o       ( data_type_o       ),
-  .payload_data_o    ( payload_data_o    ),
-  .valid_o           ( valid_o           ),
-  .pkt_done_o        ( pkt_done_o        ),
-  .crc_check_o       ( crc_chceck_o      )
+  .clk_i                    ( clk                    ),
+  .rst_i                    ( rst                    ),
+  .valid_i                  ( valid                  ),
+  .data_i                   ( data                   ),
+  .error_i                  ( error                  ),
+  .error_corrected_i        ( error_corrected        ),
+  .short_pkt_valid_o        ( short_pkt_valid        ),
+  .short_pkt_v_channel_o    ( short_pkt_v_channel    ),
+  .short_pkt_data_type_o    ( short_pkt_data_type    ),
+  .short_pkt_data_field_o   ( short_pkt_data_field   ),
+  .long_pkt_header_valid_o  ( long_pkt_header_valid  ),
+  .long_pkt_v_channel_o     ( long_pkt_v_channel     ),
+  .long_pkt_data_type_o     ( long_pkt_data_type     ),
+  .long_pkt_word_cnt_o      ( long_pkt_word_cnt      ),
+  .long_pkt_payload_o       ( long_pkt_payload       ),
+  .long_pkt_payload_valid_o ( long_pkt_payload_valid ),
+  .long_pkt_payload_be_o    ( long_pkt_payload_be    )
 );
 
 initial
@@ -68,17 +76,18 @@ initial
     join_none
     @( posedge clk );
     @( posedge clk );
-    valid      <= 1'b1;
-    data[23:8] <= 16'd8;
+    valid       <= 1'b1;
+    data[29:24] <= 6'h10;
+    data[23:8]  <= 16'd8;
     @( posedge clk );
     valid      <= 1'b0;
     data       <= '1;
     @( posedge clk );
     valid      <= 1'b1;
     @( posedge clk );
-    valid      <= 1'b0;
-    @( posedge clk );
     valid      <= 1'b1;
+    @( posedge clk );
+    valid      <= 1'b0;
     @( posedge clk );
     valid      <= 1'b0;
     repeat(30)
