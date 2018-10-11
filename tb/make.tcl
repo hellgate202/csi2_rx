@@ -1,8 +1,8 @@
 vlib work
 set proj_dir [pwd]/../
 set vivado_sim_lib $::env(QSYS_ROOTDIR)/../../../modelsim_ase/xilinx/
-set inc_dir "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/"
-set dirs "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/verification/dphy_pkg/ $vivado_sim_lib"   
+set inc_dir "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/ $proj_dir/lib/"
+set dirs "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/ $proj_dir/lib/dphy_lib/ $vivado_sim_lib"   
 set files "$proj_dir/tb/files" 
 
 vmap work $vivado_sim_lib/unisims_ver

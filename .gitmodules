@@ -1,9 +1,6 @@
-[submodule "ip/verification/dphy_pkg"]
-	path = ip/verification/dphy_pkg
-	url = https://github.com/hellgate202/dphy_pkg
-[submodule "ip/verification/dphy_interface"]
-	path = ip/verification/dphy_interface
-	url = https://github.com/hellgate202/dphy_interface.git
-[submodule "ip/synthesis/dual_port_ram"]
-	path = ip/synthesis/dual_port_ram
+[submodule "ip/dual_port_ram"]
+	path = ip/dual_port_ram
 	url = https://github.com/hellgate202/dual_port_ram.git
+[submodule "lib/dphy_lib"]
+	path = lib/dphy_lib
+	url = https://github.com/hellgate202/dphy_lib.git

@@ -1,4 +1,4 @@
-import dphy_pkg::*;
+include "../lib/dphy_lib/DPHYSender.sv";
 
 `timescale 1 ps / 1 ps
 
