@@ -28,6 +28,7 @@ logic [15:0]           long_pkt_word_cnt;
 logic [31:0]           long_pkt_payload;
 logic                  long_pkt_payload_valid;
 logic [3:0]            long_pkt_payload_be;
+logic                  long_pkt_eop;
 
 logic [31:0]           header;
 
@@ -133,7 +134,8 @@ csi2_top #(
   .long_pkt_word_cnt_o      ( long_pkt_word_cnt      ),
   .long_pkt_payload_o       ( long_pkt_payload       ),
   .long_pkt_payload_valid_o ( long_pkt_payload_valid ),
-  .long_pkt_payload_be_o    ( long_pkt_payload_be    )
+  .long_pkt_payload_be_o    ( long_pkt_payload_be    ),
+  .long_pkt_eop_o           ( long_pkt_eop           )
 );
 
 initial

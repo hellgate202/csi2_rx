@@ -18,6 +18,7 @@ add wave -noupdate -radix unsigned /tb_csi2/DUT/long_pkt_word_cnt_o
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/long_pkt_payload_o
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/long_pkt_payload_valid_o
 add wave -noupdate -radix binary /tb_csi2/DUT/long_pkt_payload_be_o
+add wave -noupdate /tb_csi2/long_pkt_eop
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/int_clk
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/int_rst
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/pkt_done
@@ -44,4 +45,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {368927 ps} {625246 ps}
+WaveRestoreZoom {5448997 ps} {5705316 ps}

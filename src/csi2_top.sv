@@ -22,7 +22,8 @@ module csi2_top #(
  
   output [31:0]           long_pkt_payload_o,
   output                  long_pkt_payload_valid_o,
-  output [3:0]            long_pkt_payload_be_o
+  output [3:0]            long_pkt_payload_be_o,
+  output                  long_pkt_eop_o
 );
 
 // Interconnect
@@ -87,6 +88,7 @@ csi2_pkt_handler pkt_handler
   .long_pkt_payload_o       ( long_pkt_payload_o       ),
   .long_pkt_payload_valid_o ( long_pkt_payload_valid_o ),
   .long_pkt_payload_be_o    ( long_pkt_payload_be_o    ),
+  .long_pkt_eop_o           ( long_pkt_eop_o           ),
   .pkt_done_o               ( pkt_done                 )
 );
 

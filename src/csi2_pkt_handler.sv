@@ -20,7 +20,8 @@ module csi2_pkt_handler
   output logic [31:0] long_pkt_payload_o,
   output logic        long_pkt_payload_valid_o,
   output logic [3:0]  long_pkt_payload_be_o,
-
+  // End of packet signal for upper protocol
+  output logic        long_pkt_eop_o,
   // Reset DPHY logic and prepare to new packet
   output logic        pkt_done_o
 );
@@ -157,5 +158,11 @@ assign pkt_done_o = last_word && pkt_running && valid_i;
 always_comb
   for( bit [2:0] i = 3'd0; i <= 3'd3; i++ )
     be_on_last_word[i] = long_pkt_word_cnt_o[1:0] > i;
+
+always_ff @( posedge clk_i )
+  if( rst_i )
+    long_pkt_eop_o <= 1'b0;
+  else
+    long_pkt_eop_o <= pkt_done_o;
 
 endmodule
