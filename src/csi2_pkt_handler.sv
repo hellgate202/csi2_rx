@@ -111,7 +111,7 @@ always_ff @( posedge clk_i )
         long_pkt_header_valid_o  <= 1'b1;
         long_pkt_v_channel_o     <= data_i[7:6];
         long_pkt_data_type_o     <= data_i[5:0];
-        long_pkt_word_cnt_o      <= data_i[23:8];
+        long_pkt_word_cnt_o      <= data_i[23:8] + 2'd2;
       end
     else
       if( last_valid )

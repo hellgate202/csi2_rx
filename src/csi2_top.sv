@@ -23,7 +23,10 @@ module csi2_top #(
   output [31:0]           long_pkt_payload_o,
   output                  long_pkt_payload_valid_o,
   output [3:0]            long_pkt_payload_be_o,
-  output                  long_pkt_eop_o
+  output                  long_pkt_eop_o,
+
+  output                  crc_passed_o,
+  output                  crc_failed_o
 );
 
 // Interconnect
@@ -90,6 +93,18 @@ csi2_pkt_handler pkt_handler
   .long_pkt_payload_be_o    ( long_pkt_payload_be_o    ),
   .long_pkt_eop_o           ( long_pkt_eop_o           ),
   .pkt_done_o               ( pkt_done                 )
+);
+
+csi2_crc_calc crc_calc
+(
+  .clk_i                    ( int_clk                  ),
+  .rst_i                    ( int_rst                  ),
+  .long_pkt_payload_i       ( long_pkt_payload_o       ),
+  .long_pkt_payload_valid_i ( long_pkt_payload_valid_o ),
+  .long_pkt_payload_be_i    ( long_pkt_payload_be_o    ),
+  .long_pkt_eop_i           ( long_pkt_eop_o           ),
+  .crc_passed_o             ( crc_passed_o             ),
+  .crc_failed_o             ( crc_failed_o             )
 );
 
 endmodule

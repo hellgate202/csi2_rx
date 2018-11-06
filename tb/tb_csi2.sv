@@ -8,7 +8,9 @@ parameter     DATA_LANES = 4;
 parameter int DELAY[4]   = '{0,0,0,0};
 parameter     DPHY_CLK_T = 3000;
 parameter     REF_CLK_T  = 5000;
-parameter     WORD_CNT   = 13;
+parameter     WORD_CNT   = 11;
+
+localparam CSI2_CRC_POLY = 16'h1021;
 
 logic [DATA_LANES-1:0] dphy_data_p;
 logic [DATA_LANES-1:0] dphy_data_n;
@@ -29,8 +31,12 @@ logic [31:0]           long_pkt_payload;
 logic                  long_pkt_payload_valid;
 logic [3:0]            long_pkt_payload_be;
 logic                  long_pkt_eop;
+logic                  crc_passed;
+logic                  crc_failed;
 
 logic [31:0]           header;
+logic [7:0]            crc_q[$];
+logic [15:0]           crc;
 
 initial
   begin
@@ -113,6 +119,27 @@ else
   end
 endfunction
 
+function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
+  logic [7:0] current_byte;
+  logic [15:0] current_crc = 16'hffff;
+  while( payload.size() > 0 )
+    begin
+      current_byte = payload.pop_front();
+      $display("%h",current_byte);
+      for( int i = 0; i < 8; i++ )
+        begin
+          gen_crc[15] = current_crc[0] ^ current_byte[i];
+          for( int j = 1; j < 16; j++ )
+            if( CSI2_CRC_POLY[j] )
+              gen_crc[15-j] = current_crc[16-j] ^ current_crc[0] ^ current_byte[i];
+            else
+              gen_crc[15-j] = current_crc[16-j];
+          current_crc = gen_crc;
+        end
+    end
+    $display("%h",gen_crc);
+endfunction
+
 csi2_top #(
   .DATA_LANES               ( DATA_LANES             ),
   .DELAY                    ( DELAY                  )
@@ -135,7 +162,9 @@ csi2_top #(
   .long_pkt_payload_o       ( long_pkt_payload       ),
   .long_pkt_payload_valid_o ( long_pkt_payload_valid ),
   .long_pkt_payload_be_o    ( long_pkt_payload_be    ),
-  .long_pkt_eop_o           ( long_pkt_eop           )
+  .long_pkt_eop_o           ( long_pkt_eop           ),
+  .crc_passed_o             ( crc_passed             ),
+  .crc_failed_o             ( crc_failed             )
 );
 
 initial
@@ -152,12 +181,18 @@ initial
                          .data_identifier ( 8'h12 ),
                          .word_cnt ( WORD_CNT )
                        );
-    // Put header into mailbox
+    // Put header into mailbox and to crc_queue
     for( int i = 0; i < 4; i++ )
       data_to_send.put(header[(i*8+7)-:8]);
     // Put other data
-    for( int i = 0; i < 13; i++ )
-      data_to_send.put(i);
+    for( int i = 0; i < WORD_CNT; i++ )
+      begin
+        crc_q.push_back(i);
+        data_to_send.put(i);
+      end
+    crc = gen_crc(crc_q);
+    data_to_send.put(crc[7:0]);
+    data_to_send.put(crc[15:8]);
     dphy_gen.send();
     repeat(1000)
       @( posedge ref_clk );

@@ -4,3 +4,6 @@
 [submodule "lib/dphy_lib"]
 	path = lib/dphy_lib
 	url = https://github.com/hellgate202/dphy_lib.git
+[submodule "ip/crc_calc"]
+	path = ip/crc_calc
+	url = https://github.com/hellgate202/crc_calc
