@@ -2,11 +2,12 @@ dphy_if.sv
 dphy_pkg.sv
 dphy_hs_clk_lane.sv
 dphy_hs_data_lane.sv
-dphy_clk_detect_cdc.sv
+dphy_clk_detect.sv
 dphy_byte_align.sv
 dphy_word_align.sv
 dphy_32b_map.sv
 dphy_slave.sv
+dual_port_ram.sv
 csi2_hamming_dec.sv
 csi2_pkt_handler.sv
 csi2_top.sv
