@@ -125,7 +125,6 @@ function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
   while( payload.size() > 0 )
     begin
       current_byte = payload.pop_front();
-      $display("%h",current_byte);
       for( int i = 0; i < 8; i++ )
         begin
           gen_crc[15] = current_crc[0] ^ current_byte[i];
@@ -137,7 +136,6 @@ function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
           current_crc = gen_crc;
         end
     end
-    $display("%h",gen_crc);
 endfunction
 
 csi2_top #(

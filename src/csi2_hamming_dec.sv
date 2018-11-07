@@ -1,5 +1,5 @@
 module csi2_hamming_dec #(
-  LUT_REG_OUTPUT = 0
+  LUT_REG_OUTPUT = "FALSE"
 )(
   input               clk_i,
   input               rst_i,
@@ -13,7 +13,7 @@ module csi2_hamming_dec #(
 );
 
 localparam INIT_PATH = "./err_bit_pos_lut.txt";
-localparam DELAY_STG = 1 + LUT_REG_OUTPUT;
+localparam DELAY_STG = ( LUT_REG_OUTPUT == "TRUE" ) ? 3 : 1;
 
 logic [5:0]                 generated_parity;
 logic [5:0]                 syndrome;
@@ -25,7 +25,7 @@ logic                       header_passed;
 logic                       error_detected;
 
 generate
-  if( LUT_REG_OUTPUT )
+  if( LUT_REG_OUTPUT == "TRUE" )
     begin : reg_syndrome
       always_ff @( posedge clk_i )
         if( rst_i )
@@ -107,12 +107,14 @@ dual_port_ram #(
   .REGISTERED_OUTPUT ( LUT_REG_OUTPUT ),
   .INIT_FILE         ( INIT_PATH      )
 ) err_bit_pos_lut (
+  .rst_i             ( rst_i          ),
   .wr_clk_i          ( clk_i          ),
   .wr_addr_i         ( 6'd0           ),
   .wr_data_i         ( 5'd0           ),
   .wr_i              ( 1'b0           ),
   .rd_clk_i          ( clk_i          ),
   .rd_addr_i         ( syndrome       ),
+  .output_reg_en_i   ( 1'b1           ),
   .rd_data_o         ( err_bit_pos    ),
   .rd_i              ( 1'b1           )
 );

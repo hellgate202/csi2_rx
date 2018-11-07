@@ -59,7 +59,7 @@ dphy_slave #(
 );
 
 csi2_hamming_dec #(
-  .LUT_REG_OUTPUT    ( 0                        )
+  .LUT_REG_OUTPUT    ( "FALSE"                  )
 ) header_corrector (
   .clk_i             ( int_clk                  ),
   .rst_i             ( int_rst                  ),
