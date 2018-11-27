@@ -1,4 +1,4 @@
-module csi2_top #(
+module csi2_rx #(
   parameter     DATA_LANES = 4,
   parameter int DELAY [4]  = '{0,0,0,0}
 )(
@@ -29,9 +29,9 @@ module csi2_top #(
   output                  crc_failed_o
 );
 
-// Interconnect
 logic        int_clk;
 logic        int_rst;
+logic        rx_clk_present;
 logic        pkt_done;
 logic [31:0] phy_data;
 logic        phy_data_valid;
@@ -40,22 +40,24 @@ logic        header_error_corrected;
 logic [31:0] corrected_phy_data;
 logic        corrected_phy_data_valid;
 
+assign int_rst = ~rx_clk_present;
+
 dphy_slave #(
-  .DATA_LANES    ( DATA_LANES     ),
-  .DELAY         ( DELAY          )
+  .DATA_LANES       ( DATA_LANES     ),
+  .DELAY            ( DELAY          )
 ) phy (
-  .dphy_clk_p_i  ( dphy_clk_p_i   ),
-  .dphy_clk_n_i  ( dphy_clk_n_i   ),
-  .dphy_data_p_i ( dphy_data_p_i  ),
-  .dphy_data_n_i ( dphy_data_n_i  ),
-  .ref_clk_i     ( ref_clk_i      ),
-  .rst_i         ( rst_i          ),
-  .enable_i      ( enable_i       ),
-  .pkt_done_i    ( pkt_done       ),
-  .rst_o         ( int_rst        ),
-  .data_o        ( phy_data       ),
-  .clk_o         ( int_clk        ),
-  .valid_o       ( phy_data_valid )
+  .dphy_clk_p_i     ( dphy_clk_p_i   ),
+  .dphy_clk_n_i     ( dphy_clk_n_i   ),
+  .dphy_data_p_i    ( dphy_data_p_i  ),
+  .dphy_data_n_i    ( dphy_data_n_i  ),
+  .ref_clk_i        ( ref_clk_i      ),
+  .rst_i            ( rst_i          ),
+  .enable_i         ( enable_i       ),
+  .eop_i            ( pkt_done       ),
+  .rx_clk_present_o ( rx_clk_present ),
+  .data_o           ( phy_data       ),
+  .clk_o            ( int_clk        ),
+  .valid_o          ( phy_data_valid )
 );
 
 csi2_hamming_dec #(

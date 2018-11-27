@@ -20,9 +20,7 @@ module csi2_pkt_handler
   output logic [31:0] long_pkt_payload_o,
   output logic        long_pkt_payload_valid_o,
   output logic [3:0]  long_pkt_payload_be_o,
-  // End of packet signal for upper protocol
   output logic        long_pkt_eop_o,
-  // Reset DPHY logic and prepare to new packet
   output logic        pkt_done_o
 );
 
@@ -36,11 +34,6 @@ logic        last_word;
 logic [3:0]  be_on_last_word;
 logic        last_valid;
 
-// Because of that there could be less than 4 data lanes
-// valid_i signal won't always be continious. We need to detect
-// header, only on first positive edge.
-
-// Valid positive edge detection
 always_ff @( posedge clk_i )
   if( rst_i )
     begin
@@ -53,8 +46,6 @@ always_ff @( posedge clk_i )
       last_valid <= pkt_done_o;
     end
 
-// When we detect header the packet starts.
-// It ends when we recieve declared amount of words.
 always_ff @( posedge clk_i )
   if( rst_i )
     pkt_running <= 1'b0;
@@ -65,14 +56,13 @@ always_ff @( posedge clk_i )
       if( pkt_done_o )
         pkt_running <= 1'b0;
 
-assign header_valid = ( ( valid_i && ~valid_d1 ) && // First positive edge of valid signal
-                        ( ~error_i || ( error_i && error_corrected_i ) ) && // If header is correct
-                        ~pkt_running ); // If we didnt capture any headers before
+assign header_valid = ( ( valid_i && ~valid_d1 ) &&
+                        ( ~error_i || ( error_i && error_corrected_i ) ) &&
+                        ~pkt_running );
 
 assign long_pkt     = ( header_valid && data_i[5:0] > 6'hf );
 assign short_pkt    = ( header_valid && data_i[5:0] < 6'h10 );
 
-// Headers parsing
 always_ff @( posedge clk_i )
   if( rst_i )
     begin
@@ -122,7 +112,6 @@ always_ff @( posedge clk_i )
           long_pkt_word_cnt_o     <= 16'd0;
         end
 
-// Long packet payload
 always_ff @( posedge clk_i )
   if( rst_i )
     begin
@@ -140,7 +129,6 @@ always_ff @( posedge clk_i )
         long_pkt_payload_be_o <= 4'b1111;
     end
 
-// We always count by 4 bytes regardless of size of packet
 always_ff @( posedge clk_i )
   if( rst_i )
     byte_cnt <= 16'd0;

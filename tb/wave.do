@@ -8,9 +8,9 @@ add wave -noupdate /tb_csi2/DUT/ref_clk_i
 add wave -noupdate /tb_csi2/DUT/rst_i
 add wave -noupdate /tb_csi2/DUT/enable_i
 add wave -noupdate /tb_csi2/DUT/short_pkt_valid_o
-add wave -noupdate /tb_csi2/DUT/short_pkt_v_channel_o
-add wave -noupdate /tb_csi2/DUT/short_pkt_data_type_o
-add wave -noupdate /tb_csi2/DUT/short_pkt_data_field_o
+add wave -noupdate -radix unsigned /tb_csi2/DUT/short_pkt_v_channel_o
+add wave -noupdate -radix hexadecimal /tb_csi2/DUT/short_pkt_data_type_o
+add wave -noupdate -radix hexadecimal /tb_csi2/DUT/short_pkt_data_field_o
 add wave -noupdate /tb_csi2/DUT/long_pkt_header_valid_o
 add wave -noupdate -radix unsigned /tb_csi2/DUT/long_pkt_v_channel_o
 add wave -noupdate -radix hexadecimal /tb_csi2/DUT/long_pkt_data_type_o
@@ -23,15 +23,16 @@ add wave -noupdate /tb_csi2/DUT/crc_passed_o
 add wave -noupdate /tb_csi2/DUT/crc_failed_o
 add wave -noupdate /tb_csi2/DUT/int_clk
 add wave -noupdate /tb_csi2/DUT/int_rst
+add wave -noupdate /tb_csi2/DUT/rx_clk_present
 add wave -noupdate /tb_csi2/DUT/pkt_done
-add wave -noupdate -radix hexadecimal /tb_csi2/DUT/phy_data
+add wave -noupdate /tb_csi2/DUT/phy_data
 add wave -noupdate /tb_csi2/DUT/phy_data_valid
 add wave -noupdate /tb_csi2/DUT/header_error
 add wave -noupdate /tb_csi2/DUT/header_error_corrected
-add wave -noupdate -radix hexadecimal /tb_csi2/DUT/corrected_phy_data
+add wave -noupdate /tb_csi2/DUT/corrected_phy_data
 add wave -noupdate /tb_csi2/DUT/corrected_phy_data_valid
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1702500 ps} 0}
+WaveRestoreCursors {{Cursor 1} {456000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 559
 configure wave -valuecolwidth 100

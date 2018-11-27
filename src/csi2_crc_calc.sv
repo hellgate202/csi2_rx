@@ -12,8 +12,6 @@ module csi2_crc_calc
 
 localparam CSI2_CRC_POLY = 16'h1021;
 
-// The idea is to calculate CRC on EOP with previous CRC value
-// from main CRC calculator
 
 logic [15:0] main_crc;
 logic [15:0] crc_8bit;
@@ -44,7 +42,6 @@ crc_calc #(
   .crc_o        ( main_crc                 )
 );
 
-// One byte EOP CRC
 always_comb
   begin
     for( int i = 0; i < 8; i++ )
@@ -58,7 +55,6 @@ always_comb
       end
   end
 
-// Two byte EOP CRC
 always_comb
   begin
     for( int i = 0; i < 16; i++ )
@@ -72,7 +68,6 @@ always_comb
       end
   end
 
-// Three byte EOP CRC
 always_comb
   begin
     for( int i = 0; i < 24; i++ )

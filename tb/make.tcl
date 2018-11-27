@@ -1,38 +1,19 @@
-vlib work
-set proj_dir [pwd]/../
-set vivado_sim_lib $::env(QSYS_ROOTDIR)/../../../modelsim_ase/xilinx/
-set inc_dir "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/ $proj_dir/lib/"
-set dirs "$proj_dir/src/ $proj_dir/tb/ $proj_dir/ip/ $proj_dir/lib/dphy_lib/ $vivado_sim_lib"   
-set files "$proj_dir/tb/files" 
+proc compile_src {} {
+  vlib work
+  vlog -sv -incr -f files 
+}
 
-vmap work $vivado_sim_lib/unisims_ver
-vmap work $vivado_sim_lib/unisim
+proc run_sim {} {
+  vsim -novopt -L unisim tb_csi2
+}
 
-foreach j $inc_dir {
-  if { [catch { exec grep -x +incdir+$j vlog.opt } ] } {
-    exec echo +incdir+$j >> vlog.opt
+proc draw_waveforms {} {
+  if { [file exists "wave.do"] } {
+    do wave.do
   }
 }
 
-foreach files $files {
-  set FILE_LIST "[exec grep -v // $files]"
-  foreach file $FILE_LIST {
-    foreach path $dirs {
-      set file_path     [exec find $path -name $file]
-      set file_dir [string trimright $file_path $file]
-      
-      if { [llength $file_path] > 0 } {
-        if [regexp {.vhdl?} $file] {
-          vcom -work work $file_path
-        } else {
-          vlog -sv -incr -work work +incdir+$file_dir $file_path
-        }
-      }
-    }
-  }
-}
-
-vsim -novopt tb_csi2
-do wave.do
-
+compile_src
+run_sim
+draw_waveforms
 run -all

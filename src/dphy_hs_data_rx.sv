@@ -1,18 +1,15 @@
-// This is Xilinx FPGA specific module designed to align and deserialize
-// input data. For other devices you should change Xilinx specific blocks 
-// for other with similar functionality descripted in comments.
-module dphy_hs_data_lane #(
+module dphy_hs_data_rx #(
   parameter DELAY = 0
 )(
-  input              bit_clk_i,
-  input              bit_clk_inv_i,
-  input              ref_clk_i,
-  input              byte_clk_i,
-  input              enable_i,
-  input              rst_i,
-  input              dphy_data_p_i,
-  input              dphy_data_n_i,
-  output logic [7:0] byte_data_o
+  input        bit_clk_i,
+  input        bit_clk_inv_i,
+  input        ref_clk_i,
+  input        byte_clk_i,
+  input        enable_i,
+  input        rst_i,
+  input        dphy_data_p_i,
+  input        dphy_data_n_i,
+  output [7:0] byte_data_o
 );
 
   logic rst_d1;
@@ -24,7 +21,6 @@ always_ff @( posedge byte_clk_i )
     rst_d2 <= rst_d1;
   end
 
-// Converts input differntial DDR data into single-ended one  
 IBUFDS #(
   .DIFF_TERM    ( 1             ),
   .IBUF_LOW_PWR ( 0             ),
@@ -35,10 +31,6 @@ IBUFDS #(
   .IB           ( dphy_data_n_i )
 );
 
-// This module is not so simple,
-// so I decided to use it in fix latency mode,
-// which is passed by DELAY parameter
-// Feel free to change this instance if you desire.
 IDELAYE2 #(
   .IDELAY_TYPE           ( "FIXED"       ),
   .DELAY_SRC             ( "IDATAIN"     ),
@@ -63,7 +55,6 @@ IDELAYE2 #(
   .REGRST                ( 1'b0          )
 );
 
-// ref_clk_i should be 200 MHz
 IDELAYCTRL delay_ctrl
 (
   .RDY    (           ),
@@ -71,7 +62,6 @@ IDELAYCTRL delay_ctrl
   .RST    ( rst_i     )
 );
 
-// Deserializer. That's all.
 ISERDESE2 #(
   .DATA_RATE         ( "DDR"          ),
   .DATA_WIDTH        ( 8              ),

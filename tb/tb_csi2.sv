@@ -138,7 +138,7 @@ function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
     end
 endfunction
 
-csi2_top #(
+csi2_rx #(
   .DATA_LANES               ( DATA_LANES             ),
   .DELAY                    ( DELAY                  )
 ) DUT (
