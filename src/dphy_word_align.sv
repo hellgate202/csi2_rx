@@ -1,27 +1,27 @@
 module dphy_word_align #(
-  parameter DATA_LANES = 4
+  parameter int DATA_LANES = 4
 )(
-  input                              byte_clk_i,
-  input                              rst_i,
-  input                              enable_i,
-  input                              eop_i,
-  input        [DATA_LANES-1:0][7:0] byte_data_i,
-  input        [DATA_LANES-1:0]      valid_i,
-  output logic                       reset_align_o,
-  output logic [DATA_LANES-1:0][7:0] word_o,
-  output logic                       valid_o
+  input                                    byte_clk_i,
+  input                                    rst_i,
+  input                                    enable_i,
+  input                                    eop_i,
+  input        [DATA_LANES - 1 : 0][7 : 0] byte_data_i,
+  input        [DATA_LANES - 1 : 0]        valid_i,
+  output logic                             reset_align_o,
+  output logic [DATA_LANES - 1 : 0][7 : 0] word_o,
+  output logic                             valid_o
 );
 
-logic [DATA_LANES-1:0][7:0] word_d1;
-logic [DATA_LANES-1:0][7:0] word_d2;
-logic [DATA_LANES-1:0][7:0] word_d3;
-logic [DATA_LANES-1:0]      valid_d1;
-logic [DATA_LANES-1:0]      valid_d2;
-logic [DATA_LANES-1:0]      valid_d3;
-logic [DATA_LANES-1:0][1:0] sel_delay;
-logic [DATA_LANES-1:0][1:0] sel_delay_reg;
-logic                       one_lane_sync;
-logic                       all_lanes_valid;
+logic [DATA_LANES - 1 : 0][7 : 0] word_d1;
+logic [DATA_LANES - 1 : 0][7 : 0] word_d2;
+logic [DATA_LANES - 1 : 0][7 : 0] word_d3;
+logic [DATA_LANES - 1 : 0]        valid_d1;
+logic [DATA_LANES - 1 : 0]        valid_d2;
+logic [DATA_LANES - 1 : 0]        valid_d3;
+logic [DATA_LANES - 1 : 0][1 : 0] sel_delay;
+logic [DATA_LANES - 1 : 0][1 : 0] sel_delay_reg;
+logic                             one_lane_sync;
+logic                             all_lanes_valid;
 
 assign all_lanes_valid = &valid_d1;
 assign invalid_start   = one_lane_sync && ~all_lanes_valid;

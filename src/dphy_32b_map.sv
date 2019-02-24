@@ -1,16 +1,16 @@
 module dphy_32b_map #(
-  parameter DATA_LANES = 4
+  parameter int DATA_LANES = 4
 )(
-  input                              byte_clk_i,
-  input                              rst_i,
-  input        [DATA_LANES-1:0][7:0] word_data_i,
-  input                              valid_i,
-  output logic [31:0]                maped_data_o,
-  output logic                       valid_o
+  input                                    byte_clk_i,
+  input                                    rst_i,
+  input        [DATA_LANES - 1 : 0][7 : 0] word_data_i,
+  input                                    valid_i,
+  output logic [31:0]                      maped_data_o,
+  output logic                             valid_o
 );
 
-logic [3:0] word_pos;
-logic       word_done;
+logic [3 : 0] word_pos;
+logic         word_done;
 
 always_ff @( posedge byte_clk_i )
   if( rst_i )
@@ -20,7 +20,7 @@ always_ff @( posedge byte_clk_i )
       word_pos <= 'b1;
     else
       if( valid_i )
-        word_pos <= {word_pos[2:0],word_pos[3]};
+        word_pos <= { word_pos[2 : 0], word_pos[3] };
 
 generate
   case( DATA_LANES )
@@ -32,7 +32,7 @@ generate
           else
             for( int i = 0; i < 4; i++ )
               if( word_pos[i] )
-                maped_data_o[(i+1)*8-1-:8] <= word_data_i;
+                maped_data_o[(i + 1) * 8 - 1 -: 8] <= word_data_i;
 
         always_ff @( posedge byte_clk_i )
           if( rst_i )
@@ -53,7 +53,7 @@ generate
           else
             for( int i = 0; i < 4; i++ )
               if( word_pos[i] )
-                maped_data_o[(i+1)*16-1-:16] <= word_data_i;
+                maped_data_o[( i + 1) * 16 - 1 -: 16] <= word_data_i;
 
         always_ff @( posedge byte_clk_i )
           if( rst_i )
@@ -80,23 +80,23 @@ generate
             case( word_pos )
               4'b0001:
                 begin
-                  maped_data_o[23:0] <= word_data_i;
+                  maped_data_o[23 : 0] <= word_data_i;
                 end
               4'b0010:
                 begin
-                  maped_data_o[31:24] <= word_data_i[0];
-                  old_bytes           <= word_data_i[2:1];
+                  maped_data_o[31 : 24] <= word_data_i[0];
+                  old_bytes             <= word_data_i[2:1];
                 end
               4'b0100:
                 begin
-                  maped_data_o[15:0]  <= old_bytes;
-                  maped_data_o[31:16] <= word_data_i[1:0];
-                  old_bytes[7:0]      <= word_data_i[2];
+                  maped_data_o[15 : 0]  <= old_bytes;
+                  maped_data_o[31 : 16] <= word_data_i[1 : 0];
+                  old_bytes[7 : 0]      <= word_data_i[2];
                 end
               4'b1000:
                 begin
-                  maped_data_o[7:0]  <= old_bytes[7:0];
-                  maped_data_o[31:8] <= word_data_i;
+                  maped_data_o[7 : 0]  <= old_bytes[7 : 0];
+                  maped_data_o[31 : 8] <= word_data_i;
                 end
               default:
                 begin

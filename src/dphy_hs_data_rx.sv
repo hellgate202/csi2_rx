@@ -1,15 +1,15 @@
 module dphy_hs_data_rx #(
-  parameter DELAY = 0
+  parameter int DELAY = 0
 )(
-  input        bit_clk_i,
-  input        bit_clk_inv_i,
-  input        ref_clk_i,
-  input        byte_clk_i,
-  input        enable_i,
-  input        rst_i,
-  input        dphy_data_p_i,
-  input        dphy_data_n_i,
-  output [7:0] byte_data_o
+  input          bit_clk_i,
+  input          bit_clk_inv_i,
+  input          ref_clk_i,
+  input          byte_clk_i,
+  input          enable_i,
+  input          rst_i,
+  input          dphy_data_p_i,
+  input          dphy_data_n_i,
+  output [7 : 0] byte_data_o
 );
 
   logic rst_d1;

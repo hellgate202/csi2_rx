@@ -1,45 +1,45 @@
 module csi2_hamming_dec #(
-  LUT_REG_OUTPUT = "FALSE"
+  parameter int LUT_REG_OUTPUT = 0
 )(
-  input               clk_i,
-  input               rst_i,
-  input               valid_i,
-  input        [31:0] data_i,
-  input               pkt_done_i,
-  output logic        error_o,
-  output logic        error_corrected_o,
-  output logic [31:0] data_o,
-  output logic        valid_o
+  input                 clk_i,
+  input                 rst_i,
+  input                 valid_i,
+  input        [31 : 0] data_i,
+  input                 pkt_done_i,
+  output logic          error_o,
+  output logic          error_corrected_o,
+  output logic [31 : 0] data_o,
+  output logic          valid_o
 );
 
-localparam INIT_PATH = "./err_bit_pos_lut.txt";
-localparam DELAY_STG = ( LUT_REG_OUTPUT == "TRUE" ) ? 3 : 1;
+localparam string INIT_PATH = "./err_bit_pos_lut.txt";
+localparam int    DELAY_STG = ( LUT_REG_OUTPUT ) ? 3 : 1;
 
-logic [5:0]                 generated_parity;
-logic [5:0]                 syndrome;
-logic [4:0]                 err_bit_pos;
-logic [DELAY_STG-1:0][31:0] data_d;
-logic [DELAY_STG-1:0]       valid_d;
-logic                       header_valid;
-logic                       header_passed;
-logic                       error_detected;
+logic [5 : 0]                     generated_parity;
+logic [5 : 0]                     syndrome;
+logic [4 : 0]                     err_bit_pos;
+logic [DELAY_STG - 1 : 0][31 : 0] data_d;
+logic [DELAY_STG - 1 : 0]         valid_d;
+logic                             header_valid;
+logic                             header_passed;
+logic                             error_detected;
 
 generate
-  if( LUT_REG_OUTPUT == "TRUE" )
+  if( LUT_REG_OUTPUT )
     begin : reg_syndrome
       always_ff @( posedge clk_i )
         if( rst_i )
           syndrome <= '0;
         else
-          syndrome <= generated_parity ^ data_i[29:24];
+          syndrome <= generated_parity ^ data_i[29 : 24];
     end
   else
     begin : comb_syndrome
-      assign syndrome = generated_parity ^ data_i[29:24];
+      assign syndrome = generated_parity ^ data_i[29 : 24];
     end
 endgenerate
 
-assign header_valid = valid_d[DELAY_STG-1] && ~header_passed;
+assign header_valid = valid_d[DELAY_STG - 1] && !header_passed;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -73,10 +73,10 @@ always_ff @( posedge clk_i )
     begin
       data_d[0] <= data_i;
       for( int i = 1; i < DELAY_STG; i++ )
-        data_d[i] <= data_d[i-1];
+        data_d[i] <= data_d[i - 1];
       valid_d[0] <= valid_i;
       for( int i = 1; i < DELAY_STG; i++ )
-        valid_d[i] <= valid_d[i-1];
+        valid_d[i] <= valid_d[i - 1];
     end
 
 always_comb
@@ -144,17 +144,17 @@ always_ff @( posedge clk_i )
     data_o <= '0;
   else
     begin
-      data_o <= data_d[DELAY_STG-1];
+      data_o <= data_d[DELAY_STG - 1];
       if( header_valid && error_detected && err_bit_pos != 5'h1f )
         for( int i = 0; i < 24; i++ )
           if( i == err_bit_pos )
-            data_o[i] <= ~data_d[DELAY_STG-1][i];
+            data_o[i] <= ~data_d[DELAY_STG - 1][i];
     end
 
 always_ff @( posedge clk_i )
   if( rst_i )
     valid_o <= 1'b0;
   else
-    valid_o <= valid_d[DELAY_STG-1];
+    valid_o <= valid_d[DELAY_STG - 1];
 
 endmodule

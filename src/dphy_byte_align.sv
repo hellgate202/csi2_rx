@@ -1,22 +1,22 @@
 module dphy_byte_align
 (
-  input              clk_i,
-  input              rst_i,
-  input        [7:0] unaligned_byte_i,
-  input              reset_align_i,
-  output logic       valid_o,
-  output logic [7:0] aligned_byte_o
+  input                clk_i,
+  input                rst_i,
+  input        [7 : 0] unaligned_byte_i,
+  input                reset_align_i,
+  output logic         valid_o,
+  output logic [7 : 0] aligned_byte_o
 );
 
-localparam [7:0] SYNC_PATTERN = 8'b10111000;
+localparam bit [7 : 0] SYNC_PATTERN = 8'b10111000;
 
-logic [7:0]  unaligned_byte_d1;
-logic [7:0]  unaligned_byte_d2;
-logic [3:0]  sync_offset;
-logic        found_sync;
-logic [15:0] compare_window;
-logic [3:0]  align_shift;
-logic        sync_done;
+logic [7 : 0]  unaligned_byte_d1;
+logic [7 : 0]  unaligned_byte_d2;
+logic [3 : 0]  sync_offset;
+logic          found_sync;
+logic [15 : 0] compare_window;
+logic [3 : 0]  align_shift;
+logic          sync_done;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -34,11 +34,11 @@ always_comb
   begin
     sync_offset = 4'd0;
     found_sync  = 1'b0;
-    compare_window = {unaligned_byte_d1,unaligned_byte_d2};
-    for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
+    compare_window = { unaligned_byte_d1, unaligned_byte_d2 };
+    for( bit [3 : 0] i = 4'd0; i < 4'd8; i++ )
       begin
-        compare_window = {unaligned_byte_d1,unaligned_byte_d2} >> i;
-        if( compare_window[7:0] == SYNC_PATTERN )
+        compare_window = { unaligned_byte_d1, unaligned_byte_d2 } >> i;
+        if( compare_window[7 : 0] == SYNC_PATTERN )
           begin
             sync_offset = i;
             found_sync  = 1'b1;
@@ -78,6 +78,6 @@ always_ff @( posedge clk_i )
   else
     for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
       if( i == align_shift )
-        aligned_byte_o <= {unaligned_byte_d1,unaligned_byte_d2} >> i;
+        aligned_byte_o <= { unaligned_byte_d1, unaligned_byte_d2 } >> i;
       
 endmodule

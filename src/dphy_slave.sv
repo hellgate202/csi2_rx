@@ -1,31 +1,31 @@
 module dphy_slave #(
-  parameter     DATA_LANES = 2,
-  parameter int DELAY [4]  = '{0,0,0,0}
+  parameter int DATA_LANES = 2,
+  parameter int DELAY [4]  = '{ 0, 0, 0, 0}
 )(
-  input                   dphy_clk_p_i,
-  input                   dphy_clk_n_i,
-  input  [DATA_LANES-1:0] dphy_data_p_i,
-  input  [DATA_LANES-1:0] dphy_data_n_i,
-  input                   ref_clk_i,
-  input                   rst_i,
-  input                   enable_i,
-  input                   eop_i,
-  output                  rx_clk_present_o,
-  output [31:0]           data_o,
-  output                  clk_o,
-  output                  valid_o
+  input                       dphy_clk_p_i,
+  input                       dphy_clk_n_i,
+  input  [DATA_LANES - 1 : 0] dphy_data_p_i,
+  input  [DATA_LANES - 1 : 0] dphy_data_n_i,
+  input                       ref_clk_i,
+  input                       rst_i,
+  input                       enable_i,
+  input                       eop_i,
+  output                      rx_clk_present_o,
+  output [31 : 0]             data_o,
+  output                      clk_o,
+  output                      valid_o
 );
 
-logic                       bit_clk;
-logic                       bit_clk_inv;
-logic                       byte_clk;
-logic                       rx_clk_present;
-logic [DATA_LANES-1:0][7:0] byte_data;
-logic [DATA_LANES-1:0][7:0] aligned_byte_data;
-logic [DATA_LANES-1:0]      aligned_byte_valid;
-logic                       reset_align;
-logic [DATA_LANES-1:0][7:0] word_data;
-logic                       word_valid;
+logic                             bit_clk;
+logic                             bit_clk_inv;
+logic                             byte_clk;
+logic                             rx_clk_present;
+logic [DATA_LANES - 1 : 0][7 : 0] byte_data;
+logic [DATA_LANES - 1 : 0][7 : 0] aligned_byte_data;
+logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
+logic                             reset_align;
+logic [DATA_LANES - 1 : 0][7 : 0] word_data;
+logic                             word_valid;
 
 assign clk_o            = byte_clk;
 assign rx_clk_present_o = rx_clk_present;

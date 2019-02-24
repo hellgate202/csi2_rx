@@ -1,6 +1,6 @@
 module clk_detect #(
-  parameter REF_TICKS_TO_ABSENCE  = 10,
-  parameter OBS_TICKS_TO_PRESENCE = 3
+  parameter int REF_TICKS_TO_ABSENCE  = 10,
+  parameter int OBS_TICKS_TO_PRESENCE = 3
 )(
   input  ref_clk_i,
   input  obs_clk_i,
@@ -8,17 +8,17 @@ module clk_detect #(
   output clk_present_o
 );
 
-localparam ABSENCE_CNT_W  = $clog2( REF_TICKS_TO_ABSENCE );
-localparam PRESENCE_CNT_W = $clog2( OBS_TICKS_TO_PRESENCE );
+localparam int ABSENCE_CNT_W  = $clog2( REF_TICKS_TO_ABSENCE );
+localparam int PRESENCE_CNT_W = $clog2( OBS_TICKS_TO_PRESENCE );
 
-logic                      toggle_bit;
-logic                      toggle_bit_s1;
-logic                      toggle_bit_s2;
-logic                      toggle_bit_s3;
-logic [ABSENCE_CNT_W-1:0]  clk_absence_cnt;
-logic [PRESENCE_CNT_W-1:0] clk_presence_cnt;
-logic                      clk_absent;
-logic                      clk_edge;
+logic                          toggle_bit;
+logic                          toggle_bit_s1;
+logic                          toggle_bit_s2;
+logic                          toggle_bit_s3;
+logic [ABSENCE_CNT_W - 1 : 0]  clk_absence_cnt;
+logic [PRESENCE_CNT_W - 1 : 0] clk_presence_cnt;
+logic                          clk_absent;
+logic                          clk_edge;
 
 always_ff @( posedge obs_clk_i, posedge rst_i )
   if( rst_i )

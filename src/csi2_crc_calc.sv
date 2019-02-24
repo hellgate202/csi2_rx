@@ -1,23 +1,23 @@
 module csi2_crc_calc
 (
-  input               clk_i,
-  input               rst_i,
-  input        [31:0] long_pkt_payload_i,
-  input               long_pkt_payload_valid_i,
-  input        [3:0]  long_pkt_payload_be_i,
-  input               long_pkt_eop_i,
-  output logic        crc_passed_o,
-  output logic        crc_failed_o
+  input                 clk_i,
+  input                 rst_i,
+  input        [31 : 0] long_pkt_payload_i,
+  input                 long_pkt_payload_valid_i,
+  input        [3 : 0]  long_pkt_payload_be_i,
+  input                 long_pkt_eop_i,
+  output logic          crc_passed_o,
+  output logic          crc_failed_o
 );
 
-localparam CSI2_CRC_POLY = 16'h1021;
+localparam int CSI2_CRC_POLY = 16'h1021;
 
 
-logic [15:0] main_crc;
-logic [15:0] crc_8bit;
-logic [15:0] crc_16bit;
-logic [15:0] crc_24bit;
-logic        long_pkt_eop_d1;
+logic [15 : 0] main_crc;
+logic [15 : 0] crc_8bit;
+logic [15 : 0] crc_16bit;
+logic [15 : 0] crc_24bit;
+logic          long_pkt_eop_d1;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -30,8 +30,8 @@ crc_calc #(
   .CRC_SIZE     ( 16                       ),
   .DATA_WIDTH   ( 32                       ),
   .INIT         ( 16'hffff                 ),
-  .REF_IN       ( "TRUE"                   ),
-  .REF_OUT      ( "TRUE"                   ),
+  .REF_IN       ( 1                        ),
+  .REF_OUT      ( 1                        ),
   .XOR_OUT      ( 16'h0                    )
 ) main_calc (
   .clk_i        ( clk_i                    ),
@@ -49,9 +49,9 @@ always_comb
         crc_8bit[15] = main_crc[0] ^ long_pkt_payload_i[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_8bit[15-j] = main_crc[16-j] ^ main_crc[0] ^ long_pkt_payload_i[i];
+            crc_8bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload_i[i];
           else
-            crc_8bit[15-j] = main_crc[16-j];
+            crc_8bit[15 - j] = main_crc[16 - j];
       end
   end
 
@@ -62,9 +62,9 @@ always_comb
         crc_16bit[15] = main_crc[0] ^ long_pkt_payload_i[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_16bit[15-j] = main_crc[16-j] ^ main_crc[0] ^ long_pkt_payload_i[i];
+            crc_16bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload_i[i];
           else
-            crc_16bit[15-j] = main_crc[16-j];
+            crc_16bit[15 - j] = main_crc[16 - j];
       end
   end
 
@@ -75,9 +75,9 @@ always_comb
         crc_24bit[15] = main_crc[0] ^ long_pkt_payload_i[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_24bit[15-j] = main_crc[16-j] ^ main_crc[0] ^ long_pkt_payload_i[i];
+            crc_24bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload_i[i];
           else
-            crc_24bit[15-j] = main_crc[16-j];
+            crc_24bit[15 - j] = main_crc[16 - j];
       end
   end
 

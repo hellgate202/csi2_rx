@@ -1,38 +1,38 @@
 module csi2_pkt_handler
 (
-  input               clk_i,
-  input               rst_i,
-  input               valid_i,
-  input        [31:0] data_i,
-  input               error_i,
-  input               error_corrected_i,
+  input                 clk_i,
+  input                 rst_i,
+  input                 valid_i,
+  input        [31 : 0] data_i,
+  input                 error_i,
+  input                 error_corrected_i,
 
-  output logic        short_pkt_valid_o,
-  output logic [1:0]  short_pkt_v_channel_o,
-  output logic [5:0]  short_pkt_data_type_o,
-  output logic [15:0] short_pkt_data_field_o,
+  output logic          short_pkt_valid_o,
+  output logic [1 : 0]  short_pkt_v_channel_o,
+  output logic [5 : 0]  short_pkt_data_type_o,
+  output logic [15 : 0] short_pkt_data_field_o,
 
-  output logic        long_pkt_header_valid_o,
-  output logic [1:0]  long_pkt_v_channel_o,
-  output logic [5:0]  long_pkt_data_type_o,
-  output logic [15:0] long_pkt_word_cnt_o,
+  output logic          long_pkt_header_valid_o,
+  output logic [1 : 0]  long_pkt_v_channel_o,
+  output logic [5 : 0]  long_pkt_data_type_o,
+  output logic [15 : 0] long_pkt_word_cnt_o,
 
-  output logic [31:0] long_pkt_payload_o,
-  output logic        long_pkt_payload_valid_o,
-  output logic [3:0]  long_pkt_payload_be_o,
-  output logic        long_pkt_eop_o,
-  output logic        pkt_done_o
+  output logic [31 : 0] long_pkt_payload_o,
+  output logic          long_pkt_payload_valid_o,
+  output logic [3 : 0]  long_pkt_payload_be_o,
+  output logic          long_pkt_eop_o,
+  output logic          pkt_done_o
 );
 
-logic        valid_d1;
-logic        header_valid;
-logic        pkt_running;
-logic [15:0] byte_cnt;
-logic        long_pkt;
-logic        short_pkt;
-logic        last_word;
-logic [3:0]  be_on_last_word;
-logic        last_valid;
+logic          valid_d1;
+logic          header_valid;
+logic          pkt_running;
+logic [15 : 0] byte_cnt;
+logic          long_pkt;
+logic          short_pkt;
+logic          last_word;
+logic [3 : 0]  be_on_last_word;
+logic          last_valid;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -60,8 +60,8 @@ assign header_valid = ( ( valid_i && ~valid_d1 ) &&
                         ( ~error_i || ( error_i && error_corrected_i ) ) &&
                         ~pkt_running );
 
-assign long_pkt     = ( header_valid && data_i[5:0] > 6'hf );
-assign short_pkt    = ( header_valid && data_i[5:0] < 6'h10 );
+assign long_pkt     = ( header_valid && data_i[5 : 0] > 6'hf );
+assign short_pkt    = ( header_valid && data_i[5 : 0] < 6'h10 );
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -75,9 +75,9 @@ always_ff @( posedge clk_i )
     if( short_pkt )
       begin
         short_pkt_valid_o      <= 1'b1;
-        short_pkt_v_channel_o  <= data_i[7:6];
-        short_pkt_data_type_o  <= data_i[5:0];
-        short_pkt_data_field_o <= data_i[23:8];
+        short_pkt_v_channel_o  <= data_i[7 : 6];
+        short_pkt_data_type_o  <= data_i[5 : 0];
+        short_pkt_data_field_o <= data_i[23 : 8];
       end
     else
       begin
@@ -99,9 +99,9 @@ always_ff @( posedge clk_i )
     if( long_pkt )
       begin
         long_pkt_header_valid_o  <= 1'b1;
-        long_pkt_v_channel_o     <= data_i[7:6];
-        long_pkt_data_type_o     <= data_i[5:0];
-        long_pkt_word_cnt_o      <= data_i[23:8] + 2'd2;
+        long_pkt_v_channel_o     <= data_i[7 : 6];
+        long_pkt_data_type_o     <= data_i[5 : 0];
+        long_pkt_word_cnt_o      <= data_i[23 : 8] + 2'd2;
       end
     else
       if( last_valid )
@@ -144,8 +144,8 @@ assign last_word  = ( byte_cnt + 16'd4 ) >= long_pkt_word_cnt_o;
 assign pkt_done_o = last_word && pkt_running && valid_i;
 
 always_comb
-  for( bit [2:0] i = 3'd0; i <= 3'd3; i++ )
-    be_on_last_word[i] = long_pkt_word_cnt_o[1:0] > i;
+  for( bit [2 : 0] i = 3'd0; i <= 3'd3; i++ )
+    be_on_last_word[i] = long_pkt_word_cnt_o[1 : 0] > i;
 
 always_ff @( posedge clk_i )
   if( rst_i )

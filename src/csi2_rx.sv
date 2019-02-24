@@ -1,44 +1,44 @@
 module csi2_rx #(
-  parameter     DATA_LANES = 4,
-  parameter int DELAY [4]  = '{0,0,0,0}
+  parameter int DATA_LANES = 4,
+  parameter int DELAY [4]  = '{ 0, 0, 0, 0 }
 )(
-  input                   dphy_clk_p_i,
-  input                   dphy_clk_n_i,
-  input  [DATA_LANES-1:0] dphy_data_p_i,
-  input  [DATA_LANES-1:0] dphy_data_n_i,
-  input                   ref_clk_i,
-  input                   rst_i,
-  input                   enable_i,
+  input                       dphy_clk_p_i,
+  input                       dphy_clk_n_i,
+  input  [DATA_LANES - 1 : 0] dphy_data_p_i,
+  input  [DATA_LANES - 1 : 0] dphy_data_n_i,
+  input                       ref_clk_i,
+  input                       rst_i,
+  input                       enable_i,
   // WIP: signals for debug
-  output                  short_pkt_valid_o,
-  output [1:0]            short_pkt_v_channel_o,
-  output [5:0]            short_pkt_data_type_o,
-  output [15:0]           short_pkt_data_field_o,
+  output                      short_pkt_valid_o,
+  output [1 : 0]              short_pkt_v_channel_o,
+  output [5 : 0]              short_pkt_data_type_o,
+  output [15 : 0]             short_pkt_data_field_o,
 
-  output                  long_pkt_header_valid_o,
-  output [1:0]            long_pkt_v_channel_o,
-  output [5:0]            long_pkt_data_type_o,
-  output [15:0]           long_pkt_word_cnt_o,
+  output                      long_pkt_header_valid_o,
+  output [1 : 0]              long_pkt_v_channel_o,
+  output [5 : 0]              long_pkt_data_type_o,
+  output [15 : 0]             long_pkt_word_cnt_o,
  
-  output [31:0]           long_pkt_payload_o,
-  output                  long_pkt_payload_valid_o,
-  output [3:0]            long_pkt_payload_be_o,
-  output                  long_pkt_eop_o,
+  output [31 : 0]             long_pkt_payload_o,
+  output                      long_pkt_payload_valid_o,
+  output [3 : 0]              long_pkt_payload_be_o,
+  output                      long_pkt_eop_o,
 
-  output                  crc_passed_o,
-  output                  crc_failed_o
+  output                      crc_passed_o,
+  output                      crc_failed_o
 );
 
-logic        int_clk;
-logic        int_rst;
-logic        rx_clk_present;
-logic        pkt_done;
-logic [31:0] phy_data;
-logic        phy_data_valid;
-logic        header_error;
-logic        header_error_corrected;
-logic [31:0] corrected_phy_data;
-logic        corrected_phy_data_valid;
+logic          int_clk;
+logic          int_rst;
+logic          rx_clk_present;
+logic          pkt_done;
+logic [31 : 0] phy_data;
+logic          phy_data_valid;
+logic          header_error;
+logic          header_error_corrected;
+logic [31 : 0] corrected_phy_data;
+logic          corrected_phy_data_valid;
 
 assign int_rst = ~rx_clk_present;
 
@@ -61,7 +61,7 @@ dphy_slave #(
 );
 
 csi2_hamming_dec #(
-  .LUT_REG_OUTPUT    ( "FALSE"                  )
+  .LUT_REG_OUTPUT    ( 0                        )
 ) header_corrector (
   .clk_i             ( int_clk                  ),
   .rst_i             ( int_rst                  ),
