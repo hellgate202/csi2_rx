@@ -1,6 +1,5 @@
-module csi2_hamming_dec #(
-  parameter int LUT_REG_OUTPUT = 0
-)(
+module csi2_hamming_dec
+(
   input                 clk_i,
   input                 rst_i,
   input                 valid_i,
@@ -13,33 +12,18 @@ module csi2_hamming_dec #(
 );
 
 localparam string INIT_PATH = "./err_bit_pos_lut.txt";
-localparam int    DELAY_STG = ( LUT_REG_OUTPUT ) ? 3 : 1;
 
-logic [5 : 0]                     generated_parity;
-logic [5 : 0]                     syndrome;
-logic [4 : 0]                     err_bit_pos;
-logic [DELAY_STG - 1 : 0][31 : 0] data_d;
-logic [DELAY_STG - 1 : 0]         valid_d;
-logic                             header_valid;
-logic                             header_passed;
-logic                             error_detected;
+logic [5 : 0]  generated_parity;
+logic [5 : 0]  syndrome;
+logic [4 : 0]  err_bit_pos;
+logic [31 : 0] data_d;
+logic          valid_d;
+logic          header_valid;
+logic          header_passed;
+logic          error_detected;
 
-generate
-  if( LUT_REG_OUTPUT )
-    begin : reg_syndrome
-      always_ff @( posedge clk_i )
-        if( rst_i )
-          syndrome <= '0;
-        else
-          syndrome <= generated_parity ^ data_i[29 : 24];
-    end
-  else
-    begin : comb_syndrome
-      assign syndrome = generated_parity ^ data_i[29 : 24];
-    end
-endgenerate
-
-assign header_valid = valid_d[DELAY_STG - 1] && !header_passed;
+assign syndrome     = generated_parity ^ data_i[29 : 24];
+assign header_valid = valid_d && !header_passed;
 
 always_ff @( posedge clk_i )
   if( rst_i )
@@ -71,12 +55,8 @@ always_ff @( posedge clk_i )
     end
   else
     begin
-      data_d[0] <= data_i;
-      for( int i = 1; i < DELAY_STG; i++ )
-        data_d[i] <= data_d[i - 1];
-      valid_d[0] <= valid_i;
-      for( int i = 1; i < DELAY_STG; i++ )
-        valid_d[i] <= valid_d[i - 1];
+      data_d  <= data_i;
+      valid_d <= valid_i;
     end
 
 always_comb
@@ -104,7 +84,6 @@ always_comb
 dual_port_ram #(
   .DATA_WIDTH        ( 5              ),
   .ADDR_WIDTH        ( 6              ),
-  .REGISTERED_OUTPUT ( LUT_REG_OUTPUT ),
   .INIT_FILE         ( INIT_PATH      )
 ) err_bit_pos_lut (
   .rst_i             ( rst_i          ),
@@ -114,7 +93,6 @@ dual_port_ram #(
   .wr_i              ( 1'b0           ),
   .rd_clk_i          ( clk_i          ),
   .rd_addr_i         ( syndrome       ),
-  .output_reg_en_i   ( 1'b1           ),
   .rd_data_o         ( err_bit_pos    ),
   .rd_i              ( 1'b1           )
 );
@@ -144,17 +122,17 @@ always_ff @( posedge clk_i )
     data_o <= '0;
   else
     begin
-      data_o <= data_d[DELAY_STG - 1];
+      data_o <= data_d;
       if( header_valid && error_detected && err_bit_pos != 5'h1f )
         for( int i = 0; i < 24; i++ )
           if( i == err_bit_pos )
-            data_o[i] <= ~data_d[DELAY_STG - 1][i];
+            data_o[i] <= ~data_d[i];
     end
 
 always_ff @( posedge clk_i )
   if( rst_i )
     valid_o <= 1'b0;
   else
-    valid_o <= valid_d[DELAY_STG - 1];
+    valid_o <= valid_d;
 
 endmodule

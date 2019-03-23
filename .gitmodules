@@ -7,3 +7,6 @@
 [submodule "ip/crc_calc"]
 	path = ip/crc_calc
 	url = https://github.com/hellgate202/crc_calc
+[submodule "ip/axi4_lib"]
+	path = ip/axi4_lib
+	url = https://github.com/hellgate202/axi4_lib

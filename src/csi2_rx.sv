@@ -60,9 +60,7 @@ dphy_slave #(
   .valid_o          ( phy_data_valid )
 );
 
-csi2_hamming_dec #(
-  .LUT_REG_OUTPUT    ( 0                        )
-) header_corrector (
+csi2_hamming_dec header_corrector (
   .clk_i             ( int_clk                  ),
   .rst_i             ( int_rst                  ),
   .valid_i           ( phy_data_valid           ),
