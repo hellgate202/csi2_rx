@@ -1,4 +1,5 @@
-include "../lib/dphy_lib/DPHYSender.sv";
+`include "../lib/dphy_lib/DPHYSender.sv";
+`include "../lib/axi4_lib/src/class/AXI4StreamSlave.sv"
 
 `timescale 1 ps / 1 ps
 
@@ -8,30 +9,15 @@ parameter int DATA_LANES = 4;
 parameter int DELAY[4]   = '{0,0,0,0};
 parameter int DPHY_CLK_T = 3000;
 parameter int REF_CLK_T  = 5000;
-parameter int WORD_CNT   = 11;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
-logic [DATA_LANES-1:0] dphy_data_p;
-logic [DATA_LANES-1:0] dphy_data_n;
-logic                  dphy_clk_p;
-logic                  dphy_clk_n;
-logic                  ref_clk;
-logic                  rst;
-
-logic [31 : 0]         csi2_pkt_if_tdata;
-logic                  csi2_pkt_if_tvalid;
-logic [3 : 0]          csi2_pkt_if_tstrb;
-
-logic [31:0]           header;
-logic [7:0]            crc_q[$];
-logic [15:0]           crc;
-
-initial
-  begin
-    ref_clk = 1'b0;
-    rst     = 1'b0;
-  end
+bit [DATA_LANES - 1 : 0] dphy_data_p;
+bit [DATA_LANES - 1 : 0] dphy_data_n;
+bit                      dphy_clk_p;
+bit                      dphy_clk_n;
+bit                      ref_clk;
+bit                      rst;
 
 dphy_if #(
   .DATA_LANES ( DATA_LANES )
@@ -43,6 +29,14 @@ assign dphy_clk_p  = sender_if.hs_clk_p;
 assign dphy_clk_n  = sender_if.hs_clk_n;
 
 mailbox data_to_send = new();
+mailbox rx_data_mbx  = new();
+
+axi4_stream_if #(
+  .DATA_WIDTH ( 32      )
+) csi2_pkt_if (
+  .aclk       ( dut.int_clk ),
+  .aresetn    ( !rst    )
+);
 
 DPHYSender #(
   .DATA_LANES ( DATA_LANES ),
@@ -50,6 +44,10 @@ DPHYSender #(
 ) dphy_gen = new( .dphy_if_v    ( sender_if    ),
                   .data_to_send ( data_to_send )
                 );
+
+AXI4StreamSlave #(
+  .DATA_WIDTH ( 32 )
+) axi4_stream_receiver;
 
 task automatic ref_clk_gen;
   forever
@@ -67,8 +65,8 @@ task automatic apply_rst;
 endtask
 
 // This function generates ECC for header
-function automatic logic [7:0] gen_ham ( logic [23:0] data );
-  logic [5:0] generated_parity;
+function automatic bit [7 : 0] gen_ham ( bit [23 : 0] data );
+  bit [5:0] generated_parity;
 
   generated_parity[0] = data[0]  ^ data[1]  ^ data[2]  ^ data[4]  ^ data[5]  ^
                         data[7]  ^ data[10] ^ data[11] ^ data[13] ^ data[16] ^
@@ -89,28 +87,28 @@ function automatic logic [7:0] gen_ham ( logic [23:0] data );
                         data[15] ^ data[16] ^ data[17] ^ data[18] ^ data[19] ^
                         data[21] ^ data[22] ^ data[23];
 
-  gen_ham = {2'b0,generated_parity};
+  gen_ham = { 2'b0, generated_parity };
 endfunction
 
-function automatic logic [31:0] gen_header ( int          error_ins,
+function automatic bit [31 : 0] gen_header ( int          error_ins,
                                              int          error_pos,
-                                             logic [7:0]  data_identifier,
-                                             logic [15:0] word_cnt
+                                             bit [7 : 0]  data_identifier,
+                                             bit [15 : 0] word_cnt
                                            );
-logic [7:0] ecc;
-ecc = gen_ham ( {word_cnt,data_identifier} );
+bit [7 : 0] ecc;
+ecc = gen_ham ( { word_cnt, data_identifier } );
 if( error_ins == 0 )
-  gen_header = {ecc,word_cnt,data_identifier};
+  gen_header = { ecc, word_cnt, data_identifier };
 else
   begin
-    gen_header            = {ecc,word_cnt,data_identifier};
-    gen_header[error_pos] = ~gen_header[error_pos];
+    gen_header            = { ecc, word_cnt, data_identifier };
+    gen_header[error_pos] = !gen_header[error_pos];
   end
 endfunction
 
-function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
-  logic [7:0] current_byte;
-  logic [15:0] current_crc = 16'hffff;
+function automatic bit [15 : 0] gen_crc ( bit [7 : 0] payload [$] );
+  bit [7 : 0]  current_byte;
+  bit [15 : 0] current_crc = 16'hffff;
   while( payload.size() > 0 )
     begin
       current_byte = payload.pop_front();
@@ -119,18 +117,64 @@ function automatic logic [15:0] gen_crc ( logic [7:0] payload [$] );
           gen_crc[15] = current_crc[0] ^ current_byte[i];
           for( int j = 1; j < 16; j++ )
             if( CSI2_CRC_POLY[j] )
-              gen_crc[15-j] = current_crc[16-j] ^ current_crc[0] ^ current_byte[i];
+              gen_crc[15 - j] = current_crc[16 - j] ^ current_crc[0] ^ current_byte[i];
             else
-              gen_crc[15-j] = current_crc[16-j];
+              gen_crc[15 - j] = current_crc[16 - j];
           current_crc = gen_crc;
         end
     end
 endfunction
 
+task automatic send_long_pkt(
+  input bit [7 : 0]  data_identifier,
+  input bit [15 : 0] word_cnt
+);
+logic [31 : 0] header = gen_header( .error_ins       ( 0               ),
+                                    .error_pos       ( 0               ),
+                                    .data_identifier ( data_identifier ),
+                                    .word_cnt        ( word_cnt        )
+                                  );
+bit [7 : 0]  tx_pkt_q [$];
+bit [7 : 0]  rx_pkt_q [$];
+bit [7 : 0]  tx_byte;
+bit [15 : 0] crc;
+
+for( int i = 0; i < 4; i++ )
+  data_to_send.put( header[i * 8 + 7 -: 8] );
+for( int i = 0; i < word_cnt; i++ )
+  begin
+    tx_byte = $urandom_range( 255 );
+    tx_pkt_q.push_back( tx_byte );
+    data_to_send.put( tx_byte );
+  end
+crc = gen_crc( tx_pkt_q );
+tx_pkt_q.push_back( crc[7 : 0] );
+tx_pkt_q.push_back( crc[15 : 8] );
+for( int i = 3; i >= 0; i-- )
+  tx_pkt_q.push_front( header[i * 8 + 7 -: 8] );
+data_to_send.put( crc[7 : 0] );
+data_to_send.put( crc[15 : 8] );
+dphy_gen.send();
+while( data_to_send.num() )
+  @( posedge ref_clk );
+while( !rx_data_mbx.num() )
+  @( posedge ref_clk );
+rx_data_mbx.get( rx_pkt_q );
+if( tx_pkt_q != rx_pkt_q )
+  begin
+    $display("Packet data error!");
+    $stop();
+  end
+endtask
+
+task automatic send_short_pkt();
+
+endtask
+
 csi2_rx #(
   .DATA_LANES               ( DATA_LANES             ),
   .DELAY                    ( DELAY                  )
-) DUT (
+) dut (
   .dphy_clk_p_i             ( dphy_clk_p             ),
   .dphy_clk_n_i             ( dphy_clk_n             ),
   .dphy_data_p_i            ( dphy_data_p            ),
@@ -138,40 +182,26 @@ csi2_rx #(
   .ref_clk_i                ( ref_clk                ),
   .rst_i                    ( rst                    ),
   .enable_i                 ( 1'b1                   ),
-  .csi2_pkt_if_tdata        ( csi2_pkt_if_tdata      ),
-  .csi2_pkt_if_tvalid       ( csi2_pkt_if_tvalid     ),
-  .csi2_pkt_if_tstrb        ( csi2_pkt_if_tstrb      )
+  .csi2_pkt_if              ( csi2_pkt_if            )
 );
 
 initial
   begin
+    axi4_stream_receiver = new( .axi4_stream_if_v ( csi2_pkt_if ),
+                                .rx_data_mbx      ( rx_data_mbx )
+                              );
     fork
       ref_clk_gen;
       apply_rst;
     join_none
-    repeat(5)
-      @( posedge ref_clk );
-    // Generate header for first packet
-    header = gen_header( .error_ins       ( 1        ),
-                         .error_pos       ( 1        ),
-                         .data_identifier ( 8'h12    ),
-                         .word_cnt        ( WORD_CNT )
-                       );
-    // Put header into mailbox and to crc_queue
-    for( int i = 0; i < 4; i++ )
-      data_to_send.put(header[(i*8+7)-:8]);
-    // Put other data
-    for( int i = 0; i < WORD_CNT; i++ )
-      begin
-        crc_q.push_back(i);
-        data_to_send.put(i);
-      end
-    crc = gen_crc(crc_q);
-    data_to_send.put(crc[7:0]);
-    data_to_send.put(crc[15:8]);
-    dphy_gen.send();
+    @( posedge ref_clk );
+    repeat( 5 )
+      send_long_pkt( .data_identifier ( 6'h2b  ),
+                     .word_cnt        ( 15'd11 )
+                   );
     repeat(1000)
       @( posedge ref_clk );
+    $display( "Everything is fine." );
     $stop;
   end
 

@@ -86,7 +86,7 @@ always_ff @( posedge clk_i, posedge rst_i )
         else
           pkt_o.tstrb[i] <= 1'b0;
     else
-      pkt_o.tstrb <= '0;
+      pkt_o.tstrb <= '1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -97,7 +97,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       pkt_o.tlast <= 1'b0;
 
-assign pkt_o.tkeep = '0;
+assign pkt_o.tkeep = pkt_o.tstrb;
 assign pkt_o.tid   = '0;
 assign pkt_o.tdest = '0;
 assign pkt_o.tuser = '0;

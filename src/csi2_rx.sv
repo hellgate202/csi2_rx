@@ -9,10 +9,7 @@ module csi2_rx #(
   input                       ref_clk_i,
   input                       rst_i,
   input                       enable_i,
-  // WIP: signals for debug
-  output [31 : 0]             csi2_pkt_if_tdata,
-  output                      csi2_pkt_if_tvalid,
-  output [3 : 0]              csi2_pkt_if_tstrb
+  axi4_stream_if.master       csi2_pkt_if
 );
 
 logic          int_clk;
@@ -29,17 +26,6 @@ logic          csi2_pkt_valid;
 
 assign int_rst   = !rx_clk_present;
 assign pkt_error = header_error && !header_error_corrected;
-
-axi4_stream_if #(
-  .DATA_WIDTH ( 32       )
-) csi2_pkt_if (
-  .aclk       ( int_clk  ),
-  .aresetn    ( !int_rst )
-);
-
-assign csi2_pkt_if_tdata  = csi2_pkt_if.tdata;
-assign csi2_pkt_if_tvalid = csi2_pkt_if.tvalid;
-assign csi2_pkt_if_tstrb  = csi2_pkt_if.tstrb;
 
 dphy_slave #(
   .DATA_LANES       ( DATA_LANES     ),
