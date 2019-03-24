@@ -5,6 +5,7 @@ module dphy_32b_map #(
   input                                    rst_i,
   input        [DATA_LANES - 1 : 0][7 : 0] word_data_i,
   input                                    valid_i,
+  input                                    eop_i,
   output logic [31:0]                      maped_data_o,
   output logic                             valid_o
 );
@@ -16,7 +17,7 @@ always_ff @( posedge byte_clk_i )
   if( rst_i )
     word_pos <= 'b1;
   else
-    if( word_done )
+    if( word_done || eop_i )
       word_pos <= 'b1;
     else
       if( valid_i )
@@ -38,7 +39,7 @@ generate
           if( rst_i )
             valid_o <= 1'b0;
           else
-            if( word_pos == 4'b1000 )
+            if( word_pos == 4'b1000 && !eop_i )
               valid_o <= valid_i;
             else
               valid_o <= 1'b0;
@@ -59,7 +60,8 @@ generate
           if( rst_i )
             valid_o <= 1'b0;
           else
-            if( word_pos == 4'b1000 || word_pos == 4'b0010 )
+            if( ( word_pos == 4'b1000 || word_pos == 4'b0010 ) &&
+                !eop_i )
               valid_o <= valid_i;
             else
               valid_o <= 1'b0;
@@ -109,7 +111,7 @@ generate
           if( rst_i )
             valid_o <= 1'b0;
           else
-            if( word_pos != 4'b0001 )
+            if( word_pos != 4'b0001 && !eop_i )
               valid_o <= valid_i;
             else
               valid_o <= 1'b0;
@@ -128,7 +130,8 @@ generate
           if( rst_i )
             valid_o <= 1'b0;
           else
-            valid_o <= valid_i;
+            if( !eop_i )
+              valid_o <= valid_i;
 
         assign word_done = valid_i;
       end

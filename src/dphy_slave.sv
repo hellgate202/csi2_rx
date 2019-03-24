@@ -104,6 +104,7 @@ dphy_32b_map #(
   .byte_clk_i   ( byte_clk        ),
   .rst_i        ( ~rx_clk_present ),
   .word_data_i  ( word_data       ),
+  .eop_i        ( phy_rst_i       ),
   .valid_i      ( word_valid      ),
   .maped_data_o ( data_o          ),
   .valid_o      ( valid_o         )

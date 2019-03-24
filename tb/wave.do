@@ -6,6 +6,7 @@ add wave -noupdate /tb_csi2/dut/phy/dphy_clk_n_i
 add wave -noupdate /tb_csi2/dut/phy/dphy_data_p_i
 add wave -noupdate /tb_csi2/dut/phy/dphy_data_n_i
 add wave -noupdate /tb_csi2/dut/phy/ref_clk_i
+add wave -noupdate /tb_csi2/dut/word_clk_i
 add wave -noupdate /tb_csi2/dut/phy/rst_i
 add wave -noupdate /tb_csi2/dut/phy/enable_i
 add wave -noupdate /tb_csi2/dut/phy/phy_rst_i
@@ -56,21 +57,33 @@ add wave -noupdate /tb_csi2/dut/axi4_conv/short_pkt
 add wave -noupdate /tb_csi2/dut/axi4_conv/long_pkt
 add wave -noupdate /tb_csi2/dut/axi4_conv/byte_cnt
 add wave -noupdate /tb_csi2/dut/axi4_conv/byte_cnt_comb
-add wave -noupdate -divider CSI2_PKT_IF
-add wave -noupdate /tb_csi2/csi2_pkt_if/aclk
-add wave -noupdate /tb_csi2/csi2_pkt_if/aresetn
-add wave -noupdate /tb_csi2/csi2_pkt_if/tvalid
-add wave -noupdate /tb_csi2/csi2_pkt_if/tready
-add wave -noupdate /tb_csi2/csi2_pkt_if/tdata
-add wave -noupdate /tb_csi2/csi2_pkt_if/tstrb
-add wave -noupdate /tb_csi2/csi2_pkt_if/tkeep
-add wave -noupdate /tb_csi2/csi2_pkt_if/tlast
-add wave -noupdate /tb_csi2/csi2_pkt_if/tid
-add wave -noupdate /tb_csi2/csi2_pkt_if/tdest
-add wave -noupdate /tb_csi2/csi2_pkt_if/tuser
+add wave -noupdate -divider CSI2_PKT_RX_CLK_IF
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/aclk
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/aresetn
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tvalid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tready
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tdata
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tstrb
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tkeep
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tlast
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tdest
+add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tuser
+add wave -noupdate -divider CSI2_PKT_WORD_CLK_IF
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/aclk
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/aresetn
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tvalid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tready
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tdata
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tstrb
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tkeep
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tlast
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tdest
+add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tuser
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {446956 ps} 0}
-quietly wave cursor active 1
+WaveRestoreCursors {{Cursor 1} {5052436 ps} 0}
+quietly wave cursor active 0
 configure wave -namecolwidth 559
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -85,4 +98,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {5956125 ps}
+WaveRestoreZoom {0 ps} {12051375 ps}

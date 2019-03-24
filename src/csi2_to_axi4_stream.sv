@@ -48,13 +48,15 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 always_comb
   begin
+    byte_cnt_comb = byte_cnt;
     if( long_pkt )
       byte_cnt_comb = data_i[23 : 8] + 2'd2;
     else
-      if( byte_cnt < 16'd4 && valid_i )
-        byte_cnt_comb = '0;
-      else
-        byte_cnt_comb = byte_cnt - 3'd4;
+      if( valid_i )
+        if( byte_cnt < 16'd4 )
+          byte_cnt_comb = '0;
+        else
+          byte_cnt_comb = byte_cnt - 3'd4;
   end
 
 always_ff @( posedge clk_i, posedge rst_i )

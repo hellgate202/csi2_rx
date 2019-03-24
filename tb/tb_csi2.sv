@@ -9,6 +9,7 @@ parameter int DATA_LANES = 4;
 parameter int DELAY[4]   = '{0,0,0,0};
 parameter int DPHY_CLK_T = 3000;
 parameter int REF_CLK_T  = 5000;
+parameter int WORD_CLK_T = 12000;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -17,6 +18,7 @@ bit [DATA_LANES - 1 : 0] dphy_data_n;
 bit                      dphy_clk_p;
 bit                      dphy_clk_n;
 bit                      ref_clk;
+bit                      word_clk;
 bit                      rst;
 
 dphy_if #(
@@ -31,13 +33,6 @@ assign dphy_clk_n  = sender_if.hs_clk_n;
 mailbox data_to_send = new();
 mailbox rx_data_mbx  = new();
 
-axi4_stream_if #(
-  .DATA_WIDTH ( 32      )
-) csi2_pkt_if (
-  .aclk       ( dut.int_clk ),
-  .aresetn    ( !rst    )
-);
-
 DPHYSender #(
   .DATA_LANES ( DATA_LANES ),
   .DPHY_CLK_T ( DPHY_CLK_T )
@@ -49,11 +44,20 @@ AXI4StreamSlave #(
   .DATA_WIDTH ( 32 )
 ) axi4_stream_receiver;
 
-task automatic ref_clk_gen;
+task automatic ref_clk_gen();
   forever
     begin
       #( REF_CLK_T / 2 );
-      ref_clk <= ~ref_clk;
+      ref_clk = !ref_clk;
+    end
+endtask
+
+task automatic word_clk_gen();
+  #2000;
+  forever
+    begin
+      #( WORD_CLK_T / 2 );
+      word_clk = !word_clk;
     end
 endtask
 
@@ -162,13 +166,38 @@ while( !rx_data_mbx.num() )
 rx_data_mbx.get( rx_pkt_q );
 if( tx_pkt_q != rx_pkt_q )
   begin
-    $display("Packet data error!");
+    $display( "Long packet data error!" );
     $stop();
   end
 endtask
 
-task automatic send_short_pkt();
-
+task automatic send_short_pkt(
+  input bit [7 : 0]  data_identifier,
+  input bit [15 : 0] data_field
+);
+bit [31 : 0] header = gen_header( .error_ins       ( 0               ),
+                                  .error_pos       ( 0               ),
+                                  .data_identifier ( data_identifier ),
+                                  .word_cnt        ( data_field      )
+                                );
+bit [7 : 0] tx_pkt_q [$];
+bit [7 : 0] rx_pkt_q [$];
+for( int i = 0; i < 4; i++ )
+  begin
+    tx_pkt_q.push_back( header[i * 8 + 7 -: 8] );
+    data_to_send.put( header[i * 8 + 7 -: 8] );
+  end
+dphy_gen.send();
+while( data_to_send.num() )
+  @( posedge ref_clk );
+while( !rx_data_mbx.num() )
+  @( posedge ref_clk );
+rx_data_mbx.get( rx_pkt_q );
+if( tx_pkt_q != rx_pkt_q )
+  begin
+    $display( "Short packet data error!" );
+    $stop();
+  end
 endtask
 
 csi2_rx #(
@@ -180,18 +209,19 @@ csi2_rx #(
   .dphy_data_p_i            ( dphy_data_p            ),
   .dphy_data_n_i            ( dphy_data_n            ),
   .ref_clk_i                ( ref_clk                ),
+  .word_clk_i               ( word_clk               ),
   .rst_i                    ( rst                    ),
-  .enable_i                 ( 1'b1                   ),
-  .csi2_pkt_if              ( csi2_pkt_if            )
+  .enable_i                 ( 1'b1                   )
 );
 
 initial
   begin
-    axi4_stream_receiver = new( .axi4_stream_if_v ( csi2_pkt_if ),
-                                .rx_data_mbx      ( rx_data_mbx )
+    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.csi2_pkt_word_clk_if ),
+                                .rx_data_mbx      ( rx_data_mbx              )
                               );
     fork
       ref_clk_gen;
+      word_clk_gen;
       apply_rst;
     join_none
     @( posedge ref_clk );
@@ -199,6 +229,10 @@ initial
       send_long_pkt( .data_identifier ( 6'h2b  ),
                      .word_cnt        ( 15'd11 )
                    );
+    repeat( 5 )
+      send_short_pkt( .data_identifier( 6'h1   ),
+                      .data_field     ( 6'h102 )
+                    );
     repeat(1000)
       @( posedge ref_clk );
     $display( "Everything is fine." );

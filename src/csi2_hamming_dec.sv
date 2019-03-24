@@ -133,6 +133,7 @@ always_ff @( posedge clk_i )
   if( rst_i )
     valid_o <= 1'b0;
   else
-    valid_o <= valid_d;
+    if( !pkt_done_i )
+      valid_o <= valid_d;
 
 endmodule
