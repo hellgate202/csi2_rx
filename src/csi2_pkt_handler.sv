@@ -141,7 +141,7 @@ always_ff @( posedge clk_i )
       
 
 assign last_word  = ( byte_cnt + 16'd4 ) >= long_pkt_word_cnt_o;
-assign pkt_done_o = last_word && pkt_running && valid_i;
+assign pkt_done_o = ( last_word && pkt_running && valid_i ) || ( error_i && !error_corrected_i );
 
 always_comb
   for( bit [2 : 0] i = 3'd0; i <= 3'd3; i++ )

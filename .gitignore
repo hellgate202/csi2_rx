@@ -1,4 +1,6 @@
 tags
+*.swp
+tb/vsim_stacktrace.vstf
 tb/work
 tb/vsim.wlf
 tb/transcript

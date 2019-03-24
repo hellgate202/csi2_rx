@@ -4,13 +4,13 @@ include "../lib/dphy_lib/DPHYSender.sv";
 
 module tb_csi2;
 
-parameter     DATA_LANES = 4;
+parameter int DATA_LANES = 4;
 parameter int DELAY[4]   = '{0,0,0,0};
-parameter     DPHY_CLK_T = 3000;
-parameter     REF_CLK_T  = 5000;
-parameter     WORD_CNT   = 11;
+parameter int DPHY_CLK_T = 3000;
+parameter int REF_CLK_T  = 5000;
+parameter int WORD_CNT   = 11;
 
-localparam CSI2_CRC_POLY = 16'h1021;
+localparam int CSI2_CRC_POLY = 16'h1021;
 
 logic [DATA_LANES-1:0] dphy_data_p;
 logic [DATA_LANES-1:0] dphy_data_n;
@@ -19,20 +19,9 @@ logic                  dphy_clk_n;
 logic                  ref_clk;
 logic                  rst;
 
-logic                  short_pkt_valid;
-logic [1:0]            short_pkt_v_channel;
-logic [5:0]            short_pkt_data_type;
-logic [15:0]           short_pkt_data_field;
-logic                  long_pkt_header_valid;
-logic [1:0]            long_pkt_v_channel;
-logic [5:0]            long_pkt_data_type;
-logic [15:0]           long_pkt_word_cnt;
-logic [31:0]           long_pkt_payload;
-logic                  long_pkt_payload_valid;
-logic [3:0]            long_pkt_payload_be;
-logic                  long_pkt_eop;
-logic                  crc_passed;
-logic                  crc_failed;
+logic [31 : 0]         csi2_pkt_if_tdata;
+logic                  csi2_pkt_if_tvalid;
+logic [3 : 0]          csi2_pkt_if_tstrb;
 
 logic [31:0]           header;
 logic [7:0]            crc_q[$];
@@ -149,20 +138,9 @@ csi2_rx #(
   .ref_clk_i                ( ref_clk                ),
   .rst_i                    ( rst                    ),
   .enable_i                 ( 1'b1                   ),
-  .short_pkt_valid_o        ( short_pkt_valid        ),
-  .short_pkt_v_channel_o    ( short_pkt_v_channel    ),
-  .short_pkt_data_type_o    ( short_pkt_data_type    ),
-  .short_pkt_data_field_o   ( short_pkt_data_field   ),
-  .long_pkt_header_valid_o  ( long_pkt_header_valid  ),
-  .long_pkt_v_channel_o     ( long_pkt_v_channel     ),
-  .long_pkt_data_type_o     ( long_pkt_data_type     ),
-  .long_pkt_word_cnt_o      ( long_pkt_word_cnt      ),
-  .long_pkt_payload_o       ( long_pkt_payload       ),
-  .long_pkt_payload_valid_o ( long_pkt_payload_valid ),
-  .long_pkt_payload_be_o    ( long_pkt_payload_be    ),
-  .long_pkt_eop_o           ( long_pkt_eop           ),
-  .crc_passed_o             ( crc_passed             ),
-  .crc_failed_o             ( crc_failed             )
+  .csi2_pkt_if_tdata        ( csi2_pkt_if_tdata      ),
+  .csi2_pkt_if_tvalid       ( csi2_pkt_if_tvalid     ),
+  .csi2_pkt_if_tstrb        ( csi2_pkt_if_tstrb      )
 );
 
 initial
@@ -174,10 +152,10 @@ initial
     repeat(5)
       @( posedge ref_clk );
     // Generate header for first packet
-    header = gen_header( .error_ins ( 1 ),
-                         .error_pos ( 1 ),
-                         .data_identifier ( 8'h12 ),
-                         .word_cnt ( WORD_CNT )
+    header = gen_header( .error_ins       ( 1        ),
+                         .error_pos       ( 1        ),
+                         .data_identifier ( 8'h12    ),
+                         .word_cnt        ( WORD_CNT )
                        );
     // Put header into mailbox and to crc_queue
     for( int i = 0; i < 4; i++ )

@@ -1,4 +1,5 @@
 ../lib/dphy_lib/dphy_if.sv
+../lib/axi4_lib/src/interface/axi4_stream_if.sv
 ../src/dphy_hs_clk_rx.sv
 ../src/dphy_hs_data_rx.sv
 ../src/clk_detect.sv
@@ -8,6 +9,7 @@
 ../src/dphy_slave.sv
 ../ip/dual_port_ram/src/dual_port_ram.sv
 ../src/csi2_hamming_dec.sv
+../src/csi2_to_axi4_stream.sv
 ../src/csi2_pkt_handler.sv
 ../ip/crc_calc/src/crc_calc.sv
 ../src/csi2_crc_calc.sv
