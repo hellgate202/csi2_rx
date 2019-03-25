@@ -5,11 +5,11 @@
 
 module tb_csi2;
 
-parameter int DATA_LANES = 4;
+parameter int DATA_LANES = 2;
 parameter int DELAY[4]   = '{0,0,0,0};
-parameter int DPHY_CLK_T = 3000;
-parameter int REF_CLK_T  = 5000;
-parameter int WORD_CLK_T = 12000;
+parameter int DPHY_CLK_T = 4762;
+parameter int REF_CLK_T  = 4762;
+parameter int PX_CLK_T = 11905;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -18,7 +18,7 @@ bit [DATA_LANES - 1 : 0] dphy_data_n;
 bit                      dphy_clk_p;
 bit                      dphy_clk_n;
 bit                      ref_clk;
-bit                      word_clk;
+bit                      px_clk;
 bit                      rst;
 
 dphy_if #(
@@ -52,12 +52,12 @@ task automatic ref_clk_gen();
     end
 endtask
 
-task automatic word_clk_gen();
+task automatic px_clk_gen();
   #2000;
   forever
     begin
-      #( WORD_CLK_T / 2 );
-      word_clk = !word_clk;
+      #( PX_CLK_T / 2 );
+      px_clk = !px_clk;
     end
 endtask
 
@@ -209,7 +209,7 @@ csi2_rx #(
   .dphy_data_p_i            ( dphy_data_p            ),
   .dphy_data_n_i            ( dphy_data_n            ),
   .ref_clk_i                ( ref_clk                ),
-  .word_clk_i               ( word_clk               ),
+  .px_clk_i                 ( px_clk                 ),
   .rst_i                    ( rst                    ),
   .enable_i                 ( 1'b1                   )
 );
@@ -221,7 +221,7 @@ initial
                               );
     fork
       ref_clk_gen;
-      word_clk_gen;
+      px_clk_gen;
       apply_rst;
     join_none
     @( posedge ref_clk );

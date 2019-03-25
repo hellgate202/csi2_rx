@@ -7,7 +7,7 @@ module csi2_rx #(
   input  [DATA_LANES - 1 : 0] dphy_data_p_i,
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
   input                       ref_clk_i,
-  input                       word_clk_i,
+  input                       px_clk_i,
   input                       rst_i,
   input                       enable_i
 );
@@ -28,10 +28,10 @@ logic          header_error;
 logic          header_error_corrected;
 logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
-logic          dphy_int_cdc_empty;
+logic          rx_px_cdc_empty;
 
 axi4_word_t    pkt_word_rx_clk;
-axi4_word_t    pkt_word_word_clk;
+axi4_word_t    pkt_word_px_clk;
 
 assign rx_rst    = !rx_clk_present;
 assign pkt_error = header_error && !header_error_corrected;
@@ -89,40 +89,40 @@ csi2_to_axi4_stream axi4_conv (
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 32         )
-) csi2_pkt_word_clk_if (
-  .aclk       ( word_clk_i ),
-  .aresetn    ( !rst_i     )
+  .DATA_WIDTH ( 32       )
+) csi2_pkt_px_clk_if (
+  .aclk       ( px_clk_i ),
+  .aresetn    ( !rst_i   )
 );
 
 dc_fifo #(
-  .DATA_WIDTH      ( 37                          ),
-  .WORDS_AMOUNT    ( 256                         )
+  .DATA_WIDTH      ( 37                        ),
+  .WORDS_AMOUNT    ( 256                       )
 ) dphy_int_cdc (
-  .wr_clk_i        ( rx_clk                      ),
-  .wr_data_i       ( pkt_word_rx_clk             ),
-  .wr_i            ( csi2_pkt_rx_clk_if.tvalid   ),
-  .wr_used_words_o (                             ),
-  .wr_full_o       (                             ),
-  .wr_empty_o      (                             ),
-  .rd_clk_i        ( word_clk_i                  ),
-  .rd_data_o       ( pkt_word_word_clk           ),
-  .rd_i            ( csi2_pkt_word_clk_if.tready ),
-  .rd_used_words_o (                             ),
-  .rd_full_o       (                             ),
-  .rd_empty_o      ( dphy_int_cdc_empty          ),
-  .rst_i           ( rst_i                       )
+  .wr_clk_i        ( rx_clk                    ),
+  .wr_data_i       ( pkt_word_rx_clk           ),
+  .wr_i            ( csi2_pkt_rx_clk_if.tvalid ),
+  .wr_used_words_o (                           ),
+  .wr_full_o       (                           ),
+  .wr_empty_o      (                           ),
+  .rd_clk_i        ( px_clk_i                  ),
+  .rd_data_o       ( pkt_word_px_clk           ),
+  .rd_i            ( csi2_pkt_px_clk_if.tready ),
+  .rd_used_words_o (                           ),
+  .rd_full_o       (                           ),
+  .rd_empty_o      ( rx_px_cdc_empty           ),
+  .rst_i           ( rst_i                     )
 );
 
-assign csi2_pkt_word_clk_if.tready = 1'b1;
-assign csi2_pkt_word_clk_if.tdata  = pkt_word_word_clk.tdata;
-assign csi2_pkt_word_clk_if.tstrb  = pkt_word_word_clk.tstrb;
-assign csi2_pkt_word_clk_if.tkeep  = pkt_word_word_clk.tstrb;
-assign csi2_pkt_word_clk_if.tlast  = pkt_word_word_clk.tlast;
-assign csi2_pkt_word_clk_if.tvalid = !dphy_int_cdc_empty;
-assign csi2_pkt_word_clk_if.tdest  = '0;
-assign csi2_pkt_word_clk_if.tid    = '0;
-assign csi2_pkt_word_clk_if.tuser  = '0;
+assign csi2_pkt_px_clk_if.tready = 1'b1;
+assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
+assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
+assign csi2_pkt_px_clk_if.tkeep  = pkt_word_px_clk.tstrb;
+assign csi2_pkt_px_clk_if.tlast  = pkt_word_px_clk.tlast;
+assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty;
+assign csi2_pkt_px_clk_if.tdest  = '0;
+assign csi2_pkt_px_clk_if.tid    = '0;
+assign csi2_pkt_px_clk_if.tuser  = '0;
 
 /*csi2_crc_calc crc_calc
 (
