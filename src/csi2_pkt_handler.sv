@@ -112,7 +112,8 @@ always_ff @( posedge clk_i, posedge rst_i )
         pkt_i.tready && byte_cnt < pkt_size )
       pkt_o.tvalid <= 1'b1;
     else
-      pkt_o.tvalid <= 1'b0;
+      if( pkt_i.tready )
+        pkt_o.tvalid <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -132,10 +133,11 @@ always_ff @( posedge clk_i, posedge rst_i )
         pkt_o.tlast <= 1'b1;
       end
     else
-      begin
-        pkt_o.tstrb <= '1;
-        pkt_o.tlast <= 1'b0;
-      end
+      if( pkt_i.tready )
+        begin
+          pkt_o.tstrb <= '1;
+          pkt_o.tlast <= 1'b0;
+        end
 
 assign pkt_o.tkeep = pkt_o.tstrb;
 assign pkt_o.tid   = '0;

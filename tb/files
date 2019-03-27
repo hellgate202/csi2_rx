@@ -16,5 +16,6 @@
 ../src/csi2_to_axi4_stream.sv
 ../src/csi2_pkt_handler.sv
 ../src/csi2_raw10_32b_40b_gbx.sv
+../src/csi2_px_serializer.sv
 ../src/csi2_rx.sv
 ./tb_csi2.sv

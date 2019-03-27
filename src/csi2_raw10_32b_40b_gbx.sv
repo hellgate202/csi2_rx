@@ -125,7 +125,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     pkt_o.tvalid <= 1'b0;
   else
     if( state != FIRST_WORD_S )
-      pkt_o.tvalid <= pkt_i.tvalid;
+      pkt_o.tvalid <= pkt_i.tvalid && pkt_i.tready;
     else
       if( pkt_o.tready )
         pkt_o.tvalid <= 1'b0;
@@ -136,18 +136,6 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( pkt_i.tvalid && pkt_i.tready )
       pkt_o.tlast <= pkt_i.tlast;
-
-/*always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    pkt_o.tstrb <= '1;
-  else
-    if( pkt_i.tvalid && pkt_i.tready && pkt_i.tlast )
-      case( state )
-        SECOND_WORD_S: pkt_o.tstrb <= 5'b0001;
-      endcase
-    else
-      if( pkt_o.tready )
-        pkt_o.tstrb <= '1;*/
 
 assign pkt_o.tstrb = '1;
 assign pkt_o.tkeep = pkt_o.tstrb;

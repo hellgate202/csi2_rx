@@ -9,7 +9,8 @@ module csi2_rx #(
   input                       ref_clk_i,
   input                       px_clk_i,
   input                       rst_i,
-  input                       enable_i
+  input                       enable_i,
+  axi4_stream_if.master       video_o
 );
 
 typedef struct packed {
@@ -154,6 +155,14 @@ csi2_raw10_32b_40b_gbx gbx
   .rst_i ( rst_i          ),
   .pkt_i ( payload_if     ),
   .pkt_o ( payload_40b_if )
+);
+
+csi2_px_serializer px_ser
+(
+  .clk_i ( px_clk_i       ),
+  .rst_i ( rst_i          ),
+  .pkt_i ( payload_40b_if ),
+  .pkt_o ( video_o        )
 );
 
 endmodule

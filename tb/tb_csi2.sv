@@ -25,6 +25,13 @@ dphy_if #(
   .DATA_LANES ( DATA_LANES )
 ) sender_if ();
 
+axi4_stream_if #(
+  .DATA_WIDTH ( 16     )
+) video (
+  .aclk       ( px_clk ),
+  .aresetn    ( !rst   )
+);
+
 assign dphy_data_p = sender_if.hs_data_p;
 assign dphy_data_n = sender_if.hs_data_n;
 assign dphy_clk_p  = sender_if.hs_clk_p;
@@ -217,8 +224,11 @@ csi2_rx #(
   .ref_clk_i                ( ref_clk                ),
   .px_clk_i                 ( px_clk                 ),
   .rst_i                    ( rst                    ),
-  .enable_i                 ( 1'b1                   )
+  .enable_i                 ( 1'b1                   ),
+  .video_o                  ( video                  )
 );
+
+assign video.tready = 1'b1;
 
 initial
   begin
@@ -233,12 +243,12 @@ initial
     @( posedge ref_clk );
     repeat( 2 )
       begin
-        send_short_pkt( .data_identifier ( 6'h0 ),
-                        .data_field      ( '0   )
+        send_short_pkt( .data_identifier ( 6'h0  ),
+                        .data_field      ( 16'h0 )
                       );
         repeat( 5 )
           send_long_pkt( .data_identifier ( 6'h2b  ),
-                         .word_cnt        ( 16'd1000 )
+                         .word_cnt        ( 16'd10 )
                        );
         send_short_pkt( .data_identifier( 6'h1   ),
                         .data_field     ( 6'h0 )
