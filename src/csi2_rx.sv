@@ -31,6 +31,7 @@ logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
 logic          rx_px_cdc_empty;
 logic          frame_start_pkt;
+logic          frame_end_pkt;
 
 axi4_word_t    pkt_word_rx_clk;
 axi4_word_t    pkt_word_px_clk;
@@ -159,10 +160,11 @@ csi2_raw10_32b_40b_gbx gbx
 
 csi2_px_serializer px_ser
 (
-  .clk_i ( px_clk_i       ),
-  .rst_i ( rst_i          ),
-  .pkt_i ( payload_40b_if ),
-  .pkt_o ( video_o        )
+  .clk_i         ( px_clk_i        ),
+  .rst_i         ( rst_i           ),
+  .frame_start_i ( frame_start_pkt ),
+  .pkt_i         ( payload_40b_if  ),
+  .pkt_o         ( video_o         )
 );
 
 endmodule

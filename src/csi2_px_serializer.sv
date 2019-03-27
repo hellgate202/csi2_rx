@@ -3,10 +3,22 @@ module csi2_px_serializer
   input                 clk_i, 
   input                 rst_i,
   input                 frame_start_i,
-  input                 frame_end_i,
   axi4_stream_if.slave  pkt_i,
   axi4_stream_if.master pkt_o
 );
+
+logic start_flag;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    start_flag <= 1'b0;
+  else
+    if( frame_start_i )
+      start_flag <= 1'b1;
+    else
+      if( pkt_o.tvalid && pkt_o.tready )
+        start_flag <= 1'b0;
+
 
 enum logic [1 : 0] { PX_0_S,
                      PX_1_S,
@@ -88,14 +100,26 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pkt_o.tlast <= '0;
   else
-    if( state == PX_3_S )
-      pkt_o.tlast <= pkt_i.tlast;
+    if( state == PX_3_S && pkt_i.tlast)
+      pkt_o.tlast <= 1'b1;
+    else
+      if( pkt_o.tready )
+        pkt_o.tlast <= 1'b0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    pkt_o.tuser <= 1'b0;
+  else
+    if( state == PX_0_S && pkt_i.tvalid && start_flag )
+      pkt_o.tuser <= 1'b1;
+    else
+      if( pkt_o.tready )
+        pkt_o.tuser <= 1'b0;
 
 assign pkt_i.tready = ( state == PX_0_S ) ? 1'b1 : 1'b0;
 assign pkt_o.tstrb  = '1;
 assign pkt_o.tkeep  = '1;
 assign pkt_o.tid    = '0;
-assign pkt_o.tuser  = '0;
 assign pkt_o.tdest  = '0;
 
 endmodule
