@@ -5,11 +5,14 @@
 
 module tb_csi2;
 
-parameter int DATA_LANES = 2;
-parameter int DELAY[4]   = '{0,0,0,0};
-parameter int DPHY_CLK_T = 4762;
-parameter int REF_CLK_T  = 4762;
-parameter int PX_CLK_T = 13423;
+parameter int DATA_LANES   = 2;
+parameter int DELAY[4]     = '{0,0,0,0};
+parameter int DPHY_CLK_T   = 4762;
+parameter int REF_CLK_T    = 4762;
+parameter int PX_CLK_T     = 13423;
+
+parameter int LINE_TIME   = 691_442_400;
+parameter int LINE_PERIOD = 965_250_965;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -160,25 +163,10 @@ for( int i = 0; i < word_cnt; i++ )
     data_to_send.put( tx_byte );
   end
 crc = gen_crc( tx_pkt_q );
-//tx_pkt_q.push_back( crc[7 : 0] );
-//tx_pkt_q.push_back( crc[15 : 8] );
-//for( int i = 3; i >= 0; i-- )
-//  tx_pkt_q.push_front( header[i * 8 + 7 -: 8] );
 data_to_send.put( crc[7 : 0] );
 data_to_send.put( crc[15 : 8] );
 dphy_gen.send();
-while( data_to_send.num() )
-  @( posedge ref_clk );
-while( !rx_data_mbx.num() )
-  @( posedge ref_clk );
-rx_data_mbx.get( rx_pkt_q );
-if( tx_pkt_q != rx_pkt_q )
-  begin
-    $display( "Long packet data error!" );
-    $display( tx_pkt_q );
-    $display( rx_pkt_q );
-    $stop();
-  end
+#( LINE_PERIOD - LINE_TIME );
 endtask
 
 task automatic send_short_pkt(
@@ -199,18 +187,6 @@ for( int i = 0; i < 4; i++ )
     data_to_send.put( header[i * 8 + 7 -: 8] );
   end
 dphy_gen.send();
-/*while( data_to_send.num() )
-  @( posedge ref_clk );
-while( !rx_data_mbx.num() )
-  @( posedge ref_clk );
-rx_data_mbx.get( rx_pkt_q );
-if( tx_pkt_q != rx_pkt_q )
-  begin
-    $display( "Short packet data error!" );
-    $stop();
-  end*/
-repeat( 1000 )
-  @( posedge ref_clk );
 endtask
 
 csi2_rx #(
@@ -241,15 +217,17 @@ initial
       apply_rst;
     join_none
     @( posedge ref_clk );
-    repeat( 2 )
+    repeat( 1 )
       begin
+        #(LINE_PERIOD - LINE_TIME - 1_000_000);
         send_short_pkt( .data_identifier ( 6'h0  ),
                         .data_field      ( 16'h0 )
                       );
-        repeat( 5 )
+        repeat( 1096 )
           send_long_pkt( .data_identifier ( 6'h2b  ),
-                         .word_cnt        ( 16'd10 )
+                         .word_cnt        ( 16'd1936 )
                        );
+        #1_000_000;
         send_short_pkt( .data_identifier( 6'h1   ),
                         .data_field     ( 6'h0 )
                       );

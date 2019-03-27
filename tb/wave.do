@@ -1,8 +1,4 @@
 onerror {resume}
-quietly virtual function -install /tb_csi2/dut/payload_40b_if -env /tb_csi2/#INITIAL#233 { &{/tb_csi2/dut/payload_40b_if/tdata[9], /tb_csi2/dut/payload_40b_if/tdata[8], /tb_csi2/dut/payload_40b_if/tdata[7], /tb_csi2/dut/payload_40b_if/tdata[6], /tb_csi2/dut/payload_40b_if/tdata[5], /tb_csi2/dut/payload_40b_if/tdata[4], /tb_csi2/dut/payload_40b_if/tdata[3], /tb_csi2/dut/payload_40b_if/tdata[2], /tb_csi2/dut/payload_40b_if/tdata[1], /tb_csi2/dut/payload_40b_if/tdata[0] }} px0
-quietly virtual function -install /tb_csi2/dut/payload_40b_if -env /tb_csi2/#INITIAL#233 { &{/tb_csi2/dut/payload_40b_if/tdata[19], /tb_csi2/dut/payload_40b_if/tdata[18], /tb_csi2/dut/payload_40b_if/tdata[17], /tb_csi2/dut/payload_40b_if/tdata[16], /tb_csi2/dut/payload_40b_if/tdata[15], /tb_csi2/dut/payload_40b_if/tdata[14], /tb_csi2/dut/payload_40b_if/tdata[13], /tb_csi2/dut/payload_40b_if/tdata[12], /tb_csi2/dut/payload_40b_if/tdata[11], /tb_csi2/dut/payload_40b_if/tdata[10] }} px1
-quietly virtual function -install /tb_csi2/dut/payload_40b_if -env /tb_csi2/#INITIAL#233 { &{/tb_csi2/dut/payload_40b_if/tdata[29], /tb_csi2/dut/payload_40b_if/tdata[28], /tb_csi2/dut/payload_40b_if/tdata[27], /tb_csi2/dut/payload_40b_if/tdata[26], /tb_csi2/dut/payload_40b_if/tdata[25], /tb_csi2/dut/payload_40b_if/tdata[24], /tb_csi2/dut/payload_40b_if/tdata[23], /tb_csi2/dut/payload_40b_if/tdata[22], /tb_csi2/dut/payload_40b_if/tdata[21], /tb_csi2/dut/payload_40b_if/tdata[20] }} px2
-quietly virtual function -install /tb_csi2/dut/payload_40b_if -env /tb_csi2/#INITIAL#233 { &{/tb_csi2/dut/payload_40b_if/tdata[39], /tb_csi2/dut/payload_40b_if/tdata[38], /tb_csi2/dut/payload_40b_if/tdata[37], /tb_csi2/dut/payload_40b_if/tdata[36], /tb_csi2/dut/payload_40b_if/tdata[35], /tb_csi2/dut/payload_40b_if/tdata[34], /tb_csi2/dut/payload_40b_if/tdata[33], /tb_csi2/dut/payload_40b_if/tdata[32], /tb_csi2/dut/payload_40b_if/tdata[31], /tb_csi2/dut/payload_40b_if/tdata[30] }} px3
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider PHY
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/dphy_clk_p_i
@@ -172,10 +168,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/frame_start_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/state
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/next_state
 add wave -noupdate -divider VIDEO
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/px0
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/px1
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/px2
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/px3
 add wave -noupdate -radix hexadecimal /tb_csi2/video/aclk
 add wave -noupdate -radix hexadecimal /tb_csi2/video/aresetn
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tvalid
@@ -204,4 +196,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {36518230 ps}
+WaveRestoreZoom {0 ps} {616229944 ps}
