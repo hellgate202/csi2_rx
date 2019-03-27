@@ -9,7 +9,7 @@ parameter int DATA_LANES = 2;
 parameter int DELAY[4]   = '{0,0,0,0};
 parameter int DPHY_CLK_T = 4762;
 parameter int REF_CLK_T  = 4762;
-parameter int PX_CLK_T = 11905;
+parameter int PX_CLK_T = 13423;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -143,6 +143,7 @@ bit [7 : 0]  rx_pkt_q [$];
 bit [7 : 0]  tx_byte;
 bit [15 : 0] crc;
 
+@( posedge ref_clk );
 for( int i = 0; i < 4; i++ )
   data_to_send.put( header[i * 8 + 7 -: 8] );
 for( int i = 0; i < word_cnt; i++ )
@@ -184,6 +185,7 @@ bit [31 : 0] header = gen_header( .error_ins       ( 0               ),
                                 );
 bit [7 : 0] tx_pkt_q [$];
 bit [7 : 0] rx_pkt_q [$];
+@( posedge ref_clk );
 for( int i = 0; i < 4; i++ )
   begin
     tx_pkt_q.push_back( header[i * 8 + 7 -: 8] );
@@ -229,16 +231,19 @@ initial
       apply_rst;
     join_none
     @( posedge ref_clk );
-    send_short_pkt( .data_identifier ( 6'h0 ),
-                    .data_field      ( '0   )
-                  );
-    repeat( 5 )
-      send_long_pkt( .data_identifier ( 6'h2b  ),
-                     .word_cnt        ( 15'd12 )
-                   );
-    send_short_pkt( .data_identifier( 6'h1   ),
-                    .data_field     ( 6'h0 )
-                  );
+    repeat( 2 )
+      begin
+        send_short_pkt( .data_identifier ( 6'h0 ),
+                        .data_field      ( '0   )
+                      );
+        repeat( 5 )
+          send_long_pkt( .data_identifier ( 6'h2b  ),
+                         .word_cnt        ( 15'd1936 )
+                       );
+        send_short_pkt( .data_identifier( 6'h1   ),
+                        .data_field     ( 6'h0 )
+                      );
+      end
     repeat(1000)
       @( posedge ref_clk );
     $display( "Everything is fine." );

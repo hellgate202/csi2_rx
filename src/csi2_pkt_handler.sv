@@ -125,7 +125,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       begin
         if( pkt_size[1 : 0] )
           for( int i = 0; i < 4; i++ )
-            if( i <= pkt_size[1 : 0] )
+            if( i < pkt_size[1 : 0] )
               pkt_o.tstrb[i] <= 1'b1;
             else
               pkt_o.tstrb[i] <= 1'b0;

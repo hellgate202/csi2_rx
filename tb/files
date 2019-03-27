@@ -1,5 +1,8 @@
 ../lib/dphy_lib/dphy_if.sv
 ../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../lib/fifo_lib/src/bin2gray.sv
+../lib/fifo_lib/src/gray2bin.sv
+../lib/fifo_lib/src/dc_fifo.sv
 ../src/csi2_data_types_pkg.sv
 ../src/dphy_hs_clk_rx.sv
 ../src/dphy_hs_data_rx.sv
