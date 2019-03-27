@@ -29,8 +29,7 @@ logic          header_error_corrected;
 logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
 logic          rx_px_cdc_empty;
-logic          frame_start;
-logic          frame_end;
+logic          frame_start_pkt;
 
 axi4_word_t    pkt_word_rx_clk;
 axi4_word_t    pkt_word_px_clk;
@@ -137,11 +136,24 @@ csi2_pkt_handler payload_extractor
   .clk_i         ( px_clk_i           ),
   .rst_i         ( rst_i              ),
   .pkt_i         ( csi2_pkt_px_clk_if ),
-  .frame_start_o ( frame_start        ),
-  .frame_end_o   ( frame_end          ),
+  .frame_start_o ( frame_start_pkt    ),
+  .frame_end_o   (                    ),
   .pkt_o         ( payload_if         )
 );
 
-assign payload_if.tready = 1'b1;
+axi4_stream_if #(
+  .DATA_WIDTH ( 40       )
+) payload_40b_if (
+  .aclk       ( px_clk_i ),
+  .aresetn    ( !rst_i   )
+);
+
+csi2_raw10_32b_40b_gbx gbx
+(
+  .clk_i ( px_clk_i       ),
+  .rst_i ( rst_i          ),
+  .pkt_i ( payload_if     ),
+  .pkt_o ( payload_40b_if )
+);
 
 endmodule

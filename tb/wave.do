@@ -82,13 +82,32 @@ add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/aclk
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/aresetn
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tvalid
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tready
-add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tdata
+add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/pkt_o/tdata
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tstrb
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tkeep
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tlast
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tid
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tdest
 add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tuser
+add wave -noupdate -divider GBX
+add wave -noupdate /tb_csi2/dut/gbx/clk_i
+add wave -noupdate /tb_csi2/dut/gbx/rst_i
+add wave -noupdate /tb_csi2/dut/gbx/tdata_d1
+add wave -noupdate /tb_csi2/dut/gbx/tstrb_d1
+add wave -noupdate /tb_csi2/dut/gbx/state
+add wave -noupdate /tb_csi2/dut/gbx/next_state
+add wave -noupdate -divider PAYLOAD_40B_IF
+add wave -noupdate /tb_csi2/dut/payload_40b_if/aclk
+add wave -noupdate /tb_csi2/dut/payload_40b_if/aresetn
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tvalid
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tready
+add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/tdata
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tstrb
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tkeep
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tlast
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tid
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tdest
+add wave -noupdate /tb_csi2/dut/payload_40b_if/tuser
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {6188204 ps} 0}
 quietly wave cursor active 1
@@ -106,4 +125,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {6070306 ps} {6390578 ps}
+WaveRestoreZoom {6246397 ps} {6602318 ps}

@@ -41,7 +41,7 @@ DPHYSender #(
                 );
 
 AXI4StreamSlave #(
-  .DATA_WIDTH ( 32 )
+  .DATA_WIDTH ( 40 )
 ) axi4_stream_receiver;
 
 task automatic ref_clk_gen();
@@ -222,7 +222,7 @@ csi2_rx #(
 
 initial
   begin
-    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.payload_if ),
+    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.payload_40b_if ),
                                 .rx_data_mbx      ( rx_data_mbx    )
                               );
     fork
@@ -238,7 +238,7 @@ initial
                       );
         repeat( 5 )
           send_long_pkt( .data_identifier ( 6'h2b  ),
-                         .word_cnt        ( 15'd1936 )
+                         .word_cnt        ( 16'd1000 )
                        );
         send_short_pkt( .data_identifier( 6'h1   ),
                         .data_field     ( 6'h0 )
