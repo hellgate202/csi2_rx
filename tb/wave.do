@@ -6,7 +6,6 @@ add wave -noupdate /tb_csi2/dut/phy/dphy_clk_n_i
 add wave -noupdate /tb_csi2/dut/phy/dphy_data_p_i
 add wave -noupdate /tb_csi2/dut/phy/dphy_data_n_i
 add wave -noupdate /tb_csi2/dut/phy/ref_clk_i
-add wave -noupdate /tb_csi2/dut/word_clk_i
 add wave -noupdate /tb_csi2/dut/phy/rst_i
 add wave -noupdate /tb_csi2/dut/phy/enable_i
 add wave -noupdate /tb_csi2/dut/phy/phy_rst_i
@@ -57,33 +56,42 @@ add wave -noupdate /tb_csi2/dut/axi4_conv/short_pkt
 add wave -noupdate /tb_csi2/dut/axi4_conv/long_pkt
 add wave -noupdate /tb_csi2/dut/axi4_conv/byte_cnt
 add wave -noupdate /tb_csi2/dut/axi4_conv/byte_cnt_comb
-add wave -noupdate -divider CSI2_PKT_RX_CLK_IF
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/aclk
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/aresetn
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tvalid
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tready
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tdata
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tstrb
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tkeep
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tlast
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tid
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tdest
-add wave -noupdate /tb_csi2/dut/csi2_pkt_rx_clk_if/tuser
-add wave -noupdate -divider CSI2_PKT_WORD_CLK_IF
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/aclk
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/aresetn
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tvalid
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tready
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tdata
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tstrb
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tkeep
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tlast
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tid
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tdest
-add wave -noupdate /tb_csi2/dut/csi2_pkt_word_clk_if/tuser
+add wave -noupdate -divider CSI2_PKT_PX_CLK_IF
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/aclk
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/aresetn
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tvalid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tready
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tdata
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tstrb
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tkeep
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tlast
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tid
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tdest
+add wave -noupdate /tb_csi2/dut/csi2_pkt_px_clk_if/tuser
+add wave -noupdate -divider PKT_HANDLER
+add wave -noupdate /tb_csi2/dut/payload_extractor/clk_i
+add wave -noupdate /tb_csi2/dut/payload_extractor/rst_i
+add wave -noupdate /tb_csi2/dut/payload_extractor/frame_start_o
+add wave -noupdate /tb_csi2/dut/payload_extractor/frame_end_o
+add wave -noupdate /tb_csi2/dut/payload_extractor/state
+add wave -noupdate /tb_csi2/dut/payload_extractor/next_state
+add wave -noupdate /tb_csi2/dut/payload_extractor/byte_cnt
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_size
+add wave -noupdate -divider PAYLOAD_IF
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/aclk
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/aresetn
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tvalid
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tready
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tdata
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tstrb
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tkeep
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tlast
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tid
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tdest
+add wave -noupdate /tb_csi2/dut/payload_extractor/pkt_o/tuser
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {5052436 ps} 0}
-quietly wave cursor active 0
+WaveRestoreCursors {{Cursor 1} {6188204 ps} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 559
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -98,4 +106,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {12051375 ps}
+WaveRestoreZoom {6070306 ps} {6390578 ps}

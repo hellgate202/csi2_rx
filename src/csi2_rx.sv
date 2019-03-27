@@ -29,6 +29,8 @@ logic          header_error_corrected;
 logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
 logic          rx_px_cdc_empty;
+logic          frame_start;
+logic          frame_end;
 
 axi4_word_t    pkt_word_rx_clk;
 axi4_word_t    pkt_word_px_clk;
@@ -114,7 +116,6 @@ dc_fifo #(
   .rst_i           ( rst_i                     )
 );
 
-assign csi2_pkt_px_clk_if.tready = 1'b1;
 assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
 assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
 assign csi2_pkt_px_clk_if.tkeep  = pkt_word_px_clk.tstrb;
@@ -124,16 +125,23 @@ assign csi2_pkt_px_clk_if.tdest  = '0;
 assign csi2_pkt_px_clk_if.tid    = '0;
 assign csi2_pkt_px_clk_if.tuser  = '0;
 
-/*csi2_crc_calc crc_calc
+axi4_stream_if #(
+  .DATA_WIDTH ( 32       )
+) payload_if (
+  .aclk       ( px_clk_i ),
+  .aresetn    ( !rst_i   )
+);
+
+csi2_pkt_handler payload_extractor
 (
-  .clk_i                    ( int_clk                  ),
-  .rst_i                    ( int_rst                  ),
-  .long_pkt_payload_i       ( long_pkt_payload_o       ),
-  .long_pkt_payload_valid_i ( long_pkt_payload_valid_o ),
-  .long_pkt_payload_be_i    ( long_pkt_payload_be_o    ),
-  .long_pkt_eop_i           ( long_pkt_eop_o           ),
-  .crc_passed_o             ( crc_passed_o             ),
-  .crc_failed_o             ( crc_failed_o             )
-);*/
+  .clk_i         ( px_clk_i           ),
+  .rst_i         ( rst_i              ),
+  .pkt_i         ( csi2_pkt_px_clk_if ),
+  .frame_start_o ( frame_start        ),
+  .frame_end_o   ( frame_end          ),
+  .pkt_o         ( payload_if         )
+);
+
+assign payload_if.tready = 1'b1;
 
 endmodule

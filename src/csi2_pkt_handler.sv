@@ -1,156 +1,145 @@
+import csi2_data_types_pkg::*;
+
 module csi2_pkt_handler
 (
   input                 clk_i,
   input                 rst_i,
-  input                 valid_i,
-  input        [31 : 0] data_i,
-  input                 error_i,
-  input                 error_corrected_i,
-
-  output logic          short_pkt_valid_o,
-  output logic [1 : 0]  short_pkt_v_channel_o,
-  output logic [5 : 0]  short_pkt_data_type_o,
-  output logic [15 : 0] short_pkt_data_field_o,
-
-  output logic          long_pkt_header_valid_o,
-  output logic [1 : 0]  long_pkt_v_channel_o,
-  output logic [5 : 0]  long_pkt_data_type_o,
-  output logic [15 : 0] long_pkt_word_cnt_o,
-
-  output logic [31 : 0] long_pkt_payload_o,
-  output logic          long_pkt_payload_valid_o,
-  output logic [3 : 0]  long_pkt_payload_be_o,
-  output logic          long_pkt_eop_o,
-  output logic          pkt_done_o
+  axi4_stream_if.slave  pkt_i,
+  output logic          frame_start_o,
+  output logic          frame_end_o,
+  axi4_stream_if.master pkt_o
 );
 
-logic          valid_d1;
-logic          header_valid;
-logic          pkt_running;
-logic [15 : 0] byte_cnt;
-logic          long_pkt;
-logic          short_pkt;
-logic          last_word;
-logic [3 : 0]  be_on_last_word;
-logic          last_valid;
+assign pkt_i.tready = pkt_o.tready;
 
-always_ff @( posedge clk_i )
+enum logic [1 : 0] { IDLE_S,
+                     RUN_S,
+                     IGNORE_CRC_S } state, next_state;
+
+logic [15 : 0] byte_cnt, byte_cnt_comb;
+logic [15 : 0] pkt_size;
+
+always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    begin
-      valid_d1   <= 1'b0;
-      last_valid <= 1'b0;
-    end
+    state <= IDLE_S;
   else
-    begin
-      valid_d1   <= valid_i;
-      last_valid <= pkt_done_o;
-    end
-
-always_ff @( posedge clk_i )
-  if( rst_i )
-    pkt_running <= 1'b0;
-  else
-    if( header_valid )
-      pkt_running <= 1'b1;
-    else
-      if( pkt_done_o )
-        pkt_running <= 1'b0;
-
-assign header_valid = ( ( valid_i && ~valid_d1 ) &&
-                        ( ~error_i || ( error_i && error_corrected_i ) ) &&
-                        ~pkt_running );
-
-assign long_pkt     = ( header_valid && data_i[5 : 0] > 6'hf );
-assign short_pkt    = ( header_valid && data_i[5 : 0] < 6'h10 );
-
-always_ff @( posedge clk_i )
-  if( rst_i )
-    begin
-      short_pkt_valid_o      <= 1'b0;
-      short_pkt_v_channel_o  <= 2'd0;
-      short_pkt_data_type_o  <= 6'd0;
-      short_pkt_data_field_o <= 16'd0;
-    end
-  else
-    if( short_pkt )
-      begin
-        short_pkt_valid_o      <= 1'b1;
-        short_pkt_v_channel_o  <= data_i[7 : 6];
-        short_pkt_data_type_o  <= data_i[5 : 0];
-        short_pkt_data_field_o <= data_i[23 : 8];
-      end
-    else
-      begin
-        short_pkt_valid_o      <= 1'b0;
-        short_pkt_v_channel_o  <= 2'd0;
-        short_pkt_data_type_o  <= 6'd0;
-        short_pkt_data_field_o <= 16'd0;
-      end
-
-always_ff @( posedge clk_i )
-  if( rst_i )
-    begin
-      long_pkt_header_valid_o <= 1'b0;
-      long_pkt_v_channel_o    <= 2'd0;
-      long_pkt_data_type_o    <= 6'd0;
-      long_pkt_word_cnt_o     <= 16'd0;
-    end
-  else
-    if( long_pkt )
-      begin
-        long_pkt_header_valid_o  <= 1'b1;
-        long_pkt_v_channel_o     <= data_i[7 : 6];
-        long_pkt_data_type_o     <= data_i[5 : 0];
-        long_pkt_word_cnt_o      <= data_i[23 : 8] + 2'd2;
-      end
-    else
-      if( last_valid )
-        begin
-          long_pkt_header_valid_o <= 1'b0;
-          long_pkt_v_channel_o    <= 2'd0;
-          long_pkt_data_type_o    <= 6'd0;
-          long_pkt_word_cnt_o     <= 16'd0;
-        end
-
-always_ff @( posedge clk_i )
-  if( rst_i )
-    begin
-      long_pkt_payload_o       <= 32'd0;
-      long_pkt_payload_valid_o <= 1'b0;
-      long_pkt_payload_be_o    <= 4'd0;
-    end
-  else
-    begin
-      long_pkt_payload_o       <= data_i;
-      long_pkt_payload_valid_o <= valid_i && pkt_running;
-      if( pkt_done_o && |be_on_last_word )
-        long_pkt_payload_be_o <= be_on_last_word;
-      else
-        long_pkt_payload_be_o <= 4'b1111;
-    end
-
-always_ff @( posedge clk_i )
-  if( rst_i )
-    byte_cnt <= 16'd0;
-  else
-    if( pkt_done_o )
-      byte_cnt <= 16'd0;
-    else
-      if( valid_i && pkt_running )
-        byte_cnt <= byte_cnt + 16'd4;
-      
-
-assign last_word  = ( byte_cnt + 16'd4 ) >= long_pkt_word_cnt_o;
-assign pkt_done_o = ( last_word && pkt_running && valid_i ) || ( error_i && !error_corrected_i );
+    state <= next_state;
 
 always_comb
-  for( bit [2 : 0] i = 3'd0; i <= 3'd3; i++ )
-    be_on_last_word[i] = long_pkt_word_cnt_o[1 : 0] > i;
+  begin
+    next_state = state;
+    case( state )
+      IDLE_S:
+        begin
+          if( pkt_i.tvalid && pkt_i.tready &&
+              pkt_i.tdata[5 : 0] > 6'hf )
+            next_state = RUN_S;
+        end
+      RUN_S:
+        begin
+          if( pkt_i.tvalid && pkt_i.tready &&
+              byte_cnt_comb >= pkt_size )
+            if( pkt_size[1 : 0] == 2'd0 || pkt_size[1 : 0] == 2'd3 )
+              next_state = IGNORE_CRC_S;
+            else
+              next_state = IDLE_S;
+        end
+      IGNORE_CRC_S:
+        begin
+          if( pkt_i.tvalid && pkt_i.tready )
+            next_state = IDLE_S;
+        end
+    endcase
+  end
 
-always_ff @( posedge clk_i )
+always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    long_pkt_eop_o <= 1'b0;
+    pkt_size <= '0;
   else
-    long_pkt_eop_o <= pkt_done_o;
+    if( state == IDLE_S && pkt_i.tvalid && pkt_i.tready &&
+        pkt_i.tdata[5 : 0] > 6'hf )
+      pkt_size <= pkt_i.tdata[23 : 8];
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if ( rst_i )
+    byte_cnt <= '0;
+  else
+    byte_cnt <= byte_cnt_comb;
+
+always_comb
+  begin
+    byte_cnt_comb = byte_cnt;
+    if( state == RUN_S )
+      begin
+        if( pkt_i.tvalid && pkt_i.tready )
+          byte_cnt_comb = byte_cnt + 16'd4;
+      end
+    else
+      byte_cnt_comb = '0;
+  end
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    frame_start_o <= '0;
+  else
+    if( pkt_i.tvalid && pkt_i.tready )
+      if( pkt_i.tdata[5 : 0] == FRAME_START && state == IDLE_S )
+        frame_start_o <= 1'b1;
+      else
+        frame_start_o <= 1'b0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    frame_end_o <= '0;
+  else
+    if( pkt_i.tvalid && pkt_i.tready  )
+      if( pkt_i.tdata[5 : 0] == FRAME_END && state == IDLE_S )
+        frame_end_o <= 1'b1;
+      else
+        frame_end_o <= 1'b0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    pkt_o.tdata <= '0;
+  else
+    pkt_o.tdata <= pkt_i.tdata;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    pkt_o.tvalid <= '0;
+  else
+    if( state == RUN_S && pkt_i.tvalid && 
+        pkt_i.tready && byte_cnt < pkt_size )
+      pkt_o.tvalid <= 1'b1;
+    else
+      pkt_o.tvalid <= 1'b0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    begin
+      pkt_o.tstrb <= '0;
+      pkt_o.tlast <= '0;
+    end
+  else
+    if( state == RUN_S && byte_cnt_comb >= pkt_size )
+      begin
+        if( pkt_size[1 : 0] )
+          for( int i = 0; i < 4; i++ )
+            if( i <= pkt_size[1 : 0] )
+              pkt_o.tstrb[i] <= 1'b1;
+            else
+              pkt_o.tstrb[i] <= 1'b0;
+        pkt_o.tlast <= 1'b1;
+      end
+    else
+      begin
+        pkt_o.tstrb <= '1;
+        pkt_o.tlast <= 1'b0;
+      end
+
+assign pkt_o.tkeep = pkt_o.tstrb;
+assign pkt_o.tid   = '0;
+assign pkt_o.tdest = '0;
+assign pkt_o.tuser = '0;
 
 endmodule

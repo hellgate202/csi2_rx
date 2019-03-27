@@ -152,10 +152,10 @@ for( int i = 0; i < word_cnt; i++ )
     data_to_send.put( tx_byte );
   end
 crc = gen_crc( tx_pkt_q );
-tx_pkt_q.push_back( crc[7 : 0] );
-tx_pkt_q.push_back( crc[15 : 8] );
-for( int i = 3; i >= 0; i-- )
-  tx_pkt_q.push_front( header[i * 8 + 7 -: 8] );
+//tx_pkt_q.push_back( crc[7 : 0] );
+//tx_pkt_q.push_back( crc[15 : 8] );
+//for( int i = 3; i >= 0; i-- )
+//  tx_pkt_q.push_front( header[i * 8 + 7 -: 8] );
 data_to_send.put( crc[7 : 0] );
 data_to_send.put( crc[15 : 8] );
 dphy_gen.send();
@@ -167,6 +167,8 @@ rx_data_mbx.get( rx_pkt_q );
 if( tx_pkt_q != rx_pkt_q )
   begin
     $display( "Long packet data error!" );
+    $display( tx_pkt_q );
+    $display( rx_pkt_q );
     $stop();
   end
 endtask
@@ -188,7 +190,7 @@ for( int i = 0; i < 4; i++ )
     data_to_send.put( header[i * 8 + 7 -: 8] );
   end
 dphy_gen.send();
-while( data_to_send.num() )
+/*while( data_to_send.num() )
   @( posedge ref_clk );
 while( !rx_data_mbx.num() )
   @( posedge ref_clk );
@@ -197,7 +199,9 @@ if( tx_pkt_q != rx_pkt_q )
   begin
     $display( "Short packet data error!" );
     $stop();
-  end
+  end*/
+repeat( 1000 )
+  @( posedge ref_clk );
 endtask
 
 csi2_rx #(
@@ -216,8 +220,8 @@ csi2_rx #(
 
 initial
   begin
-    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.csi2_pkt_word_clk_if ),
-                                .rx_data_mbx      ( rx_data_mbx              )
+    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.payload_if ),
+                                .rx_data_mbx      ( rx_data_mbx    )
                               );
     fork
       ref_clk_gen;
@@ -225,14 +229,16 @@ initial
       apply_rst;
     join_none
     @( posedge ref_clk );
+    send_short_pkt( .data_identifier ( 6'h0 ),
+                    .data_field      ( '0   )
+                  );
     repeat( 5 )
       send_long_pkt( .data_identifier ( 6'h2b  ),
-                     .word_cnt        ( 15'd11 )
+                     .word_cnt        ( 15'd12 )
                    );
-    repeat( 5 )
-      send_short_pkt( .data_identifier( 6'h1   ),
-                      .data_field     ( 6'h102 )
-                    );
+    send_short_pkt( .data_identifier( 6'h1   ),
+                    .data_field     ( 6'h0 )
+                  );
     repeat(1000)
       @( posedge ref_clk );
     $display( "Everything is fine." );
