@@ -37,8 +37,8 @@ always_comb
         end
       RUN_S:
         begin
-          if( pkt_i.tvalid && pkt_i.tready &&
-              byte_cnt_comb >= pkt_size )
+          if( pkt_i.tready &&
+              byte_cnt >= pkt_size )
             if( pkt_size[1 : 0] == 2'd0 || pkt_size[1 : 0] == 2'd3 )
               next_state = IGNORE_CRC_S;
             else
@@ -46,7 +46,7 @@ always_comb
         end
       IGNORE_CRC_S:
         begin
-          if( pkt_i.tvalid && pkt_i.tready )
+          if( pkt_i.tready )
             next_state = IDLE_S;
         end
     endcase
@@ -72,7 +72,9 @@ always_comb
     if( state == RUN_S )
       begin
         if( pkt_i.tvalid && pkt_i.tready )
-          byte_cnt_comb = byte_cnt + 16'd4;
+          for( int i = 0; i < 4; i ++ )
+            if( pkt_i.tstrb[i] )
+              byte_cnt_comb = byte_cnt_comb + 1'b1;
       end
     else
       byte_cnt_comb = '0;
@@ -102,7 +104,8 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pkt_o.tdata <= '0;
   else
-    pkt_o.tdata <= pkt_i.tdata;
+    if( pkt_i.tvalid && pkt_i.tready )
+      pkt_o.tdata <= pkt_i.tdata;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -122,7 +125,8 @@ always_ff @( posedge clk_i, posedge rst_i )
       pkt_o.tlast <= '0;
     end
   else
-    if( state == RUN_S && byte_cnt_comb >= pkt_size )
+    if( state == RUN_S && byte_cnt_comb >= pkt_size &&
+        byte_cnt < pkt_size )
       begin
         if( pkt_size[1 : 0] )
           for( int i = 0; i < 4; i++ )

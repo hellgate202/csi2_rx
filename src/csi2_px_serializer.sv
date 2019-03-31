@@ -8,6 +8,7 @@ module csi2_px_serializer
 );
 
 logic start_flag;
+logic last_word;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -60,6 +61,17 @@ always_comb
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
+    last_word <= '0;
+  else
+    if( state == PX_0_S && pkt_i.tlast && pkt_i.tvalid &&
+        pkt_i.tready )
+      last_word <= 1'b1;
+    else
+      if( state == PX_3_S )
+        last_word <= 1'b0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     pkt_o.tdata <= '0;
   else
     case( state )
@@ -100,7 +112,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pkt_o.tlast <= '0;
   else
-    if( state == PX_3_S && pkt_i.tlast)
+    if( state == PX_3_S && last_word )
       pkt_o.tlast <= 1'b1;
     else
       if( pkt_o.tready )

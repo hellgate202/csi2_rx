@@ -35,7 +35,7 @@ always_comb
       SECOND_WORD_S:
         begin
           if( pkt_i.tvalid && pkt_i.tready )
-            if( pkt_i.tlast && ( pkt_i.tstrb == 4'b0001 ) )
+            if( pkt_i.tlast )
               next_state = FIRST_WORD_S;
             else
               next_state = THIRD_WORD_S;
@@ -43,7 +43,7 @@ always_comb
       THIRD_WORD_S:
         begin
           if( pkt_i.tvalid && pkt_i.tready )
-            if( pkt_i.tlast && ( pkt_i.tstrb <= 4'b0011 ) )
+            if( pkt_i.tlast )
               next_state = FIRST_WORD_S;
             else
               next_state = FOURTH_WORD_S;
@@ -51,7 +51,7 @@ always_comb
       FOURTH_WORD_S:
         begin
           if( pkt_i.tvalid && pkt_i.tready )
-            if( pkt_i.tlast && ( pkt_i.tstrb <= 4'b0111 ) )
+            if( pkt_i.tlast )
               next_state = FIRST_WORD_S;
             else
               next_state = FITH_WORD_S;
@@ -124,8 +124,8 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pkt_o.tvalid <= 1'b0;
   else
-    if( state != FIRST_WORD_S )
-      pkt_o.tvalid <= pkt_i.tvalid && pkt_i.tready;
+    if( state != FIRST_WORD_S && pkt_i.tvalid && pkt_i.tready )
+      pkt_o.tvalid <= 1'b1;
     else
       if( pkt_o.tready )
         pkt_o.tvalid <= 1'b0;

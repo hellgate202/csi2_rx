@@ -11,8 +11,8 @@ parameter int DPHY_CLK_T   = 4762;
 parameter int REF_CLK_T    = 4762;
 parameter int PX_CLK_T     = 13423;
 
-parameter int LINE_TIME   = 691_442_400;
-parameter int LINE_PERIOD = 965_250_965;
+parameter int LINE_TIME   = 25_986_928;
+parameter int LINE_PERIOD = 30_413_625;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -166,7 +166,18 @@ crc = gen_crc( tx_pkt_q );
 data_to_send.put( crc[7 : 0] );
 data_to_send.put( crc[15 : 8] );
 dphy_gen.send();
-#( LINE_PERIOD - LINE_TIME );
+rx_data_mbx.get( rx_pkt_q );
+if( rx_pkt_q != tx_pkt_q )
+  begin
+    $display( "Everything is NOT fine." );
+    $display( "tx" );
+    for( int i = 0; i < tx_pkt_q.size(); i++ )
+      $display( "%0h", tx_pkt_q[i] );
+    $display( "rx" );
+    for( int i = 0; i < rx_pkt_q.size(); i++ )
+      $display( "%0h", rx_pkt_q[i] );
+    $stop();
+  end
 endtask
 
 task automatic send_short_pkt(
@@ -219,15 +230,18 @@ initial
     @( posedge ref_clk );
     repeat( 1 )
       begin
-        #(LINE_PERIOD - LINE_TIME - 1_000_000);
         send_short_pkt( .data_identifier ( 6'h0  ),
                         .data_field      ( 16'h0 )
                       );
-        repeat( 1096 )
-          send_long_pkt( .data_identifier ( 6'h2b  ),
-                         .word_cnt        ( 16'd1936 )
-                       );
         #1_000_000;
+        repeat( 1096 )
+          begin
+            send_long_pkt( .data_identifier ( 6'h2b  ),
+                           .word_cnt        ( 16'd2040 )
+                         );
+            #( LINE_PERIOD - LINE_TIME );
+          end
+        #1_000_000;  
         send_short_pkt( .data_identifier( 6'h1   ),
                         .data_field     ( 6'h0 )
                       );

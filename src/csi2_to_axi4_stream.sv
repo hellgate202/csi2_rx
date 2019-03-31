@@ -83,7 +83,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( last_word )
       for( int i = 0; i < 4; i++ )
-        if( ( i + 1 ) <= byte_cnt )
+        if( i < byte_cnt )
           pkt_o.tstrb[i] <= 1'b1;
         else
           pkt_o.tstrb[i] <= 1'b0;
