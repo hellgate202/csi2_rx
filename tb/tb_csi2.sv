@@ -221,6 +221,8 @@ csi2_rx #(
 
 assign video.tready = 1'b1;
 
+int file;
+
 initial
   begin
     axi4_stream_receiver = new( .axi4_stream_if_v ( video       ),
@@ -253,6 +255,7 @@ initial
     repeat(1000)
       @( posedge ref_clk );
     mem_ptr = 0;
+    file = $fopen("./rx_img.bin","wb");
     while( rx_data_mbx.num() )
       begin
         rx_data_mbx.get( rx_pkt_q );
@@ -260,10 +263,12 @@ initial
           begin
             rx_img[mem_ptr][7 : 0]  = rx_pkt_q.pop_front();
             rx_img[mem_ptr][15 : 8] = rx_pkt_q.pop_front();
+            $fwrite( file, rx_img[mem_ptr][9 : 0] );
+            $fwrite( file, "\n" );
             mem_ptr++;
           end
-      end
-    for( int i = 0; i < 1936; i++ )
+      end 
+    for( int i = 0; i < PX_AMOUNT; i++ )
       if( rx_img[i] != tx_img[i] )
         begin
           $display( "Everything is NOT fine." );
