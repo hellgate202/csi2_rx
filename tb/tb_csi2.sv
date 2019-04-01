@@ -11,8 +11,13 @@ parameter int DPHY_CLK_T   = 4762;
 parameter int REF_CLK_T    = 4762;
 parameter int PX_CLK_T     = 13423;
 
-parameter int LINE_TIME   = 25_986_928;
-parameter int LINE_PERIOD = 30_413_625;
+parameter int Y_RES        = 1096;
+parameter int X_RES        = 1936;
+parameter int PX_AMOUNT    = X_RES * Y_RES;
+parameter int BYTES_AMOUNT = PX_AMOUNT + PX_AMOUNT / 4;
+
+parameter int LINE_TIME    = 25_986_928;
+parameter int LINE_PERIOD  = 30_413_625;
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
@@ -23,6 +28,18 @@ bit                      dphy_clk_n;
 bit                      ref_clk;
 bit                      px_clk;
 bit                      rst;
+bit [9 : 0]              tx_img [PX_AMOUNT - 1 : 0];
+bit [9 : 0]              rx_img [PX_AMOUNT - 1 : 0];
+bit [7 : 0]              tx_q   [BYTES_AMOUNT - 1 : 0];
+bit [7 : 0]              rx_pkt_q [$];
+
+int mem_ptr;
+
+initial
+  begin
+    $readmemb( "./scripts/px_img.bin", tx_img );
+    $readmemb( "./scripts/csi2_img.bin", tx_q );
+  end
 
 dphy_if #(
   .DATA_LANES ( DATA_LANES )
@@ -51,7 +68,7 @@ DPHYSender #(
                 );
 
 AXI4StreamSlave #(
-  .DATA_WIDTH ( 40 )
+  .DATA_WIDTH ( 16 )
 ) axi4_stream_receiver;
 
 task automatic ref_clk_gen();
@@ -149,7 +166,6 @@ logic [31 : 0] header = gen_header( .error_ins       ( 0               ),
                                     .word_cnt        ( word_cnt        )
                                   );
 bit [7 : 0]  tx_pkt_q [$];
-bit [7 : 0]  rx_pkt_q [$];
 bit [7 : 0]  tx_byte;
 bit [15 : 0] crc;
 
@@ -158,7 +174,8 @@ for( int i = 0; i < 4; i++ )
   data_to_send.put( header[i * 8 + 7 -: 8] );
 for( int i = 0; i < word_cnt; i++ )
   begin
-    tx_byte = $urandom_range( 255 );
+    tx_byte = tx_q[mem_ptr];
+    mem_ptr++;
     tx_pkt_q.push_back( tx_byte );
     data_to_send.put( tx_byte );
   end
@@ -166,18 +183,6 @@ crc = gen_crc( tx_pkt_q );
 data_to_send.put( crc[7 : 0] );
 data_to_send.put( crc[15 : 8] );
 dphy_gen.send();
-rx_data_mbx.get( rx_pkt_q );
-if( rx_pkt_q != tx_pkt_q )
-  begin
-    $display( "Everything is NOT fine." );
-    $display( "tx" );
-    for( int i = 0; i < tx_pkt_q.size(); i++ )
-      $display( "%0h", tx_pkt_q[i] );
-    $display( "rx" );
-    for( int i = 0; i < rx_pkt_q.size(); i++ )
-      $display( "%0h", rx_pkt_q[i] );
-    $stop();
-  end
 endtask
 
 task automatic send_short_pkt(
@@ -190,7 +195,6 @@ bit [31 : 0] header = gen_header( .error_ins       ( 0               ),
                                   .word_cnt        ( data_field      )
                                 );
 bit [7 : 0] tx_pkt_q [$];
-bit [7 : 0] rx_pkt_q [$];
 @( posedge ref_clk );
 for( int i = 0; i < 4; i++ )
   begin
@@ -219,8 +223,8 @@ assign video.tready = 1'b1;
 
 initial
   begin
-    axi4_stream_receiver = new( .axi4_stream_if_v ( dut.payload_40b_if ),
-                                .rx_data_mbx      ( rx_data_mbx    )
+    axi4_stream_receiver = new( .axi4_stream_if_v ( video       ),
+                                .rx_data_mbx      ( rx_data_mbx )
                               );
     fork
       ref_clk_gen;
@@ -237,7 +241,7 @@ initial
         repeat( 1096 )
           begin
             send_long_pkt( .data_identifier ( 6'h2b  ),
-                           .word_cnt        ( 16'd2040 )
+                           .word_cnt        ( 16'd2420 )
                          );
             #( LINE_PERIOD - LINE_TIME );
           end
@@ -248,6 +252,23 @@ initial
       end
     repeat(1000)
       @( posedge ref_clk );
+    mem_ptr = 0;
+    while( rx_data_mbx.num() )
+      begin
+        rx_data_mbx.get( rx_pkt_q );
+        while( rx_pkt_q.size() )
+          begin
+            rx_img[mem_ptr][7 : 0]  = rx_pkt_q.pop_front();
+            rx_img[mem_ptr][15 : 8] = rx_pkt_q.pop_front();
+            mem_ptr++;
+          end
+      end
+    for( int i = 0; i < 1936; i++ )
+      if( rx_img[i] != tx_img[i] )
+        begin
+          $display( "Everything is NOT fine." );
+          $display( "%0h was received but %0h was transmitted at index %0d", rx_img[i], tx_img[i], i );
+        end
     $display( "Everything is fine." );
     $stop;
   end

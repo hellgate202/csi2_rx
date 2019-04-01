@@ -7,8 +7,9 @@ module csi2_px_serializer
   axi4_stream_if.master pkt_o
 );
 
-logic start_flag;
-logic last_word;
+logic          start_flag;
+logic          last_word;
+logic [39 : 0] tdata_d1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -20,6 +21,12 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( pkt_o.tvalid && pkt_o.tready )
         start_flag <= 1'b0;
 
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    tdata_d1 <= '0;
+  else
+    if( pkt_i.tvalid && pkt_i.tready )
+      tdata_d1 <= pkt_i.tdata;
 
 enum logic [1 : 0] { PX_0_S,
                      PX_1_S,
@@ -77,23 +84,23 @@ always_ff @( posedge clk_i, posedge rst_i )
     case( state )
     PX_0_S:
       begin
-        if( pkt_i.tvalid )
-          pkt_o.tdata <= { 6'd0, pkt_i.tdata[9 : 0] };
+        if( pkt_i.tvalid && pkt_o.tready )
+          pkt_o.tdata <= { 6'd0, pkt_i.tdata[7 : 0], pkt_i.tdata[33 : 32] };
       end
     PX_1_S:
       begin
         if( pkt_o.tready )
-          pkt_o.tdata <= { 6'd0, pkt_i.tdata[19 : 10] };
+          pkt_o.tdata <= { 6'd0, tdata_d1[15 : 8], tdata_d1[35 : 34] };
       end
     PX_2_S:
       begin
         if( pkt_o.tready )
-          pkt_o.tdata <= { 6'd0, pkt_i.tdata[29 : 20] };
+          pkt_o.tdata <= { 6'd0, tdata_d1[23 : 16], tdata_d1[37 : 36] };
       end
     PX_3_S:
       begin
         if( pkt_o.tready )
-          pkt_o.tdata <= { 6'd0, pkt_i.tdata[39 : 30] };
+          pkt_o.tdata <= { 6'd0, tdata_d1[31 : 24], tdata_d1[39 : 38] };
       end
     endcase
 

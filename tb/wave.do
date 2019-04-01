@@ -172,7 +172,7 @@ add wave -noupdate -radix hexadecimal /tb_csi2/video/aclk
 add wave -noupdate -radix hexadecimal /tb_csi2/video/aresetn
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tvalid
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tready
-add wave -noupdate -radix hexadecimal /tb_csi2/video/tdata
+add wave -noupdate -radix unsigned /tb_csi2/video/tdata
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tstrb
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tkeep
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tlast
@@ -196,4 +196,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {616229944 ps}
+WaveRestoreZoom {0 ps} {14102782 ps}
