@@ -52,7 +52,7 @@ generate
           if( rst_i )
             maped_data_o <= '0;
           else
-            for( int i = 0; i < 4; i++ )
+            for( int i = 0; i < 2; i++ )
               if( word_pos[i] )
                 maped_data_o[( i + 1) * 16 - 1 -: 16] <= word_data_i;
 

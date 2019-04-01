@@ -32,7 +32,7 @@ BUFR #(
   .O           ( byte_clk_o ),
   .CE          ( 1'b1       ),
   .CLR         ( rst_i      ),
-  .I           ( bit_clk_o  )
+  .I           ( bit_clk    )
 );
 
 assign bit_clk_inv_o = ~bit_clk_o;

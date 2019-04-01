@@ -1,5 +1,5 @@
 module csi2_rx #(
-  parameter int DATA_LANES = 4,
+  parameter int DATA_LANES = 2,
   parameter int DELAY [4]  = '{ 0, 0, 0, 0 }
 )(
   input                       dphy_clk_p_i,
