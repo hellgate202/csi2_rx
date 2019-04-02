@@ -3,7 +3,7 @@ import csi2_data_types_pkg::*;
 module csi2_long_pkt_parser
 (
   input        header_valid_i,
-  input  [5:0] data_type_i
+  input  [5:0] data_type_i,
   // Genetic data types
   output       null_o,
   output       blanking_o,
@@ -21,7 +21,7 @@ module csi2_long_pkt_parser
   output       rgb_555_o,
   output       rgb_565_o,
   output       rgb_666_o,
-  output       rgb_888_o
+  output       rgb_888_o,
   // RAW data types
   output       raw_6_o,
   output       raw_7_o,
