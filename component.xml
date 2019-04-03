@@ -100,6 +100,12 @@
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_RESET</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.REF_CLK_I.ASSOCIATED_RESET">rst_i</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
       <spirit:name>px_clk_i</spirit:name>
@@ -160,7 +166,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ad4f63a6</spirit:value>
+            <spirit:value>40ded227</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -176,7 +182,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2b327587</spirit:value>
+            <spirit:value>40ded227</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -430,10 +436,6 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>example/csi2_example.srcs/constrs_1/new/csi2_sdc.xdc</spirit:name>
-        <spirit:userFileType>xdc</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
@@ -645,32 +647,35 @@
       </xilinx:taxonomies>
       <xilinx:displayName>csi2_rx_wrap_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2019-04-01T22:17:37Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>3</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2019-04-02T15:00:56Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b45aec_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@15c76ae8_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7781959b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c661542_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@71273096_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fe74e53_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e80146b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@100bee61_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@728690d_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d1ec6c3_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@559d80a2_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@47792d47_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@f6a1c2_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@68ee0861_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c634b2e_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@17310861_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@66b8d890_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@261c762c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33d29f5a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6fe61407_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@66d1aa7f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2725322c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6271cd82_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f9bebc9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@48960471_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6615cd7e_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cb65abe_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45acf950_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a3edf75_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a8b1bb0_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@66e12ced_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7fcae9a5_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71940a3a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c0aca0c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f8f5b7f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f7dee60_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a012119_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="76b2eab3"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="08ef67fd"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="82daf0c4"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="340ccf29"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="c07439b9"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="5b2b2fde"/>
     </xilinx:packagingInfo>
