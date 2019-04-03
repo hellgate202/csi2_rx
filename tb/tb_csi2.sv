@@ -89,9 +89,9 @@ task automatic px_clk_gen();
 endtask
 
 task automatic apply_rst;
-  @( posedge ref_clk );
+  @( posedge px_clk );
   rst <= 1'b1;
-  @( posedge ref_clk );
+  @( posedge px_clk );
   rst <= 1'b0;
 endtask
 

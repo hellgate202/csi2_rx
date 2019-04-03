@@ -1,7 +1,7 @@
 module csi2_hamming_dec
 (
   input                 clk_i,
-  input                 rst_i,
+  input                 srst_i,
   input                 valid_i,
   input        [31 : 0] data_i,
   input                 pkt_done_i,
@@ -11,7 +11,7 @@ module csi2_hamming_dec
   output logic          valid_o
 );
 
-localparam INIT_PATH = "~/fpga/csi2/misc/err_bit_pos_lut.txt";
+localparam INIT_PATH = "/home/liv/fpga/csi2/misc/err_bit_pos_lut.txt";
 
 logic [5 : 0]  generated_parity;
 logic [5 : 0]  syndrome;
@@ -26,7 +26,7 @@ assign syndrome     = generated_parity ^ data_i[29 : 24];
 assign header_valid = valid_d && !header_passed;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     header_passed <= 1'b0;
   else
     if( header_valid )
@@ -36,7 +36,7 @@ always_ff @( posedge clk_i )
         header_passed <= 1'b0;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     error_detected <= 1'b0;
   else
     if( pkt_done_i )
@@ -48,7 +48,7 @@ always_ff @( posedge clk_i )
         error_detected <= 1'b0;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     begin
       data_d  <= '0;
       valid_d <= '0;
@@ -86,7 +86,7 @@ dual_port_ram #(
   .ADDR_WIDTH        ( 6              ),
   .INIT_FILE         ( INIT_PATH      )
 ) err_bit_pos_lut (
-  .rst_i             ( rst_i          ),
+  .rst_i             ( srst_i         ),
   .wr_clk_i          ( clk_i          ),
   .wr_addr_i         ( 6'd0           ),
   .wr_data_i         ( 5'd0           ),
@@ -98,7 +98,7 @@ dual_port_ram #(
 );
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     error_o <= 1'b0;
   else
     if( pkt_done_i )
@@ -108,7 +108,7 @@ always_ff @( posedge clk_i )
         error_o <= 1'b1;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     error_corrected_o <= 1'b0;
   else
     if( pkt_done_i )
@@ -118,7 +118,7 @@ always_ff @( posedge clk_i )
         error_corrected_o <= 1'b1;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     data_o <= '0;
   else
     begin
@@ -130,7 +130,7 @@ always_ff @( posedge clk_i )
     end
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     valid_o <= 1'b0;
   else
     if( !pkt_done_i )

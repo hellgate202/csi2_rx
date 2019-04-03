@@ -3,7 +3,7 @@ import csi2_data_types_pkg::*;
 module csi2_pkt_handler
 (
   input                 clk_i,
-  input                 rst_i,
+  input                 srst_i,
   axi4_stream_if.slave  pkt_i,
   output logic          frame_start_o,
   output logic          frame_end_o,
@@ -19,8 +19,8 @@ enum logic [1 : 0] { IDLE_S,
 logic [15 : 0] byte_cnt, byte_cnt_comb;
 logic [15 : 0] pkt_size;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     state <= IDLE_S;
   else
     state <= next_state;
@@ -52,16 +52,16 @@ always_comb
     endcase
   end
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_size <= '0;
   else
     if( state == IDLE_S && pkt_i.tvalid && pkt_i.tready &&
         pkt_i.tdata[5 : 0] > 6'hf )
       pkt_size <= pkt_i.tdata[23 : 8];
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if ( rst_i )
+always_ff @( posedge clk_i )
+  if ( srst_i )
     byte_cnt <= '0;
   else
     byte_cnt <= byte_cnt_comb;
@@ -80,8 +80,8 @@ always_comb
       byte_cnt_comb = '0;
   end
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     frame_start_o <= '0;
   else
     if( pkt_i.tvalid && pkt_i.tready )
@@ -90,8 +90,8 @@ always_ff @( posedge clk_i, posedge rst_i )
       else
         frame_start_o <= 1'b0;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     frame_end_o <= '0;
   else
     if( pkt_i.tvalid && pkt_i.tready  )
@@ -100,15 +100,15 @@ always_ff @( posedge clk_i, posedge rst_i )
       else
         frame_end_o <= 1'b0;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_o.tdata <= '0;
   else
     if( pkt_i.tvalid && pkt_i.tready )
       pkt_o.tdata <= pkt_i.tdata;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_o.tvalid <= '0;
   else
     if( state == RUN_S && pkt_i.tvalid && 
@@ -118,8 +118,8 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( pkt_i.tready )
         pkt_o.tvalid <= 1'b0;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     begin
       pkt_o.tstrb <= '0;
       pkt_o.tlast <= '0;

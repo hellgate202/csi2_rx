@@ -1,7 +1,7 @@
 module csi2_to_axi4_stream
 (
   input                 clk_i,
-  input                 rst_i,
+  input                 srst_i,
   input [31 : 0]        data_i,
   input                 valid_i,
   input                 error_i,
@@ -24,14 +24,14 @@ assign short_pkt    = header_valid && data_i[5 : 0] <  6'h10;
 assign last_word    = pkt_running && byte_cnt_comb == '0;
 assign phy_rst_o    = short_pkt || last_word || error_i;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     valid_d1 <= '0;
   else
     valid_d1 <= valid_i;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_running <= '0;
   else
     if( long_pkt )
@@ -40,8 +40,8 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( phy_rst_o )
         pkt_running <= 1'b0;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     byte_cnt <= '0;
   else
     byte_cnt <= byte_cnt_comb;
@@ -59,8 +59,8 @@ always_comb
           byte_cnt_comb = byte_cnt - 3'd4;
   end
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     begin
       pkt_o.tvalid <= '0;
       pkt_o.tdata  <= '0;
@@ -77,8 +77,8 @@ always_ff @( posedge clk_i, posedge rst_i )
         pkt_o.tdata  <= '0;
       end
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_o.tstrb <= '0;
   else
     if( last_word )
@@ -90,8 +90,8 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       pkt_o.tstrb <= '1;
 
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
+always_ff @( posedge clk_i )
+  if( srst_i )
     pkt_o.tlast <= '0;
   else
     if( short_pkt || last_word )

@@ -2,7 +2,6 @@ module dphy_hs_clk_rx
 (
   input  dphy_clk_p_i,
   input  dphy_clk_n_i,
-  input  rst_i,
   output bit_clk_o,
   output bit_clk_inv_o,
   output byte_clk_o
@@ -31,7 +30,7 @@ BUFR #(
 ) clk_divider (
   .O           ( byte_clk_o ),
   .CE          ( 1'b1       ),
-  .CLR         ( rst_i      ),
+  .CLR         ( 1'b0       ),
   .I           ( bit_clk    )
 );
 

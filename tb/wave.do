@@ -6,7 +6,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/dphy_clk_n_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/dphy_data_p_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/dphy_data_n_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/ref_clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/enable_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/phy_rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/rx_clk_present_o
@@ -25,7 +24,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/word_data
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/phy/word_valid
 add wave -noupdate -divider HEADER_CORRECTOR
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/valid_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/data_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/pkt_done_i
@@ -43,7 +41,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/header_passe
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/header_corrector/error_detected
 add wave -noupdate -divider AXI4_CONV
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/axi4_conv/clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/axi4_conv/rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/axi4_conv/data_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/axi4_conv/valid_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/axi4_conv/error_i
@@ -123,7 +120,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/csi2_pkt_px_clk_if/tdest
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/csi2_pkt_px_clk_if/tuser
 add wave -noupdate -divider PKT_HANDLER
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/frame_start_o
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/frame_end_o
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/state
@@ -144,7 +140,6 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/pkt_o/tdest
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_extractor/pkt_o/tuser
 add wave -noupdate -divider GBX
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/gbx/clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/gbx/rst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/gbx/tdata_d1
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/gbx/tstrb_d1
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/gbx/state
@@ -163,7 +158,7 @@ add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/tdest
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/payload_40b_if/tuser
 add wave -noupdate -divider PX_SER
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/clk_i
-add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/rst_i
+add wave -noupdate /tb_csi2/dut/px_ser/srst_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/frame_start_i
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/state
 add wave -noupdate -radix hexadecimal /tb_csi2/dut/px_ser/next_state
@@ -180,7 +175,7 @@ add wave -noupdate -radix hexadecimal /tb_csi2/video/tid
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tdest
 add wave -noupdate -radix hexadecimal /tb_csi2/video/tuser
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {6571481 ps} 0}
+WaveRestoreCursors {{Cursor 1} {639388904 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 559
 configure wave -valuecolwidth 100
@@ -196,4 +191,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {14102782 ps}
+WaveRestoreZoom {0 ps} {287458249 ps}

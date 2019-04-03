@@ -32,6 +32,23 @@ logic          corrected_phy_data_valid;
 logic          rx_px_cdc_empty;
 logic          frame_start_pkt;
 logic          frame_end_pkt;
+logic          rst_ref_clk_d1;
+logic          ref_srst;
+logic          rst_rx_clk_d1;
+logic          rst_px_clk_d1;
+logic          px_srst;
+
+always_ff @( posedge ref_clk_i )
+  begin
+    rst_ref_clk_d1 <= rst_i;
+    ref_srst       <= rst_ref_clk_d1;
+  end
+
+always_ff @( posedge px_clk_i )
+  begin
+    rst_px_clk_d1 <= rst_i;
+    px_srst       <= rst_px_clk_d1;
+  end
 
 axi4_word_t    pkt_word_rx_clk;
 axi4_word_t    pkt_word_px_clk;
@@ -48,7 +65,7 @@ dphy_slave #(
   .dphy_data_p_i    ( dphy_data_p_i  ),
   .dphy_data_n_i    ( dphy_data_n_i  ),
   .ref_clk_i        ( ref_clk_i      ),
-  .rst_i            ( rst_i          ),
+  .srst_i           ( ref_srst       ),
   .enable_i         ( enable_i       ),
   .phy_rst_i        ( phy_rst        ),
   .rx_clk_present_o ( rx_clk_present ),
@@ -59,7 +76,7 @@ dphy_slave #(
 
 csi2_hamming_dec header_corrector (
   .clk_i             ( rx_clk                   ),
-  .rst_i             ( rx_rst                   ),
+  .srst_i            ( rx_rst                   ),
   .valid_i           ( phy_data_valid           ),
   .data_i            ( phy_data                 ),
   .pkt_done_i        ( phy_rst                  ),
@@ -83,7 +100,7 @@ assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
 
 csi2_to_axi4_stream axi4_conv (
   .clk_i     ( rx_clk                   ),
-  .rst_i     ( rx_rst                   ),
+  .srst_i    ( rx_rst                   ),
   .data_i    ( corrected_phy_data       ),
   .valid_i   ( corrected_phy_data_valid ),
   .error_i   ( pkt_error                ),
@@ -136,7 +153,7 @@ axi4_stream_if #(
 csi2_pkt_handler payload_extractor
 (
   .clk_i         ( px_clk_i           ),
-  .rst_i         ( rst_i              ),
+  .srst_i        ( px_srst            ),
   .pkt_i         ( csi2_pkt_px_clk_if ),
   .frame_start_o ( frame_start_pkt    ),
   .frame_end_o   (                    ),
@@ -152,16 +169,16 @@ axi4_stream_if #(
 
 csi2_raw10_32b_40b_gbx gbx
 (
-  .clk_i ( px_clk_i       ),
-  .rst_i ( rst_i          ),
-  .pkt_i ( payload_if     ),
-  .pkt_o ( payload_40b_if )
+  .clk_i  ( px_clk_i       ),
+  .srst_i ( px_srst        ),
+  .pkt_i  ( payload_if     ),
+  .pkt_o  ( payload_40b_if )
 );
 
 csi2_px_serializer px_ser
 (
   .clk_i         ( px_clk_i        ),
-  .rst_i         ( rst_i           ),
+  .srst_i        ( px_srst         ),
   .frame_start_i ( frame_start_pkt ),
   .pkt_i         ( payload_40b_if  ),
   .pkt_o         ( video_o         )

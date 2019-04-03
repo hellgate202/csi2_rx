@@ -37,7 +37,7 @@ IDELAYE2 #(
   .IDELAY_VALUE          ( DELAY         ),
   .HIGH_PERFORMANCE_MODE ( "TRUE"        ),
   .SIGNAL_PATTERN        ( "DATA"        ),
-  .REFCLK_FREQUENCY      ( 210           ),
+  .REFCLK_FREQUENCY      ( 200           ),
   .CINVCTRL_SEL          ( "FALSE"       ),
   .PIPE_SEL              ( "FALSE"       )
 ) input_delay (
@@ -59,7 +59,7 @@ IDELAYCTRL delay_ctrl
 (
   .RDY    (           ),
   .REFCLK ( ref_clk_i ),
-  .RST    ( rst_i     )
+  .RST    ( 1'b0      )
 );
 
 ISERDESE2 #(

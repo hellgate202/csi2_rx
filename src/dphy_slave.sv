@@ -7,7 +7,7 @@ module dphy_slave #(
   input  [DATA_LANES - 1 : 0] dphy_data_p_i,
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
   input                       ref_clk_i,
-  input                       rst_i,
+  input                       srst_i,
   input                       enable_i,
   input                       phy_rst_i,
   output                      rx_clk_present_o,
@@ -34,7 +34,6 @@ dphy_hs_clk_rx clk_phy
 (
   .dphy_clk_p_i  ( dphy_clk_p_i ),
   .dphy_clk_n_i  ( dphy_clk_n_i ),
-  .rst_i         ( rst_i        ),
   .bit_clk_o     ( bit_clk      ),
   .bit_clk_inv_o ( bit_clk_inv  ),
   .byte_clk_o    ( byte_clk     )
@@ -46,7 +45,7 @@ clk_detect #(
 ) clk_detect (
   .ref_clk_i             ( ref_clk_i      ),
   .obs_clk_i             ( byte_clk       ),
-  .rst_i                 ( rst_i          ),
+  .srst_i                ( srst_i         ),
   .clk_present_o         ( rx_clk_present )
 );
 
@@ -61,7 +60,7 @@ generate
         .byte_clk_i    ( byte_clk         ),
         .ref_clk_i     ( ref_clk_i        ),
         .enable_i      ( enable_i         ),
-        .rst_i         ( ~rx_clk_present ),
+        .rst_i        ( ~rx_clk_present ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
         .byte_data_o   ( byte_data[i]     )
