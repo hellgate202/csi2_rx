@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>user.org</spirit:vendor>
+  <spirit:vendor>hellgate202</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>csi2_rx_wrap</spirit:name>
+  <spirit:name>csi2_2_lane_rx</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
-      <spirit:name>video_o</spirit:name>
+      <spirit:name>video</spirit:name>
+      <spirit:displayName>video</spirit:displayName>
+      <spirit:description>Stamdard AX4-Stream Video Interface</spirit:description>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
       <spirit:master/>
       <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>video_tid_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TDEST</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>video_tdest_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
             <spirit:name>TDATA</spirit:name>
@@ -45,18 +31,10 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>TKEEP</spirit:name>
+            <spirit:name>TREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>video_tkeep_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>TLAST</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>video_tlast_o</spirit:name>
+            <spirit:name>video_tready_i</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -77,35 +55,37 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>TREADY</spirit:name>
+            <spirit:name>TLAST</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>video_tready_i</spirit:name>
+            <spirit:name>video_tlast_o</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
-      </spirit:portMaps>
-    </spirit:busInterface>
-    <spirit:busInterface>
-      <spirit:name>ref_clk_i</spirit:name>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
-      <spirit:slave/>
-      <spirit:portMaps>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>CLK</spirit:name>
+            <spirit:name>TKEEP</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>ref_clk_i</spirit:name>
+            <spirit:name>video_tkeep_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TDEST</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>video_tdest_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>video_tid_o</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
-      <spirit:parameters>
-        <spirit:parameter>
-          <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.REF_CLK_I.ASSOCIATED_RESET">rst_i</spirit:value>
-        </spirit:parameter>
-      </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
       <spirit:name>px_clk_i</spirit:name>
@@ -125,7 +105,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_BUSIF">video_o</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_BUSIF">video</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -144,12 +124,6 @@
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
-      <spirit:parameters>
-        <spirit:parameter>
-          <spirit:name>POLARITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.RST_I.POLARITY">ACTIVE_HIGH</spirit:value>
-        </spirit:parameter>
-      </spirit:parameters>
     </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:model>
@@ -166,7 +140,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>40ded227</spirit:value>
+            <spirit:value>204bc6ca</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -182,7 +156,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>40ded227</spirit:value>
+            <spirit:value>027b371c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -436,6 +410,10 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>example/csi2_example.srcs/constrs_1/new/csi2.xdc</spirit:name>
+        <spirit:userFileType>xdc</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
@@ -603,14 +581,14 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/csi2_rx_wrap_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/csi2_2_lane_rx_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_f92e9879</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>csi2_rx_wrap_v1_0</spirit:description>
+  <spirit:description>Simple CSI-2 Receiver</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
@@ -620,62 +598,59 @@
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:supportedFamilies>
-        <xilinx:family xilinx:lifeCycle="Production">virtex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qvirtex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintex7l</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qkintex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qkintex7l</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">artix7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">artix7l</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">aartix7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qartix7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">zynq</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qzynq</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">azynq</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">spartan7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">aspartan7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexu</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">zynquplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexuplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexuplusHBM</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintexuplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintexu</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">zynq</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">azynq</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">aartix7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">kintex7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">aspartan7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">artix7l</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">artix7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">spartan7</xilinx:family>
+        <xilinx:family xilinx:lifeCycle="Beta">kintex7l</xilinx:family>
       </xilinx:supportedFamilies>
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>csi2_rx_wrap_v1_0</xilinx:displayName>
+      <xilinx:displayName>CSI-2 2 Lane RX</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2019-04-02T15:00:56Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2019-04-04T12:17:11Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@261c762c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@33d29f5a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6fe61407_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@66d1aa7f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2725322c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6271cd82_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f9bebc9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@48960471_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6615cd7e_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cb65abe_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@45acf950_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a3edf75_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a8b1bb0_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@66e12ced_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7fcae9a5_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@71940a3a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c0aca0c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f8f5b7f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f7dee60_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a012119_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@245db626_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@75124a9f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b2824b1_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@693f7770_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@daeb590_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45f4851b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35e5a8a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a8e354b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c285547_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12819ca0_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1db3740e_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40327dc6_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@77d1ac3b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14e8bcd9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5cf01219_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2188c0ee_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ef67826_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45377f73_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f4ff96b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3bfe6f2_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7b852674_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@42b7ae1b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2029c76f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e6c588f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2db6c51c_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@47d5c4e8_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51a8804d_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5482649b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c2e20b9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="82daf0c4"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="340ccf29"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="08029bd9"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="115b7d46"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="c07439b9"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="5b2b2fde"/>
     </xilinx:packagingInfo>
