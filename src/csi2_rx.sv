@@ -21,6 +21,8 @@ typedef struct packed {
 
 logic          rx_clk;
 logic          rx_rst;
+logic          clk_loss_rst_d1;
+logic          clk_loss_srst;
 logic          rx_clk_present;
 logic          phy_rst;
 logic [31 : 0] phy_data;
@@ -50,6 +52,12 @@ always_ff @( posedge px_clk_i )
     px_srst       <= rst_px_clk_d1;
   end
 
+always_ff @( posedge rx_clk )
+  begin
+    clk_loss_rst_d1 <= rx_rst;
+    clk_loss_srst   <= clk_loss_rst_d1;
+  end
+
 axi4_word_t    pkt_word_rx_clk;
 axi4_word_t    pkt_word_px_clk;
 
@@ -76,7 +84,7 @@ dphy_slave #(
 
 csi2_hamming_dec header_corrector (
   .clk_i             ( rx_clk                   ),
-  .srst_i            ( rx_rst                   ),
+  .srst_i            ( clk_loss_srst            ),
   .valid_i           ( phy_data_valid           ),
   .data_i            ( phy_data                 ),
   .pkt_done_i        ( phy_rst                  ),
@@ -100,7 +108,7 @@ assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
 
 csi2_to_axi4_stream axi4_conv (
   .clk_i     ( rx_clk                   ),
-  .srst_i    ( rx_rst                   ),
+  .srst_i    ( clk_loss_srst            ),
   .data_i    ( corrected_phy_data       ),
   .valid_i   ( corrected_phy_data_valid ),
   .error_i   ( pkt_error                ),
