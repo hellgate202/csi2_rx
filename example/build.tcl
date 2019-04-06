@@ -229,3 +229,7 @@ wait_on_run impl_1
 # Generate bitstream
 launch_runs impl_1 -to_step write_bitstream -jobs 8
 wait_on_run impl_1
+
+# Export Hardware
+file mkdir ./csi2_example.sdk
+file copy -force ./csi2_example.runs/impl_1/design_1_wrapper.sysdef ./csi2_example.sdk/design_1_wrapper.hdf
