@@ -60,7 +60,6 @@ generate
         .byte_clk_i    ( byte_clk         ),
         .ref_clk_i     ( ref_clk_i        ),
         .enable_i      ( enable_i         ),
-        .srst_i        ( srst_i           ),
         .serdes_rst_i  ( ~rx_clk_present  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
@@ -68,6 +67,13 @@ generate
       ); 
   end
 endgenerate
+
+IDELAYCTRL delay_ctrl
+(
+  .RDY    (           ),
+  .REFCLK ( ref_clk_i ),
+  .RST    ( 1'b0      )
+);
 
 generate
   begin: byte_align
