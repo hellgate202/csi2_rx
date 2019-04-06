@@ -6,7 +6,8 @@ module dphy_hs_data_rx #(
   input          ref_clk_i,
   input          byte_clk_i,
   input          enable_i,
-  input          rst_i,
+  input          srst_i,
+  input          serdes_rst_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
   output [7 : 0] byte_data_o
@@ -17,7 +18,7 @@ module dphy_hs_data_rx #(
 
 always_ff @( posedge byte_clk_i )
   begin
-    rst_d1 <= rst_i;
+    rst_d1 <= serdes_rst_i;
     rst_d2 <= rst_d1;
   end
 
@@ -59,7 +60,7 @@ IDELAYCTRL delay_ctrl
 (
   .RDY    (           ),
   .REFCLK ( ref_clk_i ),
-  .RST    ( 1'b0      )
+  .RST    ( srst_i    )
 );
 
 ISERDESE2 #(

@@ -6,7 +6,8 @@ module csi2_rx_wrap
   input  [1 : 0]  dphy_data_n_i,
   input           ref_clk_i,
   input           px_clk_i,
-  input           rst_i,
+  input           ref_srst_i,
+  input           px_srst_i,
 
   input           video_tready_i,
   output [15 : 0] video_tdata_o,
@@ -20,12 +21,12 @@ module csi2_rx_wrap
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 16       ),
-  .ID_WIDTH   ( 1        ),
-  .DEST_WIDTH ( 1        )
+  .DATA_WIDTH ( 16         ),
+  .ID_WIDTH   ( 1          ),
+  .DEST_WIDTH ( 1          )
 ) video (
-  .aclk       ( px_clk_i ),
-  .aresetn    ( !rst_i   )
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
 );
 
 assign video.tready   = video_tready_i;
@@ -47,7 +48,8 @@ csi2_rx #(
   .dphy_data_n_i ( dphy_data_n_i ),
   .ref_clk_i     ( ref_clk_i     ),
   .px_clk_i      ( px_clk_i      ),
-  .rst_i         ( rst_i         ),
+  .ref_srst_i    ( ref_srst_i    ),
+  .px_srst_i     ( px_srst_i     ),
   .enable_i      ( 1'b1          ),
   .video_o       ( video         )
 );

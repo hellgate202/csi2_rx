@@ -8,7 +8,8 @@ module csi2_rx #(
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
   input                       ref_clk_i,
   input                       px_clk_i,
-  input                       rst_i,
+  input                       ref_srst_i,
+  input                       px_srst_i,
   input                       enable_i,
   axi4_stream_if.master       video_o
 );
@@ -35,22 +36,8 @@ logic          rx_px_cdc_empty;
 logic          frame_start_pkt;
 logic          frame_end_pkt;
 logic          rst_ref_clk_d1;
-logic          ref_srst;
 logic          rst_rx_clk_d1;
 logic          rst_px_clk_d1;
-logic          px_srst;
-
-always_ff @( posedge ref_clk_i )
-  begin
-    rst_ref_clk_d1 <= rst_i;
-    ref_srst       <= rst_ref_clk_d1;
-  end
-
-always_ff @( posedge px_clk_i )
-  begin
-    rst_px_clk_d1 <= rst_i;
-    px_srst       <= rst_px_clk_d1;
-  end
 
 always_ff @( posedge rx_clk )
   begin
@@ -73,7 +60,7 @@ dphy_slave #(
   .dphy_data_p_i    ( dphy_data_p_i  ),
   .dphy_data_n_i    ( dphy_data_n_i  ),
   .ref_clk_i        ( ref_clk_i      ),
-  .srst_i           ( ref_srst       ),
+  .srst_i           ( ref_srst_i     ),
   .enable_i         ( enable_i       ),
   .phy_rst_i        ( phy_rst        ),
   .rx_clk_present_o ( rx_clk_present ),
@@ -95,10 +82,10 @@ csi2_hamming_dec header_corrector (
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 32     )
+  .DATA_WIDTH ( 32             )
 ) csi2_pkt_rx_clk_if (
-  .aclk       ( rx_clk ),
-  .aresetn    ( !rst_i )
+  .aclk       ( rx_clk         ),
+  .aresetn    ( !clk_loss_srst )
 );
 
 assign csi2_pkt_rx_clk_if.tready = 1'b1;
@@ -117,10 +104,10 @@ csi2_to_axi4_stream axi4_conv (
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 32       )
+  .DATA_WIDTH ( 32         )
 ) csi2_pkt_px_clk_if (
-  .aclk       ( px_clk_i ),
-  .aresetn    ( !rst_i   )
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
 );
 
 dc_fifo #(
@@ -152,16 +139,16 @@ assign csi2_pkt_px_clk_if.tid    = '0;
 assign csi2_pkt_px_clk_if.tuser  = '0;
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 32       )
+  .DATA_WIDTH ( 32         )
 ) payload_if (
-  .aclk       ( px_clk_i ),
-  .aresetn    ( !rst_i   )
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
 );
 
 csi2_pkt_handler payload_extractor
 (
   .clk_i         ( px_clk_i           ),
-  .srst_i        ( px_srst            ),
+  .srst_i        ( px_srst_i          ),
   .pkt_i         ( csi2_pkt_px_clk_if ),
   .frame_start_o ( frame_start_pkt    ),
   .frame_end_o   (                    ),
@@ -169,16 +156,16 @@ csi2_pkt_handler payload_extractor
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 40       )
+  .DATA_WIDTH ( 40         )
 ) payload_40b_if (
-  .aclk       ( px_clk_i ),
-  .aresetn    ( !rst_i   )
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
 );
 
 csi2_raw10_32b_40b_gbx gbx
 (
   .clk_i  ( px_clk_i       ),
-  .srst_i ( px_srst        ),
+  .srst_i ( px_srst_i      ),
   .pkt_i  ( payload_if     ),
   .pkt_o  ( payload_40b_if )
 );
@@ -186,7 +173,7 @@ csi2_raw10_32b_40b_gbx gbx
 csi2_px_serializer px_ser
 (
   .clk_i         ( px_clk_i        ),
-  .srst_i        ( px_srst         ),
+  .srst_i        ( px_srst_i       ),
   .frame_start_i ( frame_start_pkt ),
   .pkt_i         ( payload_40b_if  ),
   .pkt_o         ( video_o         )

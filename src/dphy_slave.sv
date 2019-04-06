@@ -60,7 +60,8 @@ generate
         .byte_clk_i    ( byte_clk         ),
         .ref_clk_i     ( ref_clk_i        ),
         .enable_i      ( enable_i         ),
-        .rst_i        ( ~rx_clk_present ),
+        .srst_i        ( srst_i           ),
+        .serdes_rst_i  ( ~rx_clk_present  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
         .byte_data_o   ( byte_data[i]     )
