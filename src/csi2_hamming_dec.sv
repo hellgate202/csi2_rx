@@ -11,7 +11,7 @@ module csi2_hamming_dec
   output logic          valid_o
 );
 
-localparam INIT_PATH = "../../../misc/err_bit_pos_lut.txt";
+localparam INIT_PATH = "../../../../../err_bit_pos_lut.txt";
 
 logic [5 : 0]  generated_parity;
 logic [5 : 0]  syndrome;
