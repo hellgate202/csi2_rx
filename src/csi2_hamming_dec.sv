@@ -23,17 +23,17 @@ logic          header_passed;
 logic          error_detected;
 
 assign syndrome     = generated_parity ^ data_i[29 : 24];
-assign header_valid = valid_d && !header_passed;
+assign header_valid = valid_d && !header_passed && !pkt_done_i;
 
 always_ff @( posedge clk_i )
   if( srst_i )
     header_passed <= 1'b0;
   else
-    if( header_valid )
-      header_passed <= 1'b1;
+    if( pkt_done_i )
+      header_passed <= 1'b0;
     else
-      if( pkt_done_i )
-        header_passed <= 1'b0;
+      if( header_valid )
+        header_passed <= 1'b1;
 
 always_ff @( posedge clk_i )
   if( srst_i )
@@ -54,10 +54,16 @@ always_ff @( posedge clk_i )
       valid_d <= '0;
     end
   else
-    begin
-      data_d  <= data_i;
-      valid_d <= valid_i;
-    end
+    if( pkt_done_i )
+      begin
+        data_d  <= 32'd0;
+        valid_d <= 1'b0;
+      end
+    else
+      begin
+        data_d  <= data_i;
+        valid_d <= valid_i;
+      end
 
 always_comb
   begin
@@ -133,7 +139,9 @@ always_ff @( posedge clk_i )
   if( srst_i )
     valid_o <= 1'b0;
   else
-    if( !pkt_done_i )
+    if( pkt_done_i )
+      valid_o <= 1'b0;
+    else
       valid_o <= valid_d;
 
 endmodule
