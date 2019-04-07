@@ -32,7 +32,7 @@ always_comb
       IDLE_S:
         begin
           if( pkt_i.tvalid && pkt_i.tready &&
-              pkt_i.tdata[5 : 0] > 6'hf )
+              pkt_i.tdata[5 : 0] == RAW_10 )
             next_state = RUN_S;
         end
       RUN_S:
@@ -57,7 +57,7 @@ always_ff @( posedge clk_i )
     pkt_size <= '0;
   else
     if( state == IDLE_S && pkt_i.tvalid && pkt_i.tready &&
-        pkt_i.tdata[5 : 0] > 6'hf )
+        pkt_i.tdata[5 : 0] == RAW_10 )
       pkt_size <= pkt_i.tdata[23 : 8];
 
 always_ff @( posedge clk_i )
