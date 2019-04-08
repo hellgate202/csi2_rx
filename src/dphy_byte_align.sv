@@ -4,6 +4,7 @@ module dphy_byte_align
   (*mark_debug = "true"*)input                rst_i,
   (*mark_debug = "true"*)input        [7 : 0] unaligned_byte_i,
   (*mark_debug = "true"*)input                reset_align_i,
+  (*mark_debug = "true"*)input                hs_data_valid_i,
   (*mark_debug = "true"*)output logic         valid_o,
   (*mark_debug = "true"*)output logic [7 : 0] aligned_byte_o
 );
@@ -35,16 +36,17 @@ always_comb
     sync_offset = 4'd0;
     found_sync  = 1'b0;
     compare_window = { unaligned_byte_d1, unaligned_byte_d2 };
-    for( bit [3 : 0] i = 4'd0; i < 4'd8; i++ )
-      begin
-        compare_window = { unaligned_byte_d1, unaligned_byte_d2 } >> i;
-        if( compare_window[7 : 0] == SYNC_PATTERN )
-          begin
-            sync_offset = i;
-            found_sync  = 1'b1;
-            break;
-          end
-      end
+    if( hs_data_valid_i )
+      for( bit [3 : 0] i = 4'd0; i < 4'd8; i++ )
+        begin
+          compare_window = { unaligned_byte_d1, unaligned_byte_d2 } >> i;
+          if( compare_window[7 : 0] == SYNC_PATTERN )
+            begin
+              sync_offset = i;
+              found_sync  = 1'b1;
+              break;
+            end
+        end
   end
 
 always_ff @( posedge clk_i )
@@ -67,7 +69,7 @@ always_ff @( posedge clk_i )
   if( rst_i )
     valid_o <= 1'b0;
   else
-    if( reset_align_i )
+    if( reset_align_i || !hs_data_valid_i)
       valid_o <= 1'b0;
     else
       valid_o <= sync_done;

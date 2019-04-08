@@ -6,6 +6,8 @@ module dphy_slave #(
   input                       dphy_clk_n_i,
   input  [DATA_LANES - 1 : 0] dphy_data_p_i,
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
+  input  [DATA_LANES - 1 : 0] lp_data_p_i,
+  input  [DATA_LANES - 1 : 0] lp_data_n_i,
   input  [DATA_LANES - 1 : 0] inc_delay_i,
   input                       ref_clk_i,
   input                       srst_i,
@@ -26,6 +28,7 @@ logic [DATA_LANES - 1 : 0][7 : 0] aligned_byte_data;
 logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
 logic                             reset_align;
 logic [DATA_LANES - 1 : 0][7 : 0] word_data;
+logic [DATA_LANES - 1 : 0]        hs_data_valid;
 logic                             word_valid;
 
 (* mark_debug = "true" *) logic [DATA_LANES - 1 : 0][4 : 0] cur_delay;
@@ -81,18 +84,28 @@ IDELAYCTRL delay_ctrl
 );
 
 generate
-  begin: byte_align
-    for( genvar i = 0; i < DATA_LANES; i++ )
+  for( genvar i = 0; i < DATA_LANES; i++ )
+    begin : byte_align
+      dphy_settle_ignore settle_ignore
+      (
+        .clk_i           ( ref_clk_i        ),
+        .srst_i          ( srst_i           ),
+        .lp_data_p_i     ( lp_data_p_i[i]   ),
+        .lp_data_n_i     ( lp_data_n_i[i]   ),
+        .hs_data_valid_o ( hs_data_valid[i] )
+      );
+
       dphy_byte_align byte_align
       (
         .clk_i            ( byte_clk              ),
         .rst_i            ( ~rx_clk_present       ),
         .unaligned_byte_i ( byte_data[i]          ),
         .reset_align_i    ( reset_align           ),
+        .hs_data_valid_i  ( hs_data_valid[i]      ),
         .valid_o          ( aligned_byte_valid[i] ),
         .aligned_byte_o   ( aligned_byte_data[i]  )
       );
-  end
+    end
 endgenerate
 
 dphy_word_align #(

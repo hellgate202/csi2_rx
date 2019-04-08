@@ -70,19 +70,21 @@ assign video_tdest_o  = video.tuser;
 assign video_tlast_o  = video.tlast;
 
 csi2_rx #(
-  .DATA_LANES    ( 2             )
+  .DATA_LANES    ( 2                )
 ) csi2_rx (
-  .dphy_clk_p_i  ( dphy_clk_p_i  ),
-  .dphy_clk_n_i  ( dphy_clk_n_i  ),
-  .dphy_data_p_i ( dphy_data_p_i ),
-  .dphy_data_n_i ( dphy_data_n_i ),
-  .inc_delay_i   ( inc_delay     ),
-  .ref_clk_i     ( ref_clk_i     ),
-  .px_clk_i      ( px_clk_i      ),
-  .ref_srst_i    ( ref_srst_i    ),
-  .px_srst_i     ( px_srst_i     ),
-  .enable_i      ( 1'b1          ),
-  .video_o       ( video         )
+  .dphy_clk_p_i  ( dphy_clk_p_i     ),
+  .dphy_clk_n_i  ( dphy_clk_n_i     ),
+  .dphy_data_p_i ( dphy_data_p_i    ),
+  .dphy_data_n_i ( dphy_data_n_i    ),
+  .lp_data_p_i   ( dphy_lp_data_p_i ),
+  .lp_data_n_i   ( dphy_lp_data_n_i ),
+  .inc_delay_i   ( inc_delay        ),
+  .ref_clk_i     ( ref_clk_i        ),
+  .px_clk_i      ( px_clk_i         ),
+  .ref_srst_i    ( ref_srst_i       ),
+  .px_srst_i     ( px_srst_i        ),
+  .enable_i      ( 1'b1             ),
+  .video_o       ( video            )
 );
 
 endmodule
