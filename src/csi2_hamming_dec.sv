@@ -25,6 +25,42 @@ logic          error_detected;
 assign syndrome     = generated_parity ^ data_i[29 : 24];
 assign header_valid = valid_d && !header_passed && !pkt_done_i;
 
+/* DBG STUFF */
+
+localparam int DBG_CNT_W = $clog2( 52_500_000 );
+
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] dbg_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_lock;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    dbg_cnt <= '0;
+  else
+    if( dbg_cnt == 'd52_500_000 )
+      dbg_cnt <= '0;
+    else
+      dbg_cnt <= dbg_cnt + 1'b1;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    err_cnt <= '0;
+  else
+    if( dbg_cnt == 'd52_500_000 )
+      err_cnt <= '0;
+    else
+      if( header_valid && error_detected )
+        err_cnt <= err_cnt + 1'b1;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    err_lock <= '0;
+  else
+    if( dbg_cnt == 'd52_500_000 )
+      err_lock <= err_cnt;
+
+/* DBG STUFF */
+
 always_ff @( posedge clk_i )
   if( srst_i )
     header_passed <= 1'b0;

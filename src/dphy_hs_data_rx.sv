@@ -9,7 +9,7 @@ module dphy_hs_data_rx #(
   input          serdes_rst_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
-  input          inc_delay_i,
+(* mark_debug = "true" *) input          inc_delay_i,
   output [4 : 0] cur_delay_o,
   output [7 : 0] byte_data_o
 );

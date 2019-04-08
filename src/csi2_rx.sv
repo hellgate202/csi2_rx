@@ -60,7 +60,7 @@ dphy_slave #(
   .dphy_clk_n_i     ( dphy_clk_n_i   ),
   .dphy_data_p_i    ( dphy_data_p_i  ),
   .dphy_data_n_i    ( dphy_data_n_i  ),
-  .inc_delay_i      ( inc_delay      ),
+  .inc_delay_i      ( inc_delay_i    ),
   .ref_clk_i        ( ref_clk_i      ),
   .srst_i           ( ref_srst_i     ),
   .enable_i         ( enable_i       ),

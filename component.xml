@@ -23,7 +23,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_RESET">ref_srst_i:px_srst_i</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_RESET">px_srst_i</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
