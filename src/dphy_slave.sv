@@ -6,6 +6,7 @@ module dphy_slave #(
   input                       dphy_clk_n_i,
   input  [DATA_LANES - 1 : 0] dphy_data_p_i,
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
+  input  [DATA_LANES - 1 : 0] inc_delay_i,
   input                       ref_clk_i,
   input                       srst_i,
   input                       enable_i,
@@ -26,6 +27,8 @@ logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
 logic                             reset_align;
 logic [DATA_LANES - 1 : 0][7 : 0] word_data;
 logic                             word_valid;
+
+(* mark_debug = "true" *) logic [DATA_LANES - 1 : 0][4 : 0] cur_delay;
 
 assign clk_o            = byte_clk;
 assign rx_clk_present_o = rx_clk_present;
@@ -63,6 +66,8 @@ generate
         .serdes_rst_i  ( ~rx_clk_present  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
+        .inc_delay_i   ( inc_delay_i[i]   ),
+        .cur_delay_o   ( cur_delay[i]     ),
         .byte_data_o   ( byte_data[i]     )
       ); 
   end

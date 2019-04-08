@@ -9,6 +9,8 @@ module dphy_hs_data_rx #(
   input          serdes_rst_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
+  input          inc_delay_i,
+  output [4 : 0] cur_delay_o,
   output [7 : 0] byte_data_o
 );
 
@@ -22,7 +24,7 @@ always_ff @( posedge byte_clk_i )
   end
 
 IBUFDS #(
-  .DIFF_TERM    ( 1             ),
+  .DIFF_TERM    ( "FALSE"       ),
   .IBUF_LOW_PWR ( 0             ),
   .IOSTANDARD   ( "DEFAULT"     )
 ) data_buf (
@@ -32,7 +34,7 @@ IBUFDS #(
 );
 
 IDELAYE2 #(
-  .IDELAY_TYPE           ( "FIXED"       ),
+  .IDELAY_TYPE           ( "VARIABLE"    ),
   .DELAY_SRC             ( "IDATAIN"     ),
   .IDELAY_VALUE          ( DELAY         ),
   .HIGH_PERFORMANCE_MODE ( "TRUE"        ),
@@ -43,12 +45,12 @@ IDELAYE2 #(
 ) input_delay (
   .DATAOUT               ( serial_data_d ),
   .DATAIN                ( 1'b0          ),
-  .C                     ( byte_clk_i    ),
-  .CE                    ( 1'b0          ),
-  .INC                   ( 1'b0          ),
+  .C                     ( ref_clk_i     ),
+  .CE                    ( inc_delay_i   ),
+  .INC                   ( 1'b1          ),
   .IDATAIN               ( serial_data   ),
   .CNTVALUEIN            ( 5'd0          ),
-  .CNTVALUEOUT           (               ),
+  .CNTVALUEOUT           ( cur_delay_o   ),
   .CINVCTRL              ( 1'b0          ),
   .LD                    ( 1'b0          ),
   .LDPIPEEN              ( 1'b0          ),
