@@ -1,22 +1,22 @@
 module dphy_byte_align
 (
-  input                clk_i,
-  input                rst_i,
-  input        [7 : 0] unaligned_byte_i,
-  input                reset_align_i,
-  output logic         valid_o,
-  output logic [7 : 0] aligned_byte_o
+  (*mark_debug = "true"*)input                clk_i,
+  (*mark_debug = "true"*)input                rst_i,
+  (*mark_debug = "true"*)input        [7 : 0] unaligned_byte_i,
+  (*mark_debug = "true"*)input                reset_align_i,
+  (*mark_debug = "true"*)output logic         valid_o,
+  (*mark_debug = "true"*)output logic [7 : 0] aligned_byte_o
 );
 
 localparam bit [7 : 0] SYNC_PATTERN = 8'b10111000;
 
-logic [7 : 0]  unaligned_byte_d1;
-logic [7 : 0]  unaligned_byte_d2;
-logic [3 : 0]  sync_offset;
-logic          found_sync;
-logic [15 : 0] compare_window;
-logic [3 : 0]  align_shift;
-logic          sync_done;
+(*mark_debug = "true" *)logic [7 : 0]  unaligned_byte_d1;
+(*mark_debug = "true" *)logic [7 : 0]  unaligned_byte_d2;
+(*mark_debug = "true" *)logic [3 : 0]  sync_offset;
+(*mark_debug = "true" *)logic          found_sync;
+(*mark_debug = "true" *)logic [15 : 0] compare_window;
+(*mark_debug = "true" *)logic [3 : 0]  align_shift;
+(*mark_debug = "true" *)logic          sync_done;
 
 always_ff @( posedge clk_i )
   if( rst_i )

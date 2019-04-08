@@ -49,7 +49,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( dbg_cnt == 'd52_500_000 )
       err_cnt <= '0;
     else
-      if( header_valid && error_detected )
+      if( header_valid && error_detected && err_bit_pos == 'h1f )
         err_cnt <= err_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge srst_i )

@@ -11,14 +11,14 @@ module clk_detect #(
 localparam int ABSENCE_CNT_W  = $clog2( REF_TICKS_TO_ABSENCE );
 localparam int PRESENCE_CNT_W = $clog2( OBS_TICKS_TO_PRESENCE );
 
-logic                          toggle_bit = 1'b0;
-logic                          toggle_bit_s1;
-logic                          toggle_bit_s2;
-logic                          toggle_bit_s3;
-logic [ABSENCE_CNT_W - 1 : 0]  clk_absence_cnt;
-logic [PRESENCE_CNT_W - 1 : 0] clk_presence_cnt;
-logic                          clk_absent;
-logic                          clk_edge;
+(* mark_debug = "true" *)logic                          toggle_bit = 1'b0;
+(* mark_debug = "true" *)logic                          toggle_bit_s1;
+(* mark_debug = "true" *)logic                          toggle_bit_s2;
+(* mark_debug = "true" *)logic                          toggle_bit_s3;
+(* mark_debug = "true" *)logic [ABSENCE_CNT_W - 1 : 0]  clk_absence_cnt;
+(* mark_debug = "true" *)logic [PRESENCE_CNT_W - 1 : 0] clk_presence_cnt;
+(* mark_debug = "true" *)logic                          clk_absent;
+(* mark_debug = "true" *)logic                          clk_edge;
 
 always_ff @( posedge obs_clk_i )
   toggle_bit <= !toggle_bit;
