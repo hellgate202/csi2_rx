@@ -2,8 +2,12 @@ module csi2_rx_wrap
 (
   input           dphy_clk_p_i,
   input           dphy_clk_n_i,
+  (* mark_debug = "true" *)input           dphy_lp_clk_p_i,
+  (* mark_debug = "true" *)input           dpht_lp_clk_n_i,
   input  [1 : 0]  dphy_data_p_i,
+  (* mark_debug = "true" *)input  [1 : 0]  dphy_lp_data_p_i,
   input  [1 : 0]  dphy_data_n_i,
+  (* mark_debug = "true" *)input  [1 : 0]  dphy_lp_data_n_i,
   input           ref_clk_i,
   input           px_clk_i,
   input           ref_srst_i,
