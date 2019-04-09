@@ -6,12 +6,12 @@ module csi2_raw10_32b_40b_gbx
   axi4_stream_if.master pkt_o
 );
 
-(* mark_debug = "true" *) logic [31 : 0] tdata_d1;
-(* mark_debug = "true" *) logic [3 : 0]  tstrb_d1;
+logic [31 : 0] tdata_d1;
+logic [3 : 0]  tstrb_d1;
 
 assign pkt_i.tready = pkt_o.tready;
 
-(* mark_debug = "true" *) enum logic [2 : 0] { FIRST_WORD_S,
+enum logic [2 : 0] { FIRST_WORD_S,
                      SECOND_WORD_S,
                      THIRD_WORD_S,
                      FOURTH_WORD_S,
@@ -142,13 +142,5 @@ assign pkt_o.tkeep = pkt_o.tstrb;
 assign pkt_o.tid   = '0;
 assign pkt_o.tuser = '0;
 assign pkt_o.tdest = '0;
-
-(* mark_debug = "true" *) logic [31 : 0] pkt_o_tdata;
-(* mark_debug = "true" *) logic          pkt_o_tvalid;
-(* mark_debug = "true" *) logic          pkt_o_tlast;
-
-assign pkt_o_tdata  = pkt_o.tdata;
-assign pkt_o_tvalid = pkt_o.tvalid;
-assign pkt_o_tlast  = pkt_o.tlast;
 
 endmodule

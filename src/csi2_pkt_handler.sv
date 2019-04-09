@@ -5,19 +5,19 @@ module csi2_pkt_handler
   input                 clk_i,
   input                 srst_i,
   axi4_stream_if.slave  pkt_i,
-(* mark_debug = "true" *)  output logic          frame_start_o,
-(* mark_debug = "true" *)  output logic          frame_end_o,
+  output logic          frame_start_o,
+  output logic          frame_end_o,
   axi4_stream_if.master pkt_o
 );
 
 assign pkt_i.tready = pkt_o.tready;
 
-(* mark_debug = "true" *)enum logic [1 : 0] { IDLE_S,
+enum logic [1 : 0] { IDLE_S,
                      RUN_S,
                      IGNORE_CRC_S } state, next_state;
 
-(* mark_debug = "true" *) logic [15 : 0] byte_cnt, byte_cnt_comb;
-(* mark_debug = "true" *) logic [15 : 0] pkt_size;
+logic [15 : 0] byte_cnt, byte_cnt_comb;
+logic [15 : 0] pkt_size;
 
 always_ff @( posedge clk_i )
   if( srst_i )
@@ -147,28 +147,5 @@ assign pkt_o.tkeep = pkt_o.tstrb;
 assign pkt_o.tid   = '0;
 assign pkt_o.tdest = '0;
 assign pkt_o.tuser = '0;
-
-(* mark_debug = "true" *) logic [31 : 0] pkt_i_tdata;
-(* mark_debug = "true" *) logic [3 : 0]  pkt_i_tstrb;
-(* mark_debug = "true" *) logic          pkt_i_tvalid;
-(* mark_debug = "true" *) logic          pkt_i_tlast;
-(* mark_debug = "true" *) logic          pkt_i_tready; 
-(* mark_debug = "true" *) logic [31 : 0] pkt_o_tdata;
-(* mark_debug = "true" *) logic [3 : 0]  pkt_o_tstrb;
-(* mark_debug = "true" *) logic          pkt_o_tvalid;
-(* mark_debug = "true" *) logic          pkt_o_tlast;
-(* mark_debug = "true" *) logic          pkt_o_tready;
-
-assign pkt_i_tdata  = pkt_i.tdata;
-assign pkt_i_tstrb  = pkt_i.tstrb;
-assign pkt_i_tvalid = pkt_i.tvalid;
-assign pkt_i_tlast  = pkt_i.tlast;
-assign pkt_i_tready = pkt_i.tready;
-
-assign pkt_o_tdata  = pkt_o.tdata;
-assign pkt_o_tstrb  = pkt_o.tstrb;
-assign pkt_o_tvalid = pkt_o.tvalid;
-assign pkt_o_tlast  = pkt_o.tlast;
-assign pkt_o_tready = pkt_o.tready;
 
 endmodule

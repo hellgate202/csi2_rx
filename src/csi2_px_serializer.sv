@@ -7,9 +7,9 @@ module csi2_px_serializer
   axi4_stream_if.master pkt_o
 );
 
-(* mark_debug = "true" *) logic          start_flag;
-(* mark_debug = "true" *) logic          last_word;
-(* mark_debug = "true" *) logic [39 : 0] tdata_d1;
+logic          start_flag;
+logic          last_word;
+logic [39 : 0] tdata_d1;
 
 always_ff @( posedge clk_i )
   if( srst_i )
@@ -28,7 +28,7 @@ always_ff @( posedge clk_i )
     if( pkt_i.tvalid && pkt_i.tready )
       tdata_d1 <= pkt_i.tdata;
 
-(* mark_debug = "true" *) enum logic [1 : 0] { PX_0_S,
+enum logic [1 : 0] { PX_0_S,
                      PX_1_S,
                      PX_2_S,
                      PX_3_S } state, next_state;
@@ -140,15 +140,5 @@ assign pkt_o.tstrb  = '1;
 assign pkt_o.tkeep  = '1;
 assign pkt_o.tid    = '0;
 assign pkt_o.tdest  = '0;
-
-(* mark_debug = "true" *) logic [31 : 0] pkt_o_tdata;
-(* mark_debug = "true" *) logic          pkt_o_tvalid;
-(* mark_debug = "true" *) logic          pkt_o_tlast;
-(* mark_debug = "true" *) logic          pkt_o_tuser;
-
-assign pkt_o_tdata  = pkt_o.tdata;
-assign pkt_o_tvalid = pkt_o.tvalid;
-assign pkt_o_tlast  = pkt_o.tlast;
-assign pkt_o_tuser  = pkt_o.tuser;
 
 endmodule

@@ -114,10 +114,6 @@ axi4_stream_if #(
   .aresetn    ( !px_srst_i )
 );
 
-(* mark_debug = "true" *) logic        cdc_full;
-(* mark_debug = "true" *) logic        cdc_empty;
-(* mark_debug = "true" *) logic [8 : 0]cdc_used_words;
-
 dc_fifo #(
   .DATA_WIDTH      ( 37                        ),
   .WORDS_AMOUNT    ( 256                       )
@@ -125,9 +121,9 @@ dc_fifo #(
   .wr_clk_i        ( rx_clk                    ),
   .wr_data_i       ( pkt_word_rx_clk           ),
   .wr_i            ( csi2_pkt_rx_clk_if.tvalid ),
-  .wr_used_words_o ( cdc_used_words            ),
-  .wr_full_o       ( cdc_full                  ),
-  .wr_empty_o      ( cdc_empty                 ),
+  .wr_used_words_o (                           ),
+  .wr_full_o       (                           ),
+  .wr_empty_o      (                           ),
   .rd_clk_i        ( px_clk_i                  ),
   .rd_data_o       ( pkt_word_px_clk           ),
   .rd_i            ( csi2_pkt_px_clk_if.tready ),
