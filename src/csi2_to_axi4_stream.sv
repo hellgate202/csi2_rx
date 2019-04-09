@@ -2,20 +2,20 @@ module csi2_to_axi4_stream
 (
   input                 clk_i,
   input                 srst_i,
-  input [31 : 0]        data_i,
-  input                 valid_i,
-  input                 error_i,
-  output                phy_rst_o,
-  axi4_stream_if.master pkt_o
+(* mark_debug = "true" *)  input [31 : 0]        data_i,
+(* mark_debug = "true" *)  input                 valid_i,
+(* mark_debug = "true" *)  input                 error_i,
+(* mark_debug = "true" *)  output                phy_rst_o,
+(* mark_debug = "true" *)  axi4_stream_if.master pkt_o
 );
 
-logic          valid_d1;
-logic          pkt_running;
-logic          last_word;
-logic          header_valid;
-logic          short_pkt;
-logic          long_pkt;
-logic [15 : 0] byte_cnt, byte_cnt_comb;
+(* mark_debug = "true" *) logic          valid_d1;
+(* mark_debug = "true" *) logic          pkt_running;
+(* mark_debug = "true" *) logic          last_word;
+(* mark_debug = "true" *) logic          header_valid;
+(* mark_debug = "true" *) logic          short_pkt;
+(* mark_debug = "true" *) logic          long_pkt;
+(* mark_debug = "true" *) logic [15 : 0] byte_cnt, byte_cnt_comb;
 
 assign header_valid = valid_i && !valid_d1 && !error_i && 
                       !pkt_running;
@@ -103,5 +103,17 @@ assign pkt_o.tkeep = pkt_o.tstrb;
 assign pkt_o.tid   = '0;
 assign pkt_o.tdest = '0;
 assign pkt_o.tuser = '0;
+
+(* mark_debug = "true" *) logic [31 : 0] pkt_o_tdata;
+(* mark_debug = "true" *) logic [3 : 0]  pkt_o_tstrb;
+(* mark_debug = "true" *) logic          pkt_o_tvalid;
+(* mark_debug = "true" *) logic          pkt_o_tready;
+(* mark_debug = "true" *) logic          pkt_o_tlast;
+
+assign pkt_o_tdata  = pkt_o.tdata;
+assign pkt_o_tstrb  = pkt_o.tstrb;
+assign pkt_o_tvalid = pkt_o.tvalid;
+assign pkt_o_tready = pkt_o.tready;
+assign pkt_o_tlast  = pkt_o.tlast;
 
 endmodule
