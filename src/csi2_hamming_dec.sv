@@ -29,11 +29,11 @@ assign header_valid = valid_d && !header_passed && !pkt_done_i;
 
 localparam int DBG_CNT_W = $clog2( 52_500_000 );
 
-(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] dbg_cnt;
-(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_cnt;
-(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_lock;
-(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
-(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_lock;
+logic [DBG_CNT_W - 1 : 0] dbg_cnt;
+logic [DBG_CNT_W - 1 : 0] err_cnt;
+logic [DBG_CNT_W - 1 : 0] err_lock;
+logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
+logic [DBG_CNT_W - 1 : 0] corr_err_lock;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
