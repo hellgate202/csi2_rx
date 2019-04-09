@@ -32,6 +32,8 @@ localparam int DBG_CNT_W = $clog2( 52_500_000 );
 (* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] dbg_cnt;
 (* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_cnt;
 (* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_lock;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_lock;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
@@ -44,20 +46,36 @@ always_ff @( posedge clk_i, posedge srst_i )
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
-    err_cnt <= '0;
+    begin
+      err_cnt      <= '0;
+      corr_err_cnt <= '0;
+    end
   else
     if( dbg_cnt == 'd52_500_000 )
-      err_cnt <= '0;
+      begin
+        err_cnt      <= '0;
+        corr_err_cnt <= '0;
+      end
     else
-      if( header_valid && error_detected && err_bit_pos == 'h1f )
-        err_cnt <= err_cnt + 1'b1;
+      if( header_valid && error_detected )
+        begin
+          err_cnt <= err_cnt + 1'b1;
+          if( err_bit_pos != 5'h1f )
+            corr_err_cnt <= corr_err_cnt + 1'b1; 
+        end
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
-    err_lock <= '0;
+    begin
+      err_lock      <= '0;
+      corr_err_lock <= '0;
+    end
   else
     if( dbg_cnt == 'd52_500_000 )
-      err_lock <= err_cnt;
+      begin
+        err_lock      <= err_cnt;
+        corr_err_lock <= corr_err_cnt;
+      end
 
 /* DBG STUFF */
 

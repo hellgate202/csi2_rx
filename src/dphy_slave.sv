@@ -31,7 +31,7 @@ logic [DATA_LANES - 1 : 0][7 : 0] word_data;
 logic [DATA_LANES - 1 : 0]        hs_data_valid;
 logic                             word_valid;
 
-(* mark_debug = "true" *) logic [DATA_LANES - 1 : 0][4 : 0] cur_delay;
+logic [DATA_LANES - 1 : 0][4 : 0] cur_delay;
 
 assign clk_o            = byte_clk;
 assign rx_clk_present_o = rx_clk_present;
