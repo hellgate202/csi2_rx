@@ -9,8 +9,6 @@ module dphy_hs_data_rx #(
   input          serdes_rst_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
-  input          inc_delay_i,
-  output [4 : 0] cur_delay_o,
   output [7 : 0] byte_data_o
 );
 
@@ -34,10 +32,10 @@ IBUFDS #(
 );
 
 IDELAYE2 #(
-  .IDELAY_TYPE           ( "VARIABLE"    ),
+  .IDELAY_TYPE           ( "FIXED"       ),
   .DELAY_SRC             ( "IDATAIN"     ),
   .IDELAY_VALUE          ( DELAY         ),
-  .HIGH_PERFORMANCE_MODE ( "TRUE"        ),
+  .HIGH_PERFORMANCE_MODE ( "FALSE"       ),
   .SIGNAL_PATTERN        ( "DATA"        ),
   .REFCLK_FREQUENCY      ( 200           ),
   .CINVCTRL_SEL          ( "FALSE"       ),
@@ -46,11 +44,11 @@ IDELAYE2 #(
   .DATAOUT               ( serial_data_d ),
   .DATAIN                ( 1'b0          ),
   .C                     ( ref_clk_i     ),
-  .CE                    ( inc_delay_i   ),
-  .INC                   ( 1'b1          ),
+  .CE                    ( 1'b0          ),
+  .INC                   ( 1'b0          ),
   .IDATAIN               ( serial_data   ),
   .CNTVALUEIN            ( 5'd0          ),
-  .CNTVALUEOUT           ( cur_delay_o   ),
+  .CNTVALUEOUT           (               ),
   .CINVCTRL              ( 1'b0          ),
   .LD                    ( 1'b0          ),
   .LDPIPEEN              ( 1'b0          ),

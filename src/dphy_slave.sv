@@ -31,8 +31,6 @@ logic [DATA_LANES - 1 : 0][7 : 0] word_data;
 logic [DATA_LANES - 1 : 0]        hs_data_valid;
 logic                             word_valid;
 
-logic [DATA_LANES - 1 : 0][4 : 0] cur_delay;
-
 assign clk_o            = byte_clk;
 assign rx_clk_present_o = rx_clk_present;
 
@@ -69,8 +67,6 @@ generate
         .serdes_rst_i  ( ~rx_clk_present  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
-        .inc_delay_i   ( inc_delay_i[i]   ),
-        .cur_delay_o   ( cur_delay[i]     ),
         .byte_data_o   ( byte_data[i]     )
       ); 
   end

@@ -10,7 +10,7 @@ module dphy_hs_clk_rx
 logic bit_clk;
 
 IBUFDS #(
-  .DIFF_TERM    ( 1            ),
+  .DIFF_TERM    ( "FALSE"      ),
   .IBUF_LOW_PWR ( 0            ),
   .IOSTANDARD   ( "DEFAULT"    )
 ) clk_diff_input (

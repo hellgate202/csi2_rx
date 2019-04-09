@@ -12,7 +12,6 @@ module csi2_rx_wrap
   input           px_clk_i,
   input           ref_srst_i,
   input           px_srst_i,
-  input  [1 : 0]  btn_i,
 
 (* mark_debug = "true" *)  input           video_tready_i,
 (* mark_debug = "true" *)  output [15 : 0] video_tdata_o,
@@ -34,31 +33,6 @@ axi4_stream_if #(
   .aresetn    ( !px_srst_i )
 );
 
-logic [1 : 0] btn_i_d1;
-logic [1 : 0] btn_i_d2;
-logic [1 : 0] btn_i_d3;
-logic [1 : 0] inc_delay;
-
-generate
-  for( genvar g = 0; g < 2; g++ )
-    begin : btn_edge
-      always_ff @( posedge ref_clk_i, posedge ref_srst_i )
-        if( ref_srst_i )
-          begin
-            btn_i_d1[g] <= '0;
-            btn_i_d2[g] <= '0;
-            btn_i_d3[g] <= '0;
-          end
-        else
-          begin
-            btn_i_d1[g] <= btn_i[g];
-            btn_i_d2[g] <= btn_i_d1[g];
-            btn_i_d3[g] <= btn_i_d2[g];
-          end
-        assign inc_delay[g] = !btn_i_d3[g] && btn_i_d2[g];
-    end
-endgenerate
-
 assign video.tready   = video_tready_i;
 assign video_tdata_o  = video.tdata;
 assign video_tvalid_o = video.tvalid;
@@ -78,7 +52,6 @@ csi2_rx #(
   .dphy_data_n_i ( dphy_data_n_i    ),
   .lp_data_p_i   ( dphy_lp_data_p_i ),
   .lp_data_n_i   ( dphy_lp_data_n_i ),
-  .inc_delay_i   ( inc_delay        ),
   .ref_clk_i     ( ref_clk_i        ),
   .px_clk_i      ( px_clk_i         ),
   .ref_srst_i    ( ref_srst_i       ),
