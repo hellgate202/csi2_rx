@@ -2,18 +2,18 @@ module csi2_hamming_dec
 (
   input                 clk_i,
   input                 srst_i,
-  input                 valid_i,
-  input        [31 : 0] data_i,
-  input                 pkt_done_i,
-  output logic          error_o,
-  output logic          error_corrected_o,
-  output logic [31 : 0] data_o,
-  output logic          valid_o
+(* mark_debug = "true" *)  input                 valid_i,
+(* mark_debug = "true" *)  input        [31 : 0] data_i,
+(* mark_debug = "true" *)  input                 pkt_done_i,
+(* mark_debug = "true" *)  output logic          error_o,
+(* mark_debug = "true" *)  output logic          error_corrected_o,
+(* mark_debug = "true" *)  output logic [31 : 0] data_o,
+(* mark_debug = "true" *)  output logic          valid_o
 );
 
 localparam INIT_PATH = "../../../../../err_bit_pos_lut.txt";
 
-logic [5 : 0]  generated_parity;
+(* mark_debug = "true" *) logic [5 : 0]  generated_parity;
 logic [5 : 0]  syndrome;
 logic [4 : 0]  err_bit_pos;
 logic [31 : 0] data_d;
@@ -29,11 +29,11 @@ assign header_valid = valid_d && !header_passed && !pkt_done_i;
 
 localparam int DBG_CNT_W = $clog2( 52_500_000 );
 
-logic [DBG_CNT_W - 1 : 0] dbg_cnt;
-logic [DBG_CNT_W - 1 : 0] err_cnt;
-logic [DBG_CNT_W - 1 : 0] err_lock;
-logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
-logic [DBG_CNT_W - 1 : 0] corr_err_lock;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] dbg_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] err_lock;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
+(* mark_debug = "true" *) logic [DBG_CNT_W - 1 : 0] corr_err_lock;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )

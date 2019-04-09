@@ -14,15 +14,15 @@ module csi2_rx_wrap
   input           px_srst_i,
   input  [1 : 0]  btn_i,
 
-  input           video_tready_i,
-  output [15 : 0] video_tdata_o,
-  output          video_tvalid_o,
+(* mark_debug = "true" *)  input           video_tready_i,
+(* mark_debug = "true" *)  output [15 : 0] video_tdata_o,
+(* mark_debug = "true" *)  output          video_tvalid_o,
   output [1 : 0]  video_tstrb_o,
   output [1 : 0]  video_tkeep_o,
-  output          video_tuser_o,
+(* mark_debug = "true" *)  output          video_tuser_o,
   output          video_tid_o,
   output          video_tdest_o,
-  output          video_tlast_o
+(* mark_debug = "true" *)  output          video_tlast_o
 );
 
 axi4_stream_if #(
@@ -86,5 +86,43 @@ csi2_rx #(
   .enable_i      ( 1'b1             ),
   .video_o       ( video            )
 );
+
+(* mark_debug = "true" *) logic [10 : 0] px_cnt;
+(* mark_debug = "true" *) logic [10 : 0] px_cnt_lock;
+(* mark_debug = "true" *) logic [10 : 0] ln_cnt;
+(* mark_debug = "true" *) logic [10 : 0] ln_cnt_lock;
+
+always_ff @( posedge px_clk_i, posedge px_srst_i )
+  if( px_srst_i )
+    begin
+      px_cnt      <= '0;
+      px_cnt_lock <= '0;
+    end
+  else
+    if( video.tvalid && video.tready )
+      if( video.tlast )
+        begin
+          px_cnt      <= '0;
+          px_cnt_lock <= px_cnt;
+        end
+      else
+        px_cnt <= px_cnt + 1'b1;
+
+always_ff @( posedge px_clk_i, posedge px_srst_i )
+  if( px_srst_i )
+    begin
+      ln_cnt      <= '0;
+      ln_cnt_lock <= '0;
+    end
+  else
+    if( video.tvalid && video.tready )
+      if( video.tuser )
+        begin
+          ln_cnt      <= '0;
+          ln_cnt_lock <= ln_cnt;
+        end
+      else
+        if( video.tlast )
+          ln_cnt <= ln_cnt + 1'b1;
 
 endmodule

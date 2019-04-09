@@ -4,7 +4,7 @@ module dphy_settle_ignore #(
 )(
   input  clk_i,
   input  srst_i,
-  input  lp_data_p_i,
+(* mark_debug = "true" *) input  lp_data_p_i,
   input  lp_data_n_i,
   output hs_data_valid_o
 );
@@ -13,10 +13,10 @@ localparam int IGNORE_TICKS = T_SETTLE / T_CLK;
 localparam int CNT_WIDTH    = $clog2( IGNORE_TICKS );
 
 logic [CNT_WIDTH - 1 : 0] ignore_cnt;
-logic lp_data_p_d1;
-logic lp_data_p_d2;
-logic lp_data_n_d1;
-logic lp_data_n_d2;
+logic                     lp_data_p_d1;
+(* mark_debug = "true" *) logic                     lp_data_p_d2;
+logic                     lp_data_n_d1;
+(* mark_debug = "true" *) logic                     lp_data_n_d2;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
