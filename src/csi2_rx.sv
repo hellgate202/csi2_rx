@@ -32,6 +32,8 @@ logic [31 : 0] phy_data;
 logic          phy_data_valid;
 logic          header_error;
 logic          header_error_corrected;
+logic          crc_passed;
+logic          crc_failed;
 logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
 logic          rx_px_cdc_empty;
@@ -41,14 +43,42 @@ logic          rst_ref_clk_d1;
 logic          rst_rx_clk_d1;
 logic          rst_px_clk_d1;
 
+axi4_word_t    pkt_word_rx_clk;
+axi4_word_t    pkt_word_px_clk;
+
+axi4_stream_if #(
+  .DATA_WIDTH ( 32             )
+) csi2_pkt_rx_clk_if (
+  .aclk       ( rx_clk         ),
+  .aresetn    ( !clk_loss_srst )
+);
+
+axi4_stream_if #(
+  .DATA_WIDTH ( 32         )
+) csi2_pkt_px_clk_if (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
+);
+
+axi4_stream_if #(
+  .DATA_WIDTH ( 32         )
+) payload_if (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
+);
+
+axi4_stream_if #(
+  .DATA_WIDTH ( 40         )
+) payload_40b_if (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_srst_i )
+);
+
 always_ff @( posedge rx_clk )
   begin
     clk_loss_rst_d1 <= rx_rst;
     clk_loss_srst   <= clk_loss_rst_d1;
   end
-
-axi4_word_t    pkt_word_rx_clk;
-axi4_word_t    pkt_word_px_clk;
 
 assign rx_rst    = !rx_clk_present;
 assign pkt_error = header_error && !header_error_corrected;
@@ -85,13 +115,6 @@ csi2_hamming_dec header_corrector (
   .valid_o           ( corrected_phy_data_valid )
 );
 
-axi4_stream_if #(
-  .DATA_WIDTH ( 32             )
-) csi2_pkt_rx_clk_if (
-  .aclk       ( rx_clk         ),
-  .aresetn    ( !clk_loss_srst )
-);
-
 assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;
 assign pkt_word_rx_clk.tstrb     = csi2_pkt_rx_clk_if.tstrb;
 assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
@@ -106,11 +129,12 @@ csi2_to_axi4_stream axi4_conv (
   .pkt_o     ( csi2_pkt_rx_clk_if       )
 );
 
-axi4_stream_if #(
-  .DATA_WIDTH ( 32         )
-) csi2_pkt_px_clk_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+csi2_crc_calc crc_calc #(
+  .clk_i        ( rx_clk             ),
+  .srst_i       ( clk_loss_srst      ),
+  .csi2_pkt_i   ( csi2_pkt_rx_clk_if ),
+  .crc_passed_o ( crc_passed         ),
+  .crc_failed_o ( crc_failed         )
 );
 
 dc_fifo #(
@@ -129,20 +153,13 @@ dc_fifo #(
   .rd_used_words_o (                           ),
   .rd_full_o       (                           ),
   .rd_empty_o      ( rx_px_cdc_empty           ),
-  .rst_i           ( rst_i                     )
+  .rst_i           ( px_srst_i                 )
 );
 
 assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
 assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
 assign csi2_pkt_px_clk_if.tlast  = pkt_word_px_clk.tlast;
 assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty;
-
-axi4_stream_if #(
-  .DATA_WIDTH ( 32         )
-) payload_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
-);
 
 csi2_pkt_handler payload_extractor
 (
@@ -152,13 +169,6 @@ csi2_pkt_handler payload_extractor
   .frame_start_o ( frame_start_pkt    ),
   .frame_end_o   (                    ),
   .pkt_o         ( payload_if         )
-);
-
-axi4_stream_if #(
-  .DATA_WIDTH ( 40         )
-) payload_40b_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
 );
 
 csi2_raw10_32b_40b_gbx gbx
