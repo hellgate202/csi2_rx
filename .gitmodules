@@ -13,3 +13,6 @@
 [submodule "lib/fifo_lib"]
 	path = lib/fifo_lib
 	url = https://github.com/hellgate202/fifo_lib
+[submodule "lib/i2c_lib"]
+	path = lib/i2c_lib
+	url = https://github.com/hellgate202/i2c_lib
