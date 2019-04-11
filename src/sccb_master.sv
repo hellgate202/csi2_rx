@@ -2,12 +2,12 @@ import i2c_pkg::*;
 
 module sccb_master #(
   parameter int CLK_FREQ   = 74_250_000,
-  parameter int SLAVE_ADDR = 7'h3c,
   parameter int SCL_FREQ   = 400_000
 )(
   input              clk_i,
   input              srst_i,
   axi4_lite_if.slave ctrl_if,
+  input [6 : 0]      slave_addr_i,
   input              sda_i,
   output             sda_o,
   output             sda_oe,
@@ -20,7 +20,6 @@ logic [2 : 0]  phy_cmd;
 logic          cmd_done;
 
 logic          cci_cmd;
-logic [6 : 0]  slave_addr;
 logic [15 : 0] sub_addr;
 logic [7 : 0]  tx_reg_data;
 logic          tx_bit;
@@ -161,7 +160,6 @@ always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     begin
       cci_cmd     <= 1'b0;
-      slave_addr  <= SLAVE_ADDR;
       sub_addr    <= 16'd0;
       tx_reg_data <= 8'd0;
     end
@@ -219,11 +217,11 @@ always_ff @( posedge clk_i, posedge srst_i )
   else
     if( state != SLAVE_ADDR_0_S && 
         next_state == SLAVE_ADDR_0_S )
-      phy_data <= { slave_addr, 1'b0 };
+      phy_data <= { slave_addr_i, 1'b0 };
     else
       if( state != SLAVE_ADDR_1_S &&
           next_state == SLAVE_ADDR_1_S )
-        phy_data <= { slave_addr, 1'b1 };
+        phy_data <= { slave_addr_i, 1'b1 };
       else
         if( state != SUB_ADDR_MSB_S &&
             next_state == SUB_ADDR_MSB_S )

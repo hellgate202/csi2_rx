@@ -1,21 +1,21 @@
 module dphy_slave #(
-  parameter int DATA_LANES = 2,
-  parameter int DELAY [4]  = '{ 0, 0, 0, 0}
+  parameter int DATA_LANES = 2
 )(
-  input                       dphy_clk_p_i,
-  input                       dphy_clk_n_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_p_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_n_i,
-  input  [DATA_LANES - 1 : 0] lp_data_p_i,
-  input  [DATA_LANES - 1 : 0] lp_data_n_i,
-  input                       ref_clk_i,
-  input                       srst_i,
-  input                       enable_i,
-  input                       phy_rst_i,
-  output                      rx_clk_present_o,
-  output [31 : 0]             data_o,
-  output                      clk_o,
-  output                      valid_o
+  input                              dphy_clk_p_i,
+  input                              dphy_clk_n_i,
+  input  [DATA_LANES - 1 : 0]        dphy_data_p_i,
+  input  [DATA_LANES - 1 : 0]        dphy_data_n_i,
+  input  [DATA_LANES - 1 : 0]        lp_data_p_i,
+  input  [DATA_LANES - 1 : 0]        lp_data_n_i,
+  input                              delay_act_i,
+  input  [DATA_LANES - 1 : 0][4 : 0] lane_delay_i,
+  input                              ref_clk_i,
+  input                              srst_i,
+  input                              phy_rst_i,
+  output                             rx_clk_present_o,
+  output [31 : 0]                    data_o,
+  output                             clk_o,
+  output                             valid_o
 );
 
 logic                             bit_clk;
@@ -55,15 +55,14 @@ clk_detect #(
 generate
   for( genvar i = 0; i < DATA_LANES; i++ )
     begin: data_lane
-      dphy_hs_data_rx #(
-        .DELAY         ( DELAY[i]         ) 
-      ) data_phy (
+      dphy_hs_data_rx data_phy (
         .bit_clk_i     ( bit_clk          ),
         .bit_clk_inv_i ( bit_clk_inv      ),
         .byte_clk_i    ( byte_clk         ),
         .ref_clk_i     ( ref_clk_i        ),
-        .enable_i      ( enable_i         ),
         .serdes_rst_i  ( ~rx_clk_present  ),
+        .delay_act_i   ( delay_act_i      ),
+        .lane_delay_i  ( lane_delay_i[i]  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
         .dphy_data_n_i ( dphy_data_n_i[i] ),
         .byte_data_o   ( byte_data[i]     )
@@ -108,7 +107,6 @@ dphy_word_align #(
 ) word_align (
   .byte_clk_i    ( byte_clk           ),
   .rst_i         ( ~rx_clk_present    ),
-  .enable_i      ( enable_i           ),
   .eop_i         ( phy_rst_i          ),
   .byte_data_i   ( aligned_byte_data  ),
   .valid_i       ( aligned_byte_valid ),

@@ -1,12 +1,12 @@
-module dphy_hs_data_rx #(
-  parameter int DELAY = 0
-)(
+module dphy_hs_data_rx
+(
   input          bit_clk_i,
   input          bit_clk_inv_i,
   input          ref_clk_i,
   input          byte_clk_i,
-  input          enable_i,
   input          serdes_rst_i,
+  input          delay_act_i,
+  input  [4 : 0] lane_delay_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
   output [7 : 0] byte_data_o
@@ -34,9 +34,9 @@ IBUFDS #(
 );
 
 IDELAYE2 #(
-  .IDELAY_TYPE           ( "FIXED"       ),
+  .IDELAY_TYPE           ( "VAR_LOAD"    ),
   .DELAY_SRC             ( "IDATAIN"     ),
-  .IDELAY_VALUE          ( DELAY         ),
+  .IDELAY_VALUE          ( '0            ),
   .HIGH_PERFORMANCE_MODE ( "FALSE"       ),
   .SIGNAL_PATTERN        ( "DATA"        ),
   .REFCLK_FREQUENCY      ( 200           ),
@@ -49,10 +49,10 @@ IDELAYE2 #(
   .CE                    ( 1'b0          ),
   .INC                   ( 1'b0          ),
   .IDATAIN               ( serial_data   ),
-  .CNTVALUEIN            ( 5'd0          ),
+  .CNTVALUEIN            ( lane_delay_i  ),
   .CNTVALUEOUT           (               ),
   .CINVCTRL              ( 1'b0          ),
-  .LD                    ( 1'b0          ),
+  .LD                    ( delay_act_i   ),
   .LDPIPEEN              ( 1'b0          ),
   .REGRST                ( 1'b0          )
 );
@@ -88,7 +88,7 @@ ISERDESE2 #(
   .SHIFTOUT1         (                ),
   .SHIFTOUT2         (                ),
   .BITSLIP           ( 1'b0           ),
-  .CE1               ( enable_i       ),
+  .CE1               ( 1'b1           ),
   .CE2               ( 1'b1           ),
   .CLKDIVP           ( 1'b0           ),
   .CLK               ( bit_clk_i      ),

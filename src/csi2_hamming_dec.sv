@@ -9,8 +9,9 @@ module csi2_hamming_dec
   input                 pkt_done_i,
   output logic          error_o,
   output logic          error_corrected_o,
+  output logic          header_valid_o,
   output logic [31 : 0] data_o,
-  output logic          valid_o
+  output logic          valid_o,
 );
 
 logic [5 : 0]         generated_parity;
@@ -28,8 +29,9 @@ initial
   for( int i = 0; i < 64; i++ )
     err_bit_rom[i] = ROM_INIT[i];
 
-assign syndrome     = generated_parity ^ data_i[29 : 24];
-assign header_valid = valid_d && !header_passed && !pkt_done_i;
+assign syndrome       = generated_parity ^ data_i[29 : 24];
+assign header_valid   = valid_d && !header_passed && !pkt_done_i;
+assign header_valid_o = header_valid;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )

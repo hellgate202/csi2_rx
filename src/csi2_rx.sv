@@ -1,6 +1,5 @@
 module csi2_rx #(
-  parameter int DATA_LANES = 2,
-  parameter int DELAY [4]  = '{ 0, 0, 0, 0 }
+  parameter int DATA_LANES = 2
 )(
   input                       dphy_clk_p_i,
   input                       dphy_clk_n_i,
@@ -13,6 +12,11 @@ module csi2_rx #(
   input                       ref_srst_i,
   input                       px_srst_i,
   input                       enable_i,
+  input                       delay_act_i,
+  input  [DATA_LANES - 1 : 0] lane_delay_i,
+  output                      header_err_o,
+  output                      corr_header_err_o,
+  output                      crc_err_o,
   axi4_stream_if.master       video_o
 );
 
@@ -30,6 +34,7 @@ logic          rx_clk_present;
 logic          phy_rst;
 logic [31 : 0] phy_data;
 logic          phy_data_valid;
+logic          header_valid;
 logic          header_error;
 logic          header_error_corrected;
 logic          pkt_error;
@@ -81,8 +86,12 @@ always_ff @( posedge rx_clk )
     clk_loss_srst   <= clk_loss_rst_d1;
   end
 
-assign rx_rst    = !rx_clk_present;
-assign pkt_error = header_error && !header_error_corrected;
+assign rx_rst            = !rx_clk_present;
+assign pkt_error         = header_error && !header_error_corrected;
+assign header_err_o      = header_valid && header_error;
+assign corr_header_err_o = header_valid && header_error &&
+                           header_error_corrected;
+assign crc_err_o         = crc_failed;
 
 dphy_slave #(
   .DATA_LANES       ( DATA_LANES     ),
@@ -94,9 +103,10 @@ dphy_slave #(
   .dphy_data_n_i    ( dphy_data_n_i  ),
   .lp_data_p_i      ( lp_data_p_i    ),
   .lp_data_n_i      ( lp_data_n_i    ),
+  .delay_act_i      ( delay_act_i    ),
+  .lane_delay_i     ( lane_delay_i   ),
   .ref_clk_i        ( ref_clk_i      ),
   .srst_i           ( ref_srst_i     ),
-  .enable_i         ( enable_i       ),
   .phy_rst_i        ( phy_rst        ),
   .rx_clk_present_o ( rx_clk_present ),
   .data_o           ( phy_data       ),
@@ -112,6 +122,7 @@ csi2_hamming_dec header_corrector (
   .pkt_done_i        ( phy_rst                  ),
   .error_o           ( header_error             ),
   .error_corrected_o ( header_error_corrected   ),
+  .header_valid_o    ( header_valid             ),
   .data_o            ( corrected_phy_data       ),
   .valid_o           ( corrected_phy_data_valid )
 );
@@ -123,6 +134,7 @@ assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
 csi2_to_axi4_stream axi4_conv (
   .clk_i     ( rx_clk                   ),
   .srst_i    ( clk_loss_srst            ),
+  .enable_i  ( enable_i                 ),
   .data_i    ( corrected_phy_data       ),
   .valid_i   ( corrected_phy_data_valid ),
   .error_i   ( pkt_error                ),

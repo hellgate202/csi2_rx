@@ -3,7 +3,6 @@ module dphy_word_align #(
 )(
   input                                    byte_clk_i,
   input                                    rst_i,
-  input                                    enable_i,
   input                                    eop_i,
   input        [DATA_LANES - 1 : 0][7 : 0] byte_data_i,
   input        [DATA_LANES - 1 : 0]        valid_i,
@@ -25,7 +24,7 @@ logic                             all_lanes_valid;
 
 assign all_lanes_valid = &valid_d1;
 assign invalid_start   = one_lane_sync && ~all_lanes_valid;
-assign reset_align_o   = eop_i || invalid_start || ~enable_i;
+assign reset_align_o   = eop_i || invalid_start;
 
 always_ff @( posedge byte_clk_i )
   if( rst_i )
@@ -38,15 +37,14 @@ always_ff @( posedge byte_clk_i )
       valid_d3 <= '0;
     end
   else
-    if( enable_i )
-      begin
-        word_d1  <= byte_data_i;
-        word_d2  <= word_d1;
-        word_d3  <= word_d2;
-        valid_d1 <= valid_i;
-        valid_d2 <= valid_d1;
-        valid_d3 <= valid_d2;
-      end
+    begin
+      word_d1  <= byte_data_i;
+      word_d2  <= word_d1;
+      word_d3  <= word_d2;
+      valid_d1 <= valid_i;
+      valid_d2 <= valid_d1;
+      valid_d3 <= valid_d2;
+    end
 
 always_ff @( posedge byte_clk_i )
   if( rst_i )

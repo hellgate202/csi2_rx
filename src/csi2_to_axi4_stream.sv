@@ -2,6 +2,7 @@ module csi2_to_axi4_stream
 (
   input                 clk_i,
   input                 srst_i,
+  input                 enable_i,
   input [31 : 0]        data_i,
   input                 valid_i,
   input                 error_i,
@@ -16,13 +17,24 @@ logic          header_valid;
 logic          short_pkt;
 logic          long_pkt;
 logic [15 : 0] byte_cnt, byte_cnt_comb;
+logic          disable_flag;
 
 assign header_valid = valid_i && !valid_d1 && !error_i && 
                       !pkt_running;
 assign long_pkt     = header_valid && data_i[5 : 0] >= 6'h10;
 assign short_pkt    = header_valid && data_i[5 : 0] <  6'h10;
 assign last_word    = pkt_running && byte_cnt_comb == '0;
-assign phy_rst_o    = short_pkt || last_word || error_i;
+assign phy_rst_o    = short_pkt || last_word || error_i || disable_flag;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    disable_flag <= 1'b0;
+  else
+    if( ( !pkt_running && !header_valid || lass_word ) && !enable_i )
+      disable_flag <= 1'b1;
+    else
+      if( enable_i )
+        disable_flag <= 1'b0;
 
 always_ff @( posedge clk_i )
   if( srst_i )

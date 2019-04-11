@@ -1,72 +1,94 @@
-module csi2_rx_wrap #(
-  parameter int DATA_LANES = 2
-)(
-  input                       dphy_clk_p_i,
-  input                       dphy_clk_n_i,
-  input                       dphy_lp_clk_p_i,
-  input                       dphy_lp_clk_n_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_p_i,
-  input  [DATA_LANES - 1 : 0] dphy_lp_data_p_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_n_i,
-  input  [DATA_LANES - 1 : 0] dphy_lp_data_n_i,
-  input                       ref_clk_i,
-  input                       px_clk_i,
-  input                       ref_srst_i,
-  input                       px_srst_i,
+module csi2_2_lane_rx_wrap 
+(
+  input           dphy_clk_p_i,
+  input           dphy_clk_n_i,
+  input           dphy_lp_clk_p_i,
+  input           dphy_lp_clk_n_i,
+  input  [1 : 0]  dphy_data_p_i,
+  input  [1 : 0]  dphy_lp_data_p_i,
+  input  [1 : 0]  dphy_data_n_i,
+  input  [1 : 0]  dphy_lp_data_n_i,
+  input           ref_clk_i,
+  input           px_clk_i,
+  input           ref_srst_i,
+  input           px_srst_i,
 
-  input                       sccb_ctrl_awvalid_i,
-  output                      sccb_ctrl_awready_o,
-  input  [15 : 0]             sccb_ctrl_awaddr_i,
-  input                       sccb_ctrl_wvalid_i,
-  output                      sccb_ctrl_wready_o,
-  input  [31 : 0]             sccb_ctrl_wdata_i,
-  input                       sccb_ctrl_wstrb_i,
-  output                      sccb_ctrl_bvalid_o,
-  input                       sccb_ctrl_bready_i,
-  output [1 : 0]              sccb_ctrl_bresp_o,
-  input                       sccb_ctrl_arvalid_i,
-  output                      sccb_ctrl_arready_o,
-  input  [15 : 0]             sccb_ctrl_araddr_i,
-  output                      sccb_ctrl_rvalid_o,
-  input                       sccb_ctrl_rready_i,
-  output [31 : 0]             sccb_ctrl_rdata_o,
-  output [1 : 0]              sccb_ctrl_rresp_o,
+  input           sccb_ctrl_awvalid_i,
+  output          sccb_ctrl_awready_o,
+  input  [15 : 0] sccb_ctrl_awaddr_i,
+  input           sccb_ctrl_wvalid_i,
+  output          sccb_ctrl_wready_o,
+  input  [31 : 0] sccb_ctrl_wdata_i,
+  input           sccb_ctrl_wstrb_i,
+  output          sccb_ctrl_bvalid_o,
+  input           sccb_ctrl_bready_i,
+  output [1 : 0]  sccb_ctrl_bresp_o,
+  input           sccb_ctrl_arvalid_i,
+  output          sccb_ctrl_arready_o,
+  input  [15 : 0] sccb_ctrl_araddr_i,
+  output          sccb_ctrl_rvalid_o,
+  input           sccb_ctrl_rready_i,
+  output [31 : 0] sccb_ctrl_rdata_o,
+  output [1 : 0]  sccb_ctrl_rresp_o,
 
-  input                       csi2_csr_awvalid_i,
-  output                      csi2_csr_awready_o,
-  input  [7 : 0]              csi2_csr_awaddr_i,
-  input                       csi2_csr_wvalid_i,
-  output                      csi2_csr_wready_o,
-  input  [31 : 0]             csi2_csr_wdata_i,
-  input  [3 : 0]              csi2_csr_wstrb_i,
-  output                      csi2_csr_bvalid_o,
-  input                       csi2_csr_bready_i,
-  output [1 : 0]              csi2_csr_bresp_o,
-  input                       csi2_csr_arvalid_i,
-  output                      csi2_csr_arready_o,
-  input  [7 : 0]              csi2_csr_araddr_i,
-  output                      csi2_csr_rvalid_o,
-  input                       csi2_csr_rready_i,
-  output [31 : 0]             csi2_csr_rdata_o,
-  output [1 : 0]              csi2_csr_rresp_o,
+  input           csi2_csr_awvalid_i,
+  output          csi2_csr_awready_o,
+  input  [7 : 0]  csi2_csr_awaddr_i,
+  input           csi2_csr_wvalid_i,
+  output          csi2_csr_wready_o,
+  input  [31 : 0] csi2_csr_wdata_i,
+  input  [3 : 0]  csi2_csr_wstrb_i,
+  output          csi2_csr_bvalid_o,
+  input           csi2_csr_bready_i,
+  output [1 : 0]  csi2_csr_bresp_o,
+  input           csi2_csr_arvalid_i,
+  output          csi2_csr_arready_o,
+  input  [7 : 0]  csi2_csr_araddr_i,
+  output          csi2_csr_rvalid_o,
+  input           csi2_csr_rready_i,
+  output [31 : 0] csi2_csr_rdata_o,
+  output [1 : 0]  csi2_csr_rresp_o,
 
-  input                       video_tready_i,
-  output [15 : 0]             video_tdata_o,
-  output                      video_tvalid_o,
-  output                      video_tuser_o,
-  output                      video_tlast_o,
+  input           video_tready_i,
+  output [15 : 0] video_tdata_o,
+  output          video_tvalid_o,
+  output          video_tuser_o,
+  output          video_tlast_o,
 
-  inout                       sccb_sda_io,
-  inout                       sccb_scl_io,
-  output                      cam_pwup_o
+  inout           sccb_sda_io,
+  inout           sccb_scl_io,
+  output          cam_pwup_o
 );
 
-logic sccb_sda_i;
-logic sccb_sda_o;
-logic sccb_sda_oe;
-logic sccb_scl_i;
-logic sccb_scl_o;
-logic sccb_scl_oe;
+logic                sccb_sda_i;
+logic                sccb_sda_o;
+logic                sccb_sda_oe;
+logic                sccb_scl_i;
+logic                sccb_scl_o;
+logic                sccb_scl_oe;
+
+logic                header_err;
+logic                corr_header_err;
+logic                crc_err;
+logic                reset_stat;
+logic                phy_en;
+logic                delay_act;
+logic [4 : 0]        lane_0_delay;
+logic [4 : 0]        lane_1_delay;
+logic [1 : 0][4 : 0] lane_delay;
+logic [31 : 0]       header_err_cnt;
+logic [31 : 0]       corr_header_err_cnt;
+logic [31 : 0]       crc_err_cnt;
+logic [31 : 0]       max_ln_per_frame;
+logic [31 : 0]       min_ln_per_frame;
+logic [31 : 0]       cur_ln_per_frame;
+logic [31 : 0]       max_px_per_ln;
+logic [31 : 0]       min_px_per_ln;
+logic [31 : 0]       cur_px_per_ln;
+logic [6 : 0]        sccb_slave_addr;
+
+assign lane_delay[0] = lane_0_delay;
+assign lane_delay[1] = lane_1_delay;
 
 assign sccb_sda_i = sccb_sda_io;
 assign sccb_sda_o = sccb_sda_oe ? sccb_sda_o : 1'bz;
@@ -141,45 +163,83 @@ assign csi2_csr_rdata_o    = csi2_csr_if.rdata;
 assign csi2_csr_rresp_o    = csi2_csr_if.rresp;
 
 csi2_rx #(
-  .DATA_LANES    ( DATA_LANES       )
+  .DATA_LANES        ( 2                )
 ) csi2_rx (
-  .dphy_clk_p_i  ( dphy_clk_p_i     ),
-  .dphy_clk_n_i  ( dphy_clk_n_i     ),
-  .dphy_data_p_i ( dphy_data_p_i    ),
-  .dphy_data_n_i ( dphy_data_n_i    ),
-  .lp_data_p_i   ( dphy_lp_data_p_i ),
-  .lp_data_n_i   ( dphy_lp_data_n_i ),
-  .ref_clk_i     ( ref_clk_i        ),
-  .px_clk_i      ( px_clk_i         ),
-  .ref_srst_i    ( ref_srst_i       ),
-  .px_srst_i     ( px_srst_i        ),
-  .enable_i      ( 1'b1             ),
-  .video_o       ( video            )
+  .dphy_clk_p_i      ( dphy_clk_p_i     ),
+  .dphy_clk_n_i      ( dphy_clk_n_i     ),
+  .dphy_data_p_i     ( dphy_data_p_i    ),
+  .dphy_data_n_i     ( dphy_data_n_i    ),
+  .lp_data_p_i       ( dphy_lp_data_p_i ),
+  .lp_data_n_i       ( dphy_lp_data_n_i ),
+  .ref_clk_i         ( ref_clk_i        ),
+  .px_clk_i          ( px_clk_i         ),
+  .ref_srst_i        ( ref_srst_i       ),
+  .px_srst_i         ( px_srst_i        ),
+  .enable_i          ( phy_en           ),
+  .delay_act_i       ( delay_act        ),
+  .lane_delay_i      ( lane_delay       ),
+  .header_err_o      ( header_err       ),
+  .corr_header_err_o ( corr_header_err  ),
+  .crc_error_o       ( crc_err          ),
+  .video_o           ( video            )
 );
 
-sccb_master #(
-  .CLK_FREQ   ( 74_250_000   ),
-  .SLAVE_ADDR ( 7'h3c        ),
-  .SCL_FREQ   ( 400_000      )
-) sccb_master (
-  .clk_i      ( px_clk_i     ),
-  .srst_i     ( px_srst_i    ),
-  .ctrl_if    ( sccb_ctrl_if ),
-  .sda_i      ( sccb_sda_i   ),
-  .sda_o      ( sccb_sda_o   ),
-  .sda_oe     ( sccb_sda_oe  ),
-  .scl_i      ( sccb_scl_i   ),
-  .scl_o      ( sccb_scl_o   ),
-  .scl_oe     ( sccb_scl_oe  )
+csi2_stat_acc csi2_stat_acc 
+(
+  .clk_i                 ( px_clk_i            ),
+  .srst_i                ( px_srst_i           ),
+  .reset_stat_i          ( reset_stat          ),
+  .video_i               ( video               ),
+  .header_err_i          ( header_err          ),
+  .corr_header_err_i     ( corr_header_err     ),
+  .crc_err_i             ( crc_err             ),
+  .header_err_cnt_o      ( header_err_cnt      ),
+  .corr_header_err_cnt_o ( corr_header_err_cnt ),
+  .crc_err_cnt_o         ( crc_err_cnt         ),
+  .max_ln_per_frame_o    ( max_ln_per_frame    ),
+  .min_ln_per_frame_o    ( min_ln_per_frame    ),
+  .cur_ln_per_frame_o    ( cur_ln_per_frame    ),
+  .max_px_per_ln_o       ( max_px_per_ln       ),
+  .min_px_per_ln_o       ( min_px_per_ln       ),
+  .cur_px_per_ln_o       ( cur_px_per_ln       )
 );
 
-cam_pwup #(
-  .CLK_FREQ   ( 74_250_000 )
-) cam_pwup (
+csi2_csr csi2_csr
+(
+  .clk_i                 ( px_clk_i            ),
+  .px_srst_i             ( px_srst_i           ),
+  .csr_if                ( csi2_csr_if         ),
+  .reset_stat_o          ( reset_stat          ),
+  .phy_en_o              ( phy_en              ),
+  .sccb_slave_addr_o     ( sccb_slave_addr     ),
+  .header_err_cnt_i      ( header_err_cnt      ),
+  .corr_header_err_cnt_i ( corr_header_err_cnt ),
+  .crc_err_cnt_i         ( crc_err_cnt         ),
+  .max_ln_per_frame_i    ( max_ln_per_frame    ),
+  .min_ln_per_frame_i    ( min_ln_per_frame    ),
+  .cur_ln_per_frame_i    ( cur_ln_per_frame    ),
+  .max_px_per_ln_i       ( max_px_per_ln       ),
+  .min_px_per_ln_i       ( min_px_per_ln       ),
+  .cur_px_per_ln_i       ( cur_px_per_ln       )
+);
+
+sccb_master sccb_master (
+  .clk_i        ( px_clk_i        ),
+  .srst_i       ( px_srst_i       ),
+  .ctrl_if      ( sccb_ctrl_if    ),
+  .slave_addr_i ( sccb_slave_addr ),
+  .sda_i        ( sccb_sda_i      ),
+  .sda_o        ( sccb_sda_o      ),
+  .sda_oe       ( sccb_sda_oe     ),
+  .scl_i        ( sccb_scl_i      ),
+  .scl_o        ( sccb_scl_o      ),
+  .scl_oe       ( sccb_scl_oe     )
+);
+
+cam_pwup cam_pwup (
   .clk_i      ( px_clk_i   ),
   .srst_i     ( px_srst_i  ),
   .cam_pwup_o ( cam_pwup_o )
 );
-
 
 endmodule

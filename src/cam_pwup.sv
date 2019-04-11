@@ -1,5 +1,5 @@
 module cam_pwup #(
-  parameter int CLK_FREQ = 100_000_000
+  parameter int CLK_FREQ = 74_250_000
 )(
   input  clk_i,
   input  srst_i,
