@@ -120,32 +120,13 @@ always_ff @( posedge clk_i )
 
 always_ff @( posedge clk_i )
   if( srst_i )
-    begin
-      pkt_o.tstrb <= '0;
-      pkt_o.tlast <= '0;
-    end
+    pkt_o.tlast <= '0;
   else
     if( state == RUN_S && byte_cnt_comb >= pkt_size &&
         byte_cnt < pkt_size )
-      begin
-        if( pkt_size[1 : 0] )
-          for( int i = 0; i < 4; i++ )
-            if( i < pkt_size[1 : 0] )
-              pkt_o.tstrb[i] <= 1'b1;
-            else
-              pkt_o.tstrb[i] <= 1'b0;
-        pkt_o.tlast <= 1'b1;
-      end
+      pkt_o.tlast <= 1'b1;
     else
       if( pkt_i.tready )
-        begin
-          pkt_o.tstrb <= '1;
-          pkt_o.tlast <= 1'b0;
-        end
-
-assign pkt_o.tkeep = pkt_o.tstrb;
-assign pkt_o.tid   = '0;
-assign pkt_o.tdest = '0;
-assign pkt_o.tuser = '0;
+        pkt_o.tlast <= 1'b0;
 
 endmodule

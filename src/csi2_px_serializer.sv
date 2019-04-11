@@ -136,9 +136,5 @@ always_ff @( posedge clk_i )
         pkt_o.tuser <= 1'b0;
 
 assign pkt_i.tready = ( state == PX_0_S ) ? 1'b1 : 1'b0;
-assign pkt_o.tstrb  = '1;
-assign pkt_o.tkeep  = '1;
-assign pkt_o.tid    = '0;
-assign pkt_o.tdest  = '0;
 
 endmodule

@@ -25,60 +25,6 @@ logic          error_detected;
 assign syndrome     = generated_parity ^ data_i[29 : 24];
 assign header_valid = valid_d && !header_passed && !pkt_done_i;
 
-/* DBG STUFF */
-/*
-localparam int DBG_CNT_W = $clog2( 52_500_000 );
-
-logic [DBG_CNT_W - 1 : 0] dbg_cnt;
-logic [DBG_CNT_W - 1 : 0] err_cnt;
-logic [DBG_CNT_W - 1 : 0] err_lock;
-logic [DBG_CNT_W - 1 : 0] corr_err_cnt;
-logic [DBG_CNT_W - 1 : 0] corr_err_lock;
-
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
-    dbg_cnt <= '0;
-  else
-    if( dbg_cnt == 'd52_500_000 )
-      dbg_cnt <= '0;
-    else
-      dbg_cnt <= dbg_cnt + 1'b1;
-
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
-    begin
-      err_cnt      <= '0;
-      corr_err_cnt <= '0;
-    end
-  else
-    if( dbg_cnt == 'd52_500_000 )
-      begin
-        err_cnt      <= '0;
-        corr_err_cnt <= '0;
-      end
-    else
-      if( header_valid && error_detected )
-        begin
-          err_cnt <= err_cnt + 1'b1;
-          if( err_bit_pos != 5'h1f )
-            corr_err_cnt <= corr_err_cnt + 1'b1; 
-        end
-
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
-    begin
-      err_lock      <= '0;
-      corr_err_lock <= '0;
-    end
-  else
-    if( dbg_cnt == 'd52_500_000 )
-      begin
-        err_lock      <= err_cnt;
-        corr_err_lock <= corr_err_cnt;
-      end
-*/
-/* DBG STUFF */
-
 always_ff @( posedge clk_i )
   if( srst_i )
     header_passed <= 1'b0;

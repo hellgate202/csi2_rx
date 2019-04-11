@@ -7,7 +7,6 @@ module csi2_raw10_32b_40b_gbx
 );
 
 logic [31 : 0] tdata_d1;
-logic [3 : 0]  tstrb_d1;
 
 assign pkt_i.tready = pkt_o.tready;
 
@@ -66,16 +65,10 @@ always_comb
 
 always_ff @( posedge clk_i )
   if( srst_i )
-    begin
-      tdata_d1  <= '0;
-      tstrb_d1  <= '0;
-    end
+    tdata_d1  <= '0;
   else
     if( pkt_i.tready && pkt_i.tvalid )
-      begin
-        tdata_d1  <= pkt_i.tdata;
-        tstrb_d1  <= pkt_i.tstrb;
-      end
+      tdata_d1  <= pkt_i.tdata;
     
 always_ff @( posedge clk_i )
   if ( srst_i )
@@ -136,11 +129,5 @@ always_ff @( posedge clk_i )
   else
     if( pkt_i.tvalid && pkt_i.tready )
       pkt_o.tlast <= pkt_i.tlast;
-
-assign pkt_o.tstrb = '1;
-assign pkt_o.tkeep = pkt_o.tstrb;
-assign pkt_o.tid   = '0;
-assign pkt_o.tuser = '0;
-assign pkt_o.tdest = '0;
 
 endmodule

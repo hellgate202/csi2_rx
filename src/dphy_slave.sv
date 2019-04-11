@@ -54,8 +54,8 @@ clk_detect #(
 );
 
 generate
-  begin: data_lane
-    for( genvar i = 0; i < DATA_LANES; i++ )
+  for( genvar i = 0; i < DATA_LANES; i++ )
+    begin: data_lane
       dphy_hs_data_rx #(
         .DELAY         ( DELAY[i]         ) 
       ) data_phy (
@@ -69,7 +69,7 @@ generate
         .dphy_data_n_i ( dphy_data_n_i[i] ),
         .byte_data_o   ( byte_data[i]     )
       ); 
-  end
+    end
 endgenerate
 
 IDELAYCTRL delay_ctrl

@@ -14,6 +14,8 @@ module dphy_hs_data_rx #(
 
   logic rst_d1;
   logic rst_d2;
+  logic serial_data;
+  logic serial_data_d;
 
 always_ff @( posedge byte_clk_i )
   begin

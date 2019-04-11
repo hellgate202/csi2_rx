@@ -92,7 +92,6 @@ axi4_stream_if #(
   .aresetn    ( !clk_loss_srst )
 );
 
-assign csi2_pkt_rx_clk_if.tready = 1'b1;
 assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;
 assign pkt_word_rx_clk.tstrb     = csi2_pkt_rx_clk_if.tstrb;
 assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
@@ -135,12 +134,8 @@ dc_fifo #(
 
 assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
 assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
-assign csi2_pkt_px_clk_if.tkeep  = pkt_word_px_clk.tstrb;
 assign csi2_pkt_px_clk_if.tlast  = pkt_word_px_clk.tlast;
 assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty;
-assign csi2_pkt_px_clk_if.tdest  = '0;
-assign csi2_pkt_px_clk_if.tid    = '0;
-assign csi2_pkt_px_clk_if.tuser  = '0;
 
 axi4_stream_if #(
   .DATA_WIDTH ( 32         )

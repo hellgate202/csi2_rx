@@ -99,9 +99,4 @@ always_ff @( posedge clk_i )
     else
       pkt_o.tlast <= 1'b0;
 
-assign pkt_o.tkeep = pkt_o.tstrb;
-assign pkt_o.tid   = '0;
-assign pkt_o.tdest = '0;
-assign pkt_o.tuser = '0;
-
 endmodule

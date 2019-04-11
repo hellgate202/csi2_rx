@@ -85,11 +85,7 @@ axi4_stream_if #(
 assign video.tready   = video_tready_i;
 assign video_tdata_o  = video.tdata;
 assign video_tvalid_o = video.tvalid;
-assign video_tstrb_o  = video.tstrb;
-assign video_tkeep_o  = video.tkeep;
 assign video_tuser_o  = video.tuser;
-assign video_tid_o    = video.tid;
-assign video_tdest_o  = video.tuser;
 assign video_tlast_o  = video.tlast;
 
 axi4_lite_if #(
