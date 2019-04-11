@@ -8,7 +8,6 @@ module dphy_slave #(
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
   input  [DATA_LANES - 1 : 0] lp_data_p_i,
   input  [DATA_LANES - 1 : 0] lp_data_n_i,
-  input  [DATA_LANES - 1 : 0] inc_delay_i,
   input                       ref_clk_i,
   input                       srst_i,
   input                       enable_i,

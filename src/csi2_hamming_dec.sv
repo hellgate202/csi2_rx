@@ -1,3 +1,5 @@
+import csi2_err_bit_pos_pkg::*;
+
 module csi2_hamming_dec
 (
   input                 clk_i,
@@ -11,19 +13,29 @@ module csi2_hamming_dec
   output logic          valid_o
 );
 
-localparam INIT_PATH = "../../../../../err_bit_pos_lut.txt";
+logic [5 : 0]         generated_parity;
+logic [5 : 0]         syndrome;
+logic [4 : 0]         err_bit_pos;
+logic [31 : 0]        data_d;
+logic                 valid_d;
+logic                 header_valid;
+logic                 header_passed;
+logic                 error_detected;
 
-logic [5 : 0]  generated_parity;
-logic [5 : 0]  syndrome;
-logic [4 : 0]  err_bit_pos;
-logic [31 : 0] data_d;
-logic          valid_d;
-logic          header_valid;
-logic          header_passed;
-logic          error_detected;
+logic [63 : 0][4 : 0] err_bit_rom;
+
+initial
+  for( int i = 0; i < 64; i++ )
+    err_bit_rom[i] = ROM_INIT[i];
 
 assign syndrome     = generated_parity ^ data_i[29 : 24];
 assign header_valid = valid_d && !header_passed && !pkt_done_i;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    err_bit_pos <= '1;
+  else
+    err_bit_pos <= err_bit_rom[syndrome];
 
 always_ff @( posedge clk_i )
   if( srst_i )
@@ -86,22 +98,6 @@ always_comb
                           data_i[15] ^ data_i[16] ^ data_i[17] ^ data_i[18] ^ data_i[19] ^
                           data_i[21] ^ data_i[22] ^ data_i[23];
   end
-
-dual_port_ram #(
-  .DATA_WIDTH        ( 5              ),
-  .ADDR_WIDTH        ( 6              ),
-  .INIT_FILE         ( INIT_PATH      )
-) err_bit_pos_lut (
-  .rst_i             ( srst_i         ),
-  .wr_clk_i          ( clk_i          ),
-  .wr_addr_i         ( 6'd0           ),
-  .wr_data_i         ( 5'd0           ),
-  .wr_i              ( 1'b0           ),
-  .rd_clk_i          ( clk_i          ),
-  .rd_addr_i         ( syndrome       ),
-  .rd_data_o         ( err_bit_pos    ),
-  .rd_i              ( 1'b1           )
-);
 
 always_ff @( posedge clk_i )
   if( srst_i )

@@ -16,15 +16,15 @@ logic [15 : 0] crc_16bit;
 logic [15 : 0] crc_24bit;
 logic          payload_in_progress;
 logic          long_pkt_payload_valid;
-logic          long_pkt_payload;
-logic          long_pkt_be;
+logic [31 : 0] long_pkt_payload;
+logic [3 : 0]  long_pkt_payload_be;
 logic          long_pkt_eop;
 logic          long_pkt_eop_d1;
 
 assign long_pkt_payload       = csi2_pkt_i.tdata;
 assign long_pkt_payload_valid = csi2_pkt_i.tvalid && payload_in_progress;
 assign long_pkt_eop           = csi2_pkt_i.tlast && payload_in_progress;
-assign long_pkt_be            = csi2_pkt_i.tstrb && payload_in_progress;
+assign long_pkt_payload_be            = csi2_pkt_i.tstrb && payload_in_progress;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )

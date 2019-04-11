@@ -19,7 +19,7 @@ module csi2_rx_wrap #(
   input  [15 : 0]             sccb_ctrl_awaddr_i,
   input                       sccb_ctrl_wvalid_i,
   output                      sccb_ctrl_wready_o,
-  input  [7 : 0]              sccb_ctrl_wdata_i,
+  input  [31 : 0]             sccb_ctrl_wdata_i,
   input                       sccb_ctrl_wstrb_i,
   output                      sccb_ctrl_bvalid_o,
   input                       sccb_ctrl_bready_i,
@@ -29,7 +29,7 @@ module csi2_rx_wrap #(
   input  [15 : 0]             sccb_ctrl_araddr_i,
   output                      sccb_ctrl_rvalid_o,
   input                       sccb_ctrl_rready_i,
-  output [7 : 0]              sccb_ctrl_rdata_o,
+  output [31 : 0]             sccb_ctrl_rdata_o,
   output [1 : 0]              sccb_ctrl_rresp_o,
 
   input                       csi2_csr_awvalid_i,

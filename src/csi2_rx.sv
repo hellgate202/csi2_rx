@@ -32,6 +32,7 @@ logic [31 : 0] phy_data;
 logic          phy_data_valid;
 logic          header_error;
 logic          header_error_corrected;
+logic          pkt_error;
 logic          crc_passed;
 logic          crc_failed;
 logic [31 : 0] corrected_phy_data;
@@ -129,7 +130,7 @@ csi2_to_axi4_stream axi4_conv (
   .pkt_o     ( csi2_pkt_rx_clk_if       )
 );
 
-csi2_crc_calc crc_calc #(
+csi2_crc_calc crc_calc (
   .clk_i        ( rx_clk             ),
   .srst_i       ( clk_loss_srst      ),
   .csi2_pkt_i   ( csi2_pkt_rx_clk_if ),
