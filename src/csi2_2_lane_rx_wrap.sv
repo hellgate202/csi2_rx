@@ -111,7 +111,7 @@ assign video_tlast_o  = video.tlast;
 
 axi4_lite_if #(
   .ADDR_WIDTH ( 16         ),
-  .DATA_WIDTH ( 8          )
+  .DATA_WIDTH ( 32         )
 ) sccb_ctrl_if (
   .aclk       ( px_clk_i   ),
   .aresetn    ( !px_srst_i )
@@ -214,10 +214,8 @@ csi2_csr csi2_csr
   .crc_err_cnt_i         ( crc_err_cnt         ),
   .max_ln_per_frame_i    ( max_ln_per_frame    ),
   .min_ln_per_frame_i    ( min_ln_per_frame    ),
-  .cur_ln_per_frame_i    ( cur_ln_per_frame    ),
   .max_px_per_ln_i       ( max_px_per_ln       ),
-  .min_px_per_ln_i       ( min_px_per_ln       ),
-  .cur_px_per_ln_i       ( cur_px_per_ln       )
+  .min_px_per_ln_i       ( min_px_per_ln       )
 );
 
 sccb_master sccb_master (
