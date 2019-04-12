@@ -1,5 +1,10 @@
 module csi2_2_lane_rx_wrap 
 (
+  input           ref_clk_i,
+  input           px_clk_i,
+  input           ref_srst_i,
+  input           px_srst_i,
+
   input           dphy_clk_p_i,
   input           dphy_clk_n_i,
   input           dphy_lp_clk_p_i,
@@ -8,10 +13,6 @@ module csi2_2_lane_rx_wrap
   input  [1 : 0]  dphy_lp_data_p_i,
   input  [1 : 0]  dphy_data_n_i,
   input  [1 : 0]  dphy_lp_data_n_i,
-  input           ref_clk_i,
-  input           px_clk_i,
-  input           ref_srst_i,
-  input           px_srst_i,
 
   input           sccb_ctrl_awvalid_i,
   output          sccb_ctrl_awready_o,
@@ -70,7 +71,7 @@ logic                sccb_scl_oe;
 logic                header_err;
 logic                corr_header_err;
 logic                crc_err;
-logic                reset_stat;
+logic                clear_stat;
 logic                phy_en;
 logic                delay_act;
 logic [4 : 0]        lane_0_delay;
@@ -81,10 +82,8 @@ logic [31 : 0]       corr_header_err_cnt;
 logic [31 : 0]       crc_err_cnt;
 logic [31 : 0]       max_ln_per_frame;
 logic [31 : 0]       min_ln_per_frame;
-logic [31 : 0]       cur_ln_per_frame;
 logic [31 : 0]       max_px_per_ln;
 logic [31 : 0]       min_px_per_ln;
-logic [31 : 0]       cur_px_per_ln;
 logic [6 : 0]        sccb_slave_addr;
 
 assign lane_delay[0] = lane_0_delay;
@@ -188,7 +187,7 @@ csi2_stat_acc csi2_stat_acc
 (
   .clk_i                 ( px_clk_i            ),
   .srst_i                ( px_srst_i           ),
-  .reset_stat_i          ( reset_stat          ),
+  .clear_stat_i          ( clear_stat          ),
   .video_i               ( video               ),
   .header_err_i          ( header_err          ),
   .corr_header_err_i     ( corr_header_err     ),
@@ -198,10 +197,8 @@ csi2_stat_acc csi2_stat_acc
   .crc_err_cnt_o         ( crc_err_cnt         ),
   .max_ln_per_frame_o    ( max_ln_per_frame    ),
   .min_ln_per_frame_o    ( min_ln_per_frame    ),
-  .cur_ln_per_frame_o    ( cur_ln_per_frame    ),
   .max_px_per_ln_o       ( max_px_per_ln       ),
-  .min_px_per_ln_o       ( min_px_per_ln       ),
-  .cur_px_per_ln_o       ( cur_px_per_ln       )
+  .min_px_per_ln_o       ( min_px_per_ln       )
 );
 
 csi2_csr csi2_csr
@@ -209,7 +206,7 @@ csi2_csr csi2_csr
   .clk_i                 ( px_clk_i            ),
   .px_srst_i             ( px_srst_i           ),
   .csr_if                ( csi2_csr_if         ),
-  .reset_stat_o          ( reset_stat          ),
+  .clear_stat_o          ( clear_statt         ),
   .phy_en_o              ( phy_en              ),
   .sccb_slave_addr_o     ( sccb_slave_addr     ),
   .header_err_cnt_i      ( header_err_cnt      ),
