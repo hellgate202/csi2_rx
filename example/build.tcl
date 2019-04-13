@@ -96,12 +96,12 @@ regenerate_bd_layout
 save_bd_design
 
 # Create HDL Wraper
-make_wrapper -files [get_files /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -top
-add_files -norecurse /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/hdl/csi2_zybo_z7_example_wrapper.v
+make_wrapper -files [get_files ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -top
+add_files -norecurse ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/hdl/csi2_zybo_z7_example_wrapper.v
 update_compile_order -fileset sources_1
 
 # Generate Output Products
-generate_target all [get_files  /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+generate_target all [get_files  ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_zynq_ps_0] }
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_mmcm_0] }
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_ref_clk_rst_0] }
@@ -109,8 +109,8 @@ catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_rst_0]
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_csi2_2_lane_rx_0] }
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_jtag_axi_0] }
 catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_xbar_0] }
-export_ip_user_files -of_objects [get_files /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -no_script -sync -force -quiet
-create_ip_run [get_files -of_objects [get_fileset sources_1] /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+export_ip_user_files -of_objects [get_files ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
 launch_runs -jobs 8 {                           \
   csi2_zybo_z7_example_zynq_ps_0_synth_1        \
   csi2_zybo_z7_example_px_clk_mmcm_0_synth_1    \
@@ -129,7 +129,7 @@ launch_runs -jobs 8 {                           \
   wait_on_run csi2_zybo_z7_example_xbar_0_synth_1
 
 # RTL Elaboration
-create_ip_run [get_files -of_objects [get_fileset sources_1] /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+create_ip_run [get_files -of_objects [get_fileset sources_1] ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
 synth_design -rtl -name rtl_1
 
 # Pin placement
