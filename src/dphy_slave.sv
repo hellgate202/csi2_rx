@@ -12,7 +12,7 @@ module dphy_slave #(
   input                              ref_clk_i,
   input                              srst_i,
   input                              phy_rst_i,
-  output                             rx_clk_present_o,
+  output                             clk_loss_rst_o,
   output [31 : 0]                    data_o,
   output                             clk_o,
   output                             valid_o
@@ -22,6 +22,8 @@ logic                             bit_clk;
 logic                             bit_clk_inv;
 logic                             byte_clk;
 logic                             rx_clk_present;
+logic                             clk_loss_rst_d1;
+logic                             clk_loss_rst_d2;
 logic [DATA_LANES - 1 : 0][7 : 0] byte_data;
 logic [DATA_LANES - 1 : 0][7 : 0] aligned_byte_data;
 logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
@@ -30,8 +32,8 @@ logic [DATA_LANES - 1 : 0][7 : 0] word_data;
 logic [DATA_LANES - 1 : 0]        hs_data_valid;
 logic                             word_valid;
 
-assign clk_o            = byte_clk;
-assign rx_clk_present_o = rx_clk_present;
+assign clk_o          = byte_clk;
+assign clk_loss_rst_o = clk_loss_rst_d2;
 
 dphy_hs_clk_rx clk_phy
 (
@@ -51,6 +53,12 @@ clk_detect #(
   .srst_i                ( srst_i         ),
   .clk_present_o         ( rx_clk_present )
 );
+
+always_ff @( posedge byte_clk )
+  begin
+    clk_loss_rst_d1 <= !rx_clk_present;
+    clk_loss_rst_d2 <= clk_loss_rst_d1;
+  end
 
 generate
   for( genvar i = 0; i < DATA_LANES; i++ )
@@ -83,7 +91,7 @@ generate
       dphy_settle_ignore settle_ignore
       (
         .clk_i           ( ref_clk_i        ),
-        .srst_i          ( srst_i           ),
+        .srst_i          ( clk_loss_rst_d2  ),
         .lp_data_p_i     ( lp_data_p_i[i]   ),
         .lp_data_n_i     ( lp_data_n_i[i]   ),
         .hs_data_valid_o ( hs_data_valid[i] )
@@ -92,7 +100,7 @@ generate
       dphy_byte_align byte_align
       (
         .clk_i            ( byte_clk              ),
-        .rst_i            ( ~rx_clk_present       ),
+        .srst_i           ( clk_loss_rst_d2       ),
         .unaligned_byte_i ( byte_data[i]          ),
         .reset_align_i    ( reset_align           ),
         .hs_data_valid_i  ( hs_data_valid[i]      ),
@@ -106,7 +114,7 @@ dphy_word_align #(
   .DATA_LANES    ( DATA_LANES         )
 ) word_align (
   .byte_clk_i    ( byte_clk           ),
-  .rst_i         ( ~rx_clk_present    ),
+  .srst_i        ( clk_loss_rst_d2    ),
   .eop_i         ( phy_rst_i          ),
   .byte_data_i   ( aligned_byte_data  ),
   .valid_i       ( aligned_byte_valid ),
@@ -119,7 +127,7 @@ dphy_32b_map #(
   .DATA_LANES   ( DATA_LANES )
 ) mapper (
   .byte_clk_i   ( byte_clk        ),
-  .rst_i        ( ~rx_clk_present ),
+  .srst_i       ( clk_loss_rst_d2 ),
   .word_data_i  ( word_data       ),
   .eop_i        ( phy_rst_i       ),
   .valid_i      ( word_valid      ),

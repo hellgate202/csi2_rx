@@ -2,7 +2,7 @@ module dphy_32b_map #(
   parameter int DATA_LANES = 4
 )(
   input                                    byte_clk_i,
-  input                                    rst_i,
+  input                                    srst_i,
   input        [DATA_LANES - 1 : 0][7 : 0] word_data_i,
   input                                    valid_i,
   input                                    eop_i,
@@ -14,7 +14,7 @@ logic [3 : 0] word_pos;
 logic         word_done;
 
 always_ff @( posedge byte_clk_i )
-  if( rst_i )
+  if( srst_i )
     word_pos <= 'b1;
   else
     if( word_done || eop_i )
@@ -28,7 +28,7 @@ generate
     1:
       begin : one_lane
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             maped_data_o <= '0;
           else
             for( int i = 0; i < 4; i++ )
@@ -36,7 +36,7 @@ generate
                 maped_data_o[(i + 1) * 8 - 1 -: 8] <= word_data_i;
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             valid_o <= 1'b0;
           else
             if( word_pos == 4'b1000 && !eop_i )
@@ -49,7 +49,7 @@ generate
     2:
       begin : two_lanes
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             maped_data_o <= '0;
           else
             for( int i = 0; i < 2; i++ )
@@ -57,7 +57,7 @@ generate
                 maped_data_o[( i + 1) * 16 - 1 -: 16] <= word_data_i;
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             valid_o <= 1'b0;
           else
             if( ( word_pos == 4'b1000 || word_pos == 4'b0010 ) &&
@@ -73,7 +73,7 @@ generate
         logic [15:0] old_bytes;
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             begin
               maped_data_o <= '0;
               old_bytes    <= '0;
@@ -108,7 +108,7 @@ generate
             endcase
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             valid_o <= 1'b0;
           else
             if( word_pos != 4'b0001 && !eop_i )
@@ -121,13 +121,13 @@ generate
     4:
       begin : four_lanes
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             maped_data_o <= '0;
           else
             maped_data_o <= word_data_i;
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             valid_o <= 1'b0;
           else
             if( !eop_i )
@@ -138,13 +138,13 @@ generate
     default:
       begin : unspecified_lanes
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             maped_data_o <= '0;
           else
             maped_data_o <= maped_data_o;
 
         always_ff @( posedge byte_clk_i )
-          if( rst_i )
+          if( srst_i )
             valid_o <= 1'b0;
           else
             valid_o <= valid_o;

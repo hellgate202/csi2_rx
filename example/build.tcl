@@ -101,142 +101,126 @@ add_files -norecurse /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sourc
 update_compile_order -fileset sources_1
 
 # Generate Output Products
-#generate_target all [get_files  ./zybo_z7_video_proc.srcs/sources_1/bd/design_1/design_1.bd]
-#catch { config_ip_cache -export [get_ips -all design_1_processing_system7_0_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_clk_wiz_0_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_proc_sys_reset_0_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_proc_sys_reset_1_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_proc_sys_reset_2_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_csi2_2_lane_rx_0_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_cci_master_0_0] }
-#catch { config_ip_cache -export [get_ips -all design_1_jtag_axi_0_0] }
-#export_ip_user_files -of_objects [get_files ./zybo_z7_video_proc.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
-#create_ip_run [get_files -of_objects [get_fileset sources_1] ./zybo_z7_video_proc.srcs/sources_1/bd/design_1/design_1.bd]
-#launch_runs -jobs 4 {                      \
-#   design_1_processing_system7_0_0_synth_1 \
-#   design_1_clk_wiz_0_0_synth_1            \
-#   design_1_proc_sys_reset_0_0_synth_1     \
-#   design_1_proc_sys_reset_1_0_synth_1     \
-#   design_1_proc_sys_reset_2_0_synth_1     \
-#   design_1_csi2_2_lane_rx_0_0_synth_1     \
-#   design_1_cci_master_0_0_synth_1         \
-#   design_1_jtag_axi_0_0_synth_1}
-#wait_on_run design_1_processing_system7_0_0_synth_1
-#wait_on_run design_1_clk_wiz_0_0_synth_1
-#wait_on_run design_1_proc_sys_reset_0_0_synth_1
-#wait_on_run design_1_proc_sys_reset_1_0_synth_1
-#wait_on_run design_1_csi2_2_lane_rx_0_0_synth_1
-#wait_on_run design_1_cci_master_0_0_synth_1
-#wait_on_run design_1_jtag_axi_0_0_synth_1
-#
-## RTL Elaboration
-#create_ip_run [get_files -of_objects [get_fileset sources_1] ./zybo_z7_video_proc.srcs/sources_1/bd/design_1/design_1.bd]
-#synth_design -rtl -name rtl_1
-#
-## Pin placement
-#place_ports {dphy_data_p_i_0[0]} M19
-#place_ports {dphy_data_p_i_0[1]} L16
-#place_ports dphy_clk_p_i_0       J18
-#set_property IOSTANDARD LVDS_25 [get_ports [list \
-#  {dphy_data_p_i_0[1]}                           \
-#  {dphy_data_p_i_0[0]}                           \
-#  dphy_clk_p_i_0]]
-#place_ports {video_tdata_o_0[15]} V8
-#place_ports {video_tdata_o_0[14]} W8
-#place_ports {video_tdata_o_0[13]} U7
-#place_ports {video_tdata_o_0[12]} V7
-#place_ports {video_tdata_o_0[11]} Y7
-#place_ports {video_tdata_o_0[10]} Y6
-#place_ports {video_tdata_o_0[9]}  V6
-#place_ports {video_tdata_o_0[8]}  W6
-#place_ports {video_tdata_o_0[7]}  V15
-#place_ports {video_tdata_o_0[6]}  W15
-#place_ports {video_tdata_o_0[5]}  T11
-#place_ports {video_tdata_o_0[4]}  T10
-#place_ports {video_tdata_o_0[3]}  W14
-#place_ports {video_tdata_o_0[3]}  Y14
-#place_ports {video_tdata_o_0[2]}  T12
-#place_ports {video_tdata_o_0[1]}  U12
-#place_ports {video_tdata_o_0[0]}  T14
-#place_ports {video_tkeep_o_0[1]}  T15
-#place_ports {video_tkeep_o_0[0]}  P14
-#place_ports {video_tstrb_o_0[1]}  R14
-#place_ports {video_tstrb_o_0[0]}  U14
-#place_ports video_tdest_o_0       U15
-#place_ports video_tid_o_0         V17
-#place_ports video_tlast_o_0       V18
-#place_ports video_tready_i_0      G15
-#place_ports video_tuser_o_0       W16
-#place_ports video_tvalid_o_0      J15
-#place_ports sda_io_0              F19
-#place_ports scl_io_0              F20
-#place_ports cam_pwup_o_0          G20
-#set_property IOSTANDARD LVCMOS33 [get_ports [list \
-#  {video_tdata_o_0[15]}                           \
-#  {video_tdata_o_0[14]}                           \
-#  {video_tdata_o_0[13]}                           \
-#  {video_tdata_o_0[12]}                           \
-#  {video_tdata_o_0[11]}                           \
-#  {video_tdata_o_0[10]}                           \
-#  {video_tdata_o_0[9]}                            \
-#  {video_tdata_o_0[8]}                            \
-#  {video_tdata_o_0[7]}                            \
-#  {video_tdata_o_0[6]}                            \
-#  {video_tdata_o_0[5]}                            \
-#  {video_tdata_o_0[4]}                            \
-#  {video_tdata_o_0[3]}                            \
-#  {video_tdata_o_0[2]}                            \
-#  {video_tdata_o_0[1]}                            \
-#  {video_tdata_o_0[0]}                            \
-#  {video_tkeep_o_0[1]}                            \
-#  {video_tkeep_o_0[0]}                            \
-#  {video_tstrb_o_0[1]}                            \
-#  {video_tstrb_o_0[0]}                            \
-#  video_tvalid_o_0                                \
-#  video_tdest_o_0                                 \
-#  video_tid_o_0                                   \
-#  video_tlast_o_0                                 \
-#  video_tready_i_0                                \
-#  video_tuser_o_0                                 \
-#  sda_io_0                                        \
-#  scl_io_0                                        \
-#  cam_pwup_o_0]]
+generate_target all [get_files  /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_zynq_ps_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_mmcm_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_ref_clk_rst_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_rst_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_csi2_2_lane_rx_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_jtag_axi_0] }
+catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_xbar_0] }
+export_ip_user_files -of_objects [get_files /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+launch_runs -jobs 8 {                           \
+  csi2_zybo_z7_example_zynq_ps_0_synth_1        \
+  csi2_zybo_z7_example_px_clk_mmcm_0_synth_1    \
+  csi2_zybo_z7_example_ref_clk_rst_0_synth_1    \
+  csi2_zybo_z7_example_px_clk_rst_0_synth_1     \
+  csi2_zybo_z7_example_csi2_2_lane_rx_0_synth_1 \
+  csi2_zybo_z7_example_jtag_axi_0_synth_1       \
+  csi2_zybo_z7_example_xbar_0_synth_1 }
+
+  wait_on_run csi2_zybo_z7_example_zynq_ps_0_synth_1
+  wait_on_run csi2_zybo_z7_example_px_clk_mmcm_0_synth_1
+  wait_on_run csi2_zybo_z7_example_ref_clk_rst_0_synth_1
+  wait_on_run csi2_zybo_z7_example_px_clk_rst_0_synth_1
+  wait_on_run csi2_zybo_z7_example_csi2_2_lane_rx_0_synth_1
+  wait_on_run csi2_zybo_z7_example_jtag_axi_0_synth_1
+  wait_on_run csi2_zybo_z7_example_xbar_0_synth_1
+
+# RTL Elaboration
+create_ip_run [get_files -of_objects [get_fileset sources_1] /home/liv/fpga/csi2/example/csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
+synth_design -rtl -name rtl_1
+
+# Pin placement
+place_ports {dphy_data_p_i_0[0]} M19
+place_ports {dphy_data_p_i_0[1]} L16
+place_ports dphy_clk_p_i_0       J18
+set_property IOSTANDARD LVDS_25 [get_ports [list \
+  {dphy_data_p_i_0[1]}                           \
+  {dphy_data_p_i_0[0]}                           \
+  dphy_clk_p_i_0]]
+place_ports {video_0_tdata[15]} V8
+place_ports {video_0_tdata[14]} W8
+place_ports {video_0_tdata[13]} U7
+place_ports {video_0_tdata[12]} V7
+place_ports {video_0_tdata[11]} Y7
+place_ports {video_0_tdata[10]} Y6
+place_ports {video_0_tdata[9]}  V6
+place_ports {video_0_tdata[8]}  W6
+place_ports {video_0_tdata[7]}  V15
+place_ports {video_0_tdata[6]}  W15
+place_ports {video_0_tdata[5]}  T11
+place_ports {video_0_tdata[4]}  T10
+place_ports {video_0_tdata[3]}  W14
+place_ports {video_0_tdata[3]}  Y14
+place_ports {video_0_tdata[2]}  T12
+place_ports {video_0_tdata[1]}  U12
+place_ports {video_0_tdata[0]}  T14
+place_ports video_0_tlast       V18
+place_ports video_0_tready      G15
+place_ports video_0_tuser       W16
+place_ports video_0_tvalid      J15
+place_ports sccb_sda_io_0       F19
+place_ports sccb_scl_io_0       F20
+place_ports cam_pwup_o_0        G20
+set_property IOSTANDARD LVCMOS33 [get_ports [list \
+  {video_0_tdata[15]}                           \
+  {video_0_tdata[14]}                           \
+  {video_0_tdata[13]}                           \
+  {video_0_tdata[12]}                           \
+  {video_0_tdata[11]}                           \
+  {video_0_tdata[10]}                           \
+  {video_0_tdata[9]}                            \
+  {video_0_tdata[8]}                            \
+  {video_0_tdata[7]}                            \
+  {video_0_tdata[6]}                            \
+  {video_0_tdata[5]}                            \
+  {video_0_tdata[4]}                            \
+  {video_0_tdata[3]}                            \
+  {video_0_tdata[2]}                            \
+  {video_0_tdata[1]}                            \
+  {video_0_tdata[0]}                            \
+  video_0_tvalid                                \
+  video_0_tlast                                 \
+  video_0_tready                                \
+  video_0_tuser                                 \
+  sccb_sda_io_0                                 \
+  sccb_scl_io_0                                 \
+  cam_pwup_o_0]]
 #set_property DIFF_TERM false [get_ports dphy_data_p_i_0[0]]
 #set_property DIFF_TERM false [get_ports dphy_data_p_i_0[1]]
 #set_property DIFF_TERM false [get_ports dphy_clk_p_i_0]
-#place_ports dphy_lp_clk_p_i_0       H20
-#place_ports dphy_lp_clk_n_i_0       J19
-#place_ports {dphy_lp_data_p_i_0[0]} L19
-#place_ports {dphy_lp_data_p_i_0[1]} J20
-#place_ports {dphy_lp_data_n_i_0[0]} M18
-#place_ports {dphy_lp_data_n_i_0[1]} L20
-#set_property IOSTANDARD HSUL_12 [get_ports [list \
-#  dphy_lp_clk_p_i_0                              \
-#  dphy_lp_clk_n_i_0                              \
-#  {dphy_lp_data_p_i_0[0]}                        \
-#  {dphy_lp_data_p_i_0[1]}                        \
-#  {dphy_lp_data_n_i_0[0]}                        \
-#  {dphy_lp_data_n_i_0[1]}]]
-#set_property INTERNAL_VREF 0.6 [get_iobanks 35]
-#
-## Creating directory for constraints
-#file mkdir ./zybo_z7_video_proc.srcs/constrs_1/new
-#
-## Creating constraints file
-#close [ open ./zybo_z7_video_proc.srcs/constrs_1/new/zybo_z7_video_proc.xdc w ]
-#
-## Adding this file to project
-#close [ open ./zybo_z7_video_proc.srcs/constrs_1/new/zybo_z7_video_proc.xdc w ]
-#
-## Setting this file as target constraint
-#set_property target_constrs_file ./zybo_z7_video_proc.srcs/constrs_1/new/zybo_z7_video_proc.xdc [current_fileset -constrset]
-#
-## Saving previous constraints to file
-#save_constraints -force
-#
-## Timing constraints
-#create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
-#
+place_ports dphy_lp_clk_p_i_0       H20
+place_ports dphy_lp_clk_n_i_0       J19
+place_ports {dphy_lp_data_p_i_0[0]} L19
+place_ports {dphy_lp_data_p_i_0[1]} J20
+place_ports {dphy_lp_data_n_i_0[0]} M18
+place_ports {dphy_lp_data_n_i_0[1]} L20
+set_property IOSTANDARD HSUL_12 [get_ports [list \
+  dphy_lp_clk_p_i_0                              \
+  dphy_lp_clk_n_i_0                              \
+  {dphy_lp_data_p_i_0[0]}                        \
+  {dphy_lp_data_p_i_0[1]}                        \
+  {dphy_lp_data_n_i_0[0]}                        \
+  {dphy_lp_data_n_i_0[1]}]]
+set_property INTERNAL_VREF 0.6 [get_iobanks 35]
+
+# Creating directory for constraints
+file mkdir ./csi2_zybo_z7_example.srcs/constrs_1/new
+
+# Creating constraints file
+close [ open ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc w ]
+
+# Setting this file as target constraint
+set_property target_constrs_file ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc [current_fileset -constrset]
+
+# Saving previous constraints to file
+save_constraints -force
+
+# Timing constraints
+create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
+
 #set_false_path -from [get_clocks [list                              \
 #  [get_clocks -of_objects                                           \
 #  [get_pins design_1_i/clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0]]]] -to \

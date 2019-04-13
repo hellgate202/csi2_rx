@@ -28,8 +28,7 @@ typedef struct packed {
 
 logic          rx_clk;
 logic          rx_rst;
-logic          clk_loss_rst_d1;
-logic          clk_loss_srst;
+logic          clk_loss_rst;
 logic          rx_clk_present;
 logic          phy_rst;
 logic [31 : 0] phy_data;
@@ -56,7 +55,7 @@ axi4_stream_if #(
   .DATA_WIDTH ( 32             )
 ) csi2_pkt_rx_clk_if (
   .aclk       ( rx_clk         ),
-  .aresetn    ( !clk_loss_srst )
+  .aresetn    ( !clk_loss_rst  )
 );
 
 axi4_stream_if #(
@@ -80,12 +79,6 @@ axi4_stream_if #(
   .aresetn    ( !px_srst_i )
 );
 
-always_ff @( posedge rx_clk )
-  begin
-    clk_loss_rst_d1 <= rx_rst;
-    clk_loss_srst   <= clk_loss_rst_d1;
-  end
-
 assign rx_rst            = !rx_clk_present;
 assign pkt_error         = header_error && !header_error_corrected;
 assign header_err_o      = header_valid && header_error;
@@ -107,7 +100,7 @@ dphy_slave #(
   .ref_clk_i        ( ref_clk_i      ),
   .srst_i           ( ref_srst_i     ),
   .phy_rst_i        ( phy_rst        ),
-  .rx_clk_present_o ( rx_clk_present ),
+  .clk_loss_rst_o   ( clk_loss_rst   ),
   .data_o           ( phy_data       ),
   .clk_o            ( rx_clk         ),
   .valid_o          ( phy_data_valid )
@@ -115,7 +108,7 @@ dphy_slave #(
 
 csi2_hamming_dec header_corrector (
   .clk_i             ( rx_clk                   ),
-  .srst_i            ( clk_loss_srst            ),
+  .srst_i            ( clk_loss_rst             ),
   .valid_i           ( phy_data_valid           ),
   .data_i            ( phy_data                 ),
   .pkt_done_i        ( phy_rst                  ),
@@ -132,7 +125,7 @@ assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
 
 csi2_to_axi4_stream axi4_conv (
   .clk_i     ( rx_clk                   ),
-  .srst_i    ( clk_loss_srst            ),
+  .srst_i    ( clk_loss_rst             ),
   .enable_i  ( enable_i                 ),
   .data_i    ( corrected_phy_data       ),
   .valid_i   ( corrected_phy_data_valid ),
@@ -143,7 +136,7 @@ csi2_to_axi4_stream axi4_conv (
 
 csi2_crc_calc crc_calc (
   .clk_i        ( rx_clk             ),
-  .srst_i       ( clk_loss_srst      ),
+  .srst_i       ( clk_loss_rst       ),
   .csi2_pkt_i   ( csi2_pkt_rx_clk_if ),
   .crc_passed_o ( crc_passed         ),
   .crc_failed_o ( crc_failed         )

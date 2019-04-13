@@ -1,7 +1,7 @@
 module dphy_byte_align
 (
   input                clk_i,
-  input                rst_i,
+  input                srst_i,
   input        [7 : 0] unaligned_byte_i,
   input                reset_align_i,
   input                hs_data_valid_i,
@@ -20,7 +20,7 @@ logic [3 : 0]  align_shift;
 logic          sync_done;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     begin
       unaligned_byte_d1 <= '0;
       unaligned_byte_d2 <= '0;
@@ -50,7 +50,7 @@ always_comb
   end
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     begin
       align_shift <= 3'd0;
       sync_done   <= 1'b0;
@@ -66,7 +66,7 @@ always_ff @( posedge clk_i )
         sync_done <= 1'b0;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     valid_o <= 1'b0;
   else
     if( reset_align_i || !hs_data_valid_i)
@@ -75,7 +75,7 @@ always_ff @( posedge clk_i )
       valid_o <= sync_done;
 
 always_ff @( posedge clk_i )
-  if( rst_i )
+  if( srst_i )
     aligned_byte_o <= '0;
   else
     for( bit [3:0] i = 4'd0; i < 4'd8; i++ )
