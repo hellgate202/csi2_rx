@@ -30,6 +30,8 @@ logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
 logic                             reset_align;
 logic [DATA_LANES - 1 : 0][7 : 0] word_data;
 logic [DATA_LANES - 1 : 0]        hs_data_valid;
+logic [DATA_LANES - 1 : 0]        hs_data_valid_d1;
+logic [DATA_LANES - 1 : 0]        hs_data_valid_d2;
 logic                             word_valid;
 
 assign clk_o          = byte_clk;
@@ -58,6 +60,12 @@ always_ff @( posedge byte_clk )
   begin
     clk_loss_rst_d1 <= !rx_clk_present;
     clk_loss_rst_d2 <= clk_loss_rst_d1;
+  end
+
+always_ff @( posedge byte_clk )
+  begin
+    hs_data_valid_d1 <= hs_data_valid;
+    hs_data_valid_d2 <= hs_data_valid_d1;
   end
 
 generate
@@ -103,7 +111,7 @@ generate
         .srst_i           ( clk_loss_rst_d2       ),
         .unaligned_byte_i ( byte_data[i]          ),
         .reset_align_i    ( reset_align           ),
-        .hs_data_valid_i  ( hs_data_valid[i]      ),
+        .hs_data_valid_i  ( hs_data_valid_d2[i]   ),
         .valid_o          ( aligned_byte_valid[i] ),
         .aligned_byte_o   ( aligned_byte_data[i]  )
       );
