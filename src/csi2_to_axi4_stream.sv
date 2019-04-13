@@ -30,7 +30,7 @@ always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     disable_flag <= 1'b0;
   else
-    if( ( !pkt_running && !header_valid || lass_word ) && !enable_i )
+    if( ( !pkt_running && !header_valid || last_word ) && !enable_i )
       disable_flag <= 1'b1;
     else
       if( enable_i )

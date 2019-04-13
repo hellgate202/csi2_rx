@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>hellgate202</spirit:vendor>
+  <spirit:vendor>hellgate</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>csi2_rx</spirit:name>
+  <spirit:name>csi2_2_lane_rx</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>video</spirit:name>
       <spirit:displayName>video</spirit:displayName>
-      <spirit:description>AXI4-Stream Video Interface</spirit:description>
+      <spirit:description>AXI4 Stream Video Output</spirit:description>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="axis_rtl" spirit:version="1.0"/>
       <spirit:master/>
@@ -56,157 +56,9 @@
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>sccb_ctrl</spirit:name>
-      <spirit:displayName>sccb_ctrl</spirit:displayName>
-      <spirit:description>Serial Camera Control Bus AXI4-Lite</spirit:description>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm_rtl" spirit:version="1.0"/>
-      <spirit:slave>
-        <spirit:memoryMapRef spirit:memoryMapRef="sccb_ctrl"/>
-      </spirit:slave>
-      <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>AWADDR</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_awaddr_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>AWVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_awvalid_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>AWREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_awready_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>WDATA</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_wdata_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>WSTRB</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_wstrb_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>WVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_wvalid_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>WREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_wready_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>BRESP</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_bresp_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>BVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_bvalid_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>BREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_bready_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>ARADDR</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_araddr_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>ARVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_arvalid_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>ARREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_arready_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>RDATA</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_rdata_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>RRESP</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_rresp_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>RVALID</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_rvalid_o</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>RREADY</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>sccb_ctrl_rready_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-      </spirit:portMaps>
-    </spirit:busInterface>
-    <spirit:busInterface>
       <spirit:name>csi2_csr</spirit:name>
       <spirit:displayName>csi2_csr</spirit:displayName>
-      <spirit:description>CSI-2 Control and Status Registers</spirit:description>
+      <spirit:description>AXI4-Lite CSR</spirit:description>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm_rtl" spirit:version="1.0"/>
       <spirit:slave>
@@ -352,6 +204,154 @@
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
+      <spirit:name>sccb_ctrl</spirit:name>
+      <spirit:displayName>sccb_ctrl</spirit:displayName>
+      <spirit:description>AXI4-Lite Accsess to Sensor Registers</spirit:description>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm_rtl" spirit:version="1.0"/>
+      <spirit:slave>
+        <spirit:memoryMapRef spirit:memoryMapRef="sccb_ctrl"/>
+      </spirit:slave>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWADDR</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_awaddr_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_awvalid_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_awready_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WDATA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_wdata_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WSTRB</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_wstrb_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_wvalid_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_wready_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BRESP</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_bresp_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_bvalid_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_bready_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARADDR</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_araddr_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_arvalid_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_arready_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RDATA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_rdata_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RRESP</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_rresp_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_rvalid_o</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sccb_ctrl_rready_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
       <spirit:name>ref_clk_i</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
@@ -395,7 +395,7 @@
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_BUSIF">csi2_csr:sccb_ctrl:video</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_BUSIF">video:csi2_csr:sccb_ctrl</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -434,28 +434,28 @@
   </spirit:busInterfaces>
   <spirit:memoryMaps>
     <spirit:memoryMap>
-      <spirit:name>sccb_ctrl</spirit:name>
-      <spirit:displayName>sccb_ctrl</spirit:displayName>
-      <spirit:description>Serial Camera Control Bus</spirit:description>
+      <spirit:name>csi2_csr</spirit:name>
+      <spirit:displayName>csi2_csr</spirit:displayName>
+      <spirit:description>Control and Status Registers</spirit:description>
       <spirit:addressBlock>
-        <spirit:name>sccb_regs</spirit:name>
-        <spirit:displayName>sccb_regs</spirit:displayName>
-        <spirit:description>Sensor Registers</spirit:description>
+        <spirit:name>csi2_csr</spirit:name>
+        <spirit:displayName>csi2_csr</spirit:displayName>
+        <spirit:description>Control and Status Registers</spirit:description>
         <spirit:baseAddress spirit:format="long">0</spirit:baseAddress>
-        <spirit:range spirit:format="long">65536</spirit:range>
+        <spirit:range spirit:format="long">4096</spirit:range>
         <spirit:width spirit:format="long">0</spirit:width>
       </spirit:addressBlock>
     </spirit:memoryMap>
     <spirit:memoryMap>
-      <spirit:name>csi2_csr</spirit:name>
-      <spirit:displayName>csi2_csr</spirit:displayName>
-      <spirit:description>CSI IP-core CSR</spirit:description>
+      <spirit:name>sccb_ctrl</spirit:name>
+      <spirit:displayName>sccb_ctrl</spirit:displayName>
+      <spirit:description>Accsess to Sensor CSR</spirit:description>
       <spirit:addressBlock>
-        <spirit:name>csi2_csr</spirit:name>
-        <spirit:displayName>csi2_csr</spirit:displayName>
-        <spirit:description>IP-core Registers</spirit:description>
+        <spirit:name>sccb_ctrl</spirit:name>
+        <spirit:displayName>sccb_ctrl</spirit:displayName>
+        <spirit:description>Accsess to Sensor CSR</spirit:description>
         <spirit:baseAddress spirit:format="long">0</spirit:baseAddress>
-        <spirit:range spirit:format="long">4096</spirit:range>
+        <spirit:range spirit:format="long">65536</spirit:range>
         <spirit:width spirit:format="long">0</spirit:width>
       </spirit:addressBlock>
     </spirit:memoryMap>
@@ -467,14 +467,14 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>csi2_rx_wrap</spirit:modelName>
+        <spirit:modelName>csi2_2_lane_rx_wrap</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c84c5d7d</spirit:value>
+            <spirit:value>4dee74a3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -483,14 +483,14 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>csi2_rx_wrap</spirit:modelName>
+        <spirit:modelName>csi2_2_lane_rx_wrap</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c84c5d7d</spirit:value>
+            <spirit:value>4dee74a3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -504,12 +504,64 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>49595e84</spirit:value>
+            <spirit:value>f92e9879</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
     </spirit:views>
     <spirit:ports>
+      <spirit:port>
+        <spirit:name>ref_clk_i</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>px_clk_i</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ref_srst_i</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>px_srst_i</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
       <spirit:port>
         <spirit:name>dphy_clk_p_i</spirit:name>
         <spirit:wire>
@@ -567,7 +619,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.DATA_LANES&apos;)) - 1)">1</spirit:left>
+            <spirit:left spirit:format="long">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -584,7 +636,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.DATA_LANES&apos;)) - 1)">1</spirit:left>
+            <spirit:left spirit:format="long">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -601,7 +653,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.DATA_LANES&apos;)) - 1)">1</spirit:left>
+            <spirit:left spirit:format="long">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -618,64 +670,12 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.DATA_LANES&apos;)) - 1)">1</spirit:left>
+            <spirit:left spirit:format="long">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>ref_clk_i</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>px_clk_i</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>ref_srst_i</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>px_srst_i</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -1241,6 +1241,9 @@
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">1</spirit:defaultValue>
+          </spirit:driver>
         </spirit:wire>
       </spirit:port>
       <spirit:port>
@@ -1339,385 +1342,372 @@
         </spirit:wire>
       </spirit:port>
     </spirit:ports>
-    <spirit:modelParameters>
-      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="int">
-        <spirit:name>DATA_LANES</spirit:name>
-        <spirit:displayName>Data Lanes</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.DATA_LANES">2</spirit:value>
-      </spirit:modelParameter>
-    </spirit:modelParameters>
   </spirit:model>
   <spirit:fileSets>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
+        <spirit:name>lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
+        <spirit:name>lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/bin2gray.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/bin2gray.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/cam_pwup.sv</spirit:name>
+        <spirit:name>src/cam_pwup.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/clk_detect.sv</spirit:name>
+        <spirit:name>src/clk_detect.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/ip/crc_calc/src/crc_calc.sv</spirit:name>
+        <spirit:name>ip/crc_calc/src/crc_calc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_crc_calc.sv</spirit:name>
+        <spirit:name>src/csi2_crc_calc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_data_types_pkg.sv</spirit:name>
+        <spirit:name>src/csi2_csr_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_err_bit_pos_pkg.sv</spirit:name>
+        <spirit:name>src/csi2_csr.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_hamming_dec.sv</spirit:name>
+        <spirit:name>src/csi2_data_types_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_pkt_handler.sv</spirit:name>
+        <spirit:name>src/csi2_err_bit_pos_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_px_serializer.sv</spirit:name>
+        <spirit:name>src/csi2_hamming_dec.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_raw10_32b_40b_gbx.sv</spirit:name>
+        <spirit:name>src/csi2_pkt_handler.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_rx.sv</spirit:name>
+        <spirit:name>src/csi2_px_serializer.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_to_axi4_stream.sv</spirit:name>
+        <spirit:name>src/csi2_raw10_32b_40b_gbx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/dc_fifo.sv</spirit:name>
+        <spirit:name>src/csi2_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_32b_map.sv</spirit:name>
+        <spirit:name>src/csi2_stat_acc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_byte_align.sv</spirit:name>
+        <spirit:name>src/csi2_to_axi4_stream.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_hs_clk_rx.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/dc_fifo.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_hs_data_rx.sv</spirit:name>
+        <spirit:name>src/dphy_32b_map.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_settle_ignore.sv</spirit:name>
+        <spirit:name>src/dphy_byte_align.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_slave.sv</spirit:name>
+        <spirit:name>src/dphy_hs_clk_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_word_align.sv</spirit:name>
+        <spirit:name>src/dphy_hs_data_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
+        <spirit:name>src/dphy_settle_ignore.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/gray2bin.sv</spirit:name>
+        <spirit:name>src/dphy_slave.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/i2c_lib/src/i2c_pkg.sv</spirit:name>
+        <spirit:name>src/dphy_word_align.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/i2c_lib/src/i2c_master_phy.sv</spirit:name>
+        <spirit:name>ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/sccb_master.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/gray2bin.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_rx_wrap.sv</spirit:name>
+        <spirit:name>lib/i2c_lib/src/i2c_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_07cdfbf0</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>lib/i2c_lib/src/i2c_master_phy.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/sccb_master.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/csi2_2_lane_rx_wrap.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_3529b8da</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
+        <spirit:name>lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
+        <spirit:name>lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/bin2gray.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/bin2gray.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/cam_pwup.sv</spirit:name>
+        <spirit:name>src/cam_pwup.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/clk_detect.sv</spirit:name>
+        <spirit:name>src/clk_detect.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/ip/crc_calc/src/crc_calc.sv</spirit:name>
+        <spirit:name>ip/crc_calc/src/crc_calc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_crc_calc.sv</spirit:name>
+        <spirit:name>src/csi2_crc_calc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_data_types_pkg.sv</spirit:name>
+        <spirit:name>src/csi2_csr_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_err_bit_pos_pkg.sv</spirit:name>
+        <spirit:name>src/csi2_csr.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_hamming_dec.sv</spirit:name>
+        <spirit:name>src/csi2_data_types_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_pkt_handler.sv</spirit:name>
+        <spirit:name>src/csi2_err_bit_pos_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_px_serializer.sv</spirit:name>
+        <spirit:name>src/csi2_hamming_dec.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_raw10_32b_40b_gbx.sv</spirit:name>
+        <spirit:name>src/csi2_pkt_handler.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_rx.sv</spirit:name>
+        <spirit:name>src/csi2_px_serializer.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_to_axi4_stream.sv</spirit:name>
+        <spirit:name>src/csi2_raw10_32b_40b_gbx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/dc_fifo.sv</spirit:name>
+        <spirit:name>src/csi2_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_32b_map.sv</spirit:name>
+        <spirit:name>src/csi2_stat_acc.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_byte_align.sv</spirit:name>
+        <spirit:name>src/csi2_to_axi4_stream.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_hs_clk_rx.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/dc_fifo.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_hs_data_rx.sv</spirit:name>
+        <spirit:name>src/dphy_32b_map.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_settle_ignore.sv</spirit:name>
+        <spirit:name>src/dphy_byte_align.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_slave.sv</spirit:name>
+        <spirit:name>src/dphy_hs_clk_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/dphy_word_align.sv</spirit:name>
+        <spirit:name>src/dphy_hs_data_rx.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
+        <spirit:name>src/dphy_settle_ignore.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/fifo_lib/src/gray2bin.sv</spirit:name>
+        <spirit:name>src/dphy_slave.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/i2c_lib/src/i2c_pkg.sv</spirit:name>
+        <spirit:name>src/dphy_word_align.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/lib/i2c_lib/src/i2c_master_phy.sv</spirit:name>
+        <spirit:name>ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/sccb_master.sv</spirit:name>
+        <spirit:name>lib/fifo_lib/src/gray2bin.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../../../../Users/hellg/Documents/fpga/csi2/src/csi2_rx_wrap.sv</spirit:name>
+        <spirit:name>lib/i2c_lib/src/i2c_pkg.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>lib/i2c_lib/src/i2c_master_phy.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/sccb_master.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/csi2_2_lane_rx_wrap.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/csi2_rx_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/csi2_2_lane_rx_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_49595e84</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f92e9879</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>CSI-2 Receiver to AXI4-Stream Video</spirit:description>
+  <spirit:description>CSI-2 2 Lane RX</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
-      <spirit:name>DATA_LANES</spirit:name>
-      <spirit:displayName>Data Lanes</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.DATA_LANES">2</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">csi2_rx_wrap_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">csi2_2_lane_rx_wrap_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:supportedFamilies>
-        <xilinx:family xilinx:lifeCycle="Production">virtex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qvirtex7</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">kintex7</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">kintex7l</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qkintex7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qkintex7l</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">artix7</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">artix7l</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">aartix7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qartix7</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">zynq</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qzynq</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">azynq</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">spartan7</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">aspartan7</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexu</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">zynquplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexuplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">virtexuplusHBM</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintexuplus</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">kintexu</xilinx:family>
       </xilinx:supportedFamilies>
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>CSI-2 RX</xilinx:displayName>
+      <xilinx:displayName>CSI-2 2 Lane RX</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2019-04-11T18:59:58Z</xilinx:coreCreationDateTime>
+      <xilinx:vendorURL>https://github.com/hellgate202</xilinx:vendorURL>
+      <xilinx:coreRevision>2</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2019-04-13T12:36:48Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2151fd4d_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ee5f26c_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ed45ba9_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c487433_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@44811307_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@303efa80_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@31a01ca8_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@ab29e72_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@663ab690_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@205718ec_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2be9d5f7_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4490a398_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1bed2418_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@49257db7_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6763059c_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cbe8081_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4116afe4_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@35f16549_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@19eb318c_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5773883b_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e21e0b2_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@22bb6d9f_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5856ef6d_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7892393d_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@28f28307_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@173d9b04_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@70ce232a_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7243bbe6_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@452a5902_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f170ee5_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2cd56f54_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c397626_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2795369c_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ccf67ad_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@36fc9160_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1687dd05_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4abbd4fe_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7608a5b2_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5548c5f_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e3e64c7_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@67e49dd3_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d883b96_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d0ab2f6_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4559a2d3_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b22c014_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@731d1c07_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@45b9a3bc_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b1508fc_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@347e254a_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@18aab3aa_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d668b30_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@ff3f660_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@70bcc771_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e7f404_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@f786fdf_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f4283da_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d0a5376_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5cc427b7_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f1431cb_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@32487f24_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e0dec89_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6cd2367c_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6596bec0_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@39f27c22_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a2156bb_ARCHIVE_LOCATION">c:/users/hellg/documents/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31b27a58_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@8cafe23_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3395105a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@258d6c81_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c6260f1_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4d261b9f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@e495bbd_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7952dbd5_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@406f670b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51bf6266_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25dbdba7_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@62f5a74d_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@502c37a2_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ee814a6_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e32d164_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5dac235f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57f4bec2_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f8581a6_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14c8c5d1_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15979e29_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22692f84_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a2b705a_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@336adde9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d7d3353_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f52e4f9_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@475b5942_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67be9c06_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@bc1a062_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fda5768_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1558bdd_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e093c22_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2efa9863_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e53a6f3_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@583763e7_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@d7382cc_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@42d79425_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ae73957_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16b5857f_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cec9e2d_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@151f5670_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6931c392_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53b6efe4_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@207e4bed_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3233138_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@10f3b37e_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3159d0ee_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@77353650_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28c1413b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32791dd5_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a84f78b_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@318baa44_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="507953f0"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="a94aa02f"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c148e7e1"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="29a523bc"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="7c5fa99c"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="2031a79f"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="3ea653cb"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="d3cfb502"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d53b6c01"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="549f3b9a"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="69502da3"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

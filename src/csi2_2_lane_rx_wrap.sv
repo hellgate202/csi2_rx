@@ -179,7 +179,7 @@ csi2_rx #(
   .lane_delay_i      ( lane_delay       ),
   .header_err_o      ( header_err       ),
   .corr_header_err_o ( corr_header_err  ),
-  .crc_error_o       ( crc_err          ),
+  .crc_err_o         ( crc_err          ),
   .video_o           ( video            )
 );
 
@@ -204,11 +204,14 @@ csi2_stat_acc csi2_stat_acc
 csi2_csr csi2_csr
 (
   .clk_i                 ( px_clk_i            ),
-  .px_srst_i             ( px_srst_i           ),
+  .srst_i                ( px_srst_i           ),
   .csr_if                ( csi2_csr_if         ),
-  .clear_stat_o          ( clear_statt         ),
+  .clear_stat_o          ( clear_stat          ),
   .phy_en_o              ( phy_en              ),
   .sccb_slave_addr_o     ( sccb_slave_addr     ),
+  .lane_0_delay_o        ( lane_0_delay        ),
+  .lane_1_delay_o        ( lane_1_delay        ),
+  .delay_act_o           ( delay_act           ),
   .header_err_cnt_i      ( header_err_cnt      ),
   .corr_header_err_cnt_i ( corr_header_err_cnt ),
   .crc_err_cnt_i         ( crc_err_cnt         ),

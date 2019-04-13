@@ -11,7 +11,7 @@ module csi2_hamming_dec
   output logic          error_corrected_o,
   output logic          header_valid_o,
   output logic [31 : 0] data_o,
-  output logic          valid_o,
+  output logic          valid_o
 );
 
 logic [5 : 0]         generated_parity;

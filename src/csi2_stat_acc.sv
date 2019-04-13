@@ -1,19 +1,19 @@
 module csi2_stat_acc
 (
-  input             clk_i,
-  input             srst_i,
-  input             clear_stat_i,
-  axi4_stream.slave video_i,
-  input             header_err_i,
-  input             corr_header_err_i,
-  input             crc_err_i,
-  output [31 : 0]   header_err_cnt_o,
-  output [31 : 0]   corr_header_err_cnt_o,
-  output [31 : 0]   crc_err_cnt_o,
-  output [31 : 0]   max_ln_per_frame_o,
-  output [31 : 0]   min_ln_per_frame_o,
-  output [31 : 0]   max_px_per_ln_o,
-  output [31 : 0]   min_px_per_ln_o  
+  input                clk_i,
+  input                srst_i,
+  input                clear_stat_i,
+  axi4_stream_if.slave video_i,
+  input                header_err_i,
+  input                corr_header_err_i,
+  input                crc_err_i,
+  output [31 : 0]      header_err_cnt_o,
+  output [31 : 0]      corr_header_err_cnt_o,
+  output [31 : 0]      crc_err_cnt_o,
+  output [31 : 0]      max_ln_per_frame_o,
+  output [31 : 0]      min_ln_per_frame_o,
+  output [31 : 0]      max_px_per_ln_o,
+  output [31 : 0]      min_px_per_ln_o  
 );
 
 logic [31 : 0] header_err_cnt;
@@ -113,7 +113,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     max_ln_per_frame <= '0;
   else
     if( clear_stat_i )
-      max_ln_per_frame_o <= '0;
+      max_ln_per_frame <= '0;
     else
       if( video_i.tvalid && video_i.tready && video_i.tuser )
         if( ln_cnt > max_ln_per_frame )

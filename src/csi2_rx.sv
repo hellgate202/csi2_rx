@@ -94,8 +94,7 @@ assign corr_header_err_o = header_valid && header_error &&
 assign crc_err_o         = crc_failed;
 
 dphy_slave #(
-  .DATA_LANES       ( DATA_LANES     ),
-  .DELAY            ( DELAY          )
+  .DATA_LANES       ( DATA_LANES     )
 ) phy (
   .dphy_clk_p_i     ( dphy_clk_p_i   ),
   .dphy_clk_n_i     ( dphy_clk_n_i   ),
