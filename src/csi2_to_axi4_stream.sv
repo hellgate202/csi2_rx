@@ -18,6 +18,8 @@ logic          short_pkt;
 logic          long_pkt;
 logic [15 : 0] byte_cnt, byte_cnt_comb;
 logic          disable_flag;
+logic          enable_d1;
+logic          enable_d2;
 
 assign header_valid = valid_i && !valid_d1 && !error_i && 
                       !pkt_running;
@@ -28,12 +30,24 @@ assign phy_rst_o    = short_pkt || last_word || error_i || disable_flag;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
+    begin
+      enable_d1 <= '0;
+      enable_d2 <= '0;
+    end
+  else
+    begin
+      enable_d1 <= enable_i;
+      enable_d2 <= enable_d1;
+    end
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
     disable_flag <= 1'b0;
   else
-    if( ( !pkt_running && !header_valid || last_word ) && !enable_i )
+    if( ( !pkt_running && !header_valid || last_word ) && !enable_d2 )
       disable_flag <= 1'b1;
     else
-      if( enable_i )
+      if( enable_d2 )
         disable_flag <= 1'b0;
 
 always_ff @( posedge clk_i )

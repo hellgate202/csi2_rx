@@ -16,6 +16,33 @@ module csi2_stat_acc
   output [31 : 0]      min_px_per_ln_o  
 );
 
+logic header_err_d1;
+logic header_err_d2;
+logic corr_header_err_d1;
+logic corr_header_err_d2;
+logic crc_err_d1;
+logic crc_err_d2;
+
+always_ff @( posedge clk_i, posedge srst_i )
+  if( srst_i )
+    begin
+      header_err_d1      <= '0; 
+      header_err_d1      <= '0; 
+      corr_header_err_d1 <= '0; 
+      corr_header_err_d2 <= '0; 
+      crc_err_d1         <= '0; 
+      crc_err_d2         <= '0; 
+    end
+  else
+    begin
+      header_err_d1      <= header_err_i;
+      header_err_d1      <= header_err_d2;
+      corr_header_err_d1 <= corr_header_err_i;
+      corr_header_err_d2 <= corr_header_err_d1;
+      crc_err_d1         <= crc_err_i;
+      crc_err_d2         <= crc_err_d1;
+    end
+
 logic [31 : 0] header_err_cnt;
 logic [31 : 0] corr_header_err_cnt;
 logic [31 : 0] crc_err_cnt;
@@ -42,7 +69,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       header_err_cnt <= '0;
     else
-      if( header_err_i )
+      if( header_err_d2 )
         header_err_cnt <= header_err_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge srst_i )
@@ -52,7 +79,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       corr_header_err_cnt <= '0;
     else
-      if( header_err_i && corr_header_err_i )
+      if( header_err_d2 && corr_header_err_d2 )
         corr_header_err_cnt <= corr_header_err_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge srst_i )
@@ -62,7 +89,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       crc_err_cnt <= '0;
     else
-      if( crc_err_i )
+      if( crc_err_d2 )
         crc_err_cnt <= crc_err_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge srst_i )

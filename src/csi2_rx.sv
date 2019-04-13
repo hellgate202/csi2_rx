@@ -98,7 +98,7 @@ dphy_slave #(
   .delay_act_i      ( delay_act_i    ),
   .lane_delay_i     ( lane_delay_i   ),
   .ref_clk_i        ( ref_clk_i      ),
-  .srst_i           ( ref_srst_i     ),
+  .px_clk_i         ( px_clk_i       ),
   .phy_rst_i        ( phy_rst        ),
   .clk_loss_rst_o   ( clk_loss_rst   ),
   .data_o           ( phy_data       ),

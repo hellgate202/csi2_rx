@@ -11,6 +11,7 @@ module dphy_slave #(
   input  [DATA_LANES - 1 : 0][4 : 0] lane_delay_i,
   input                              ref_clk_i,
   input                              srst_i,
+  input                              px_clk_i,
   input                              phy_rst_i,
   output                             clk_loss_rst_o,
   output [31 : 0]                    data_o,
@@ -52,7 +53,7 @@ clk_detect #(
 ) clk_detect (
   .ref_clk_i             ( ref_clk_i      ),
   .obs_clk_i             ( byte_clk       ),
-  .srst_i                ( srst_i         ),
+  .srst_i                ( ref_srst_i     ),
   .clk_present_o         ( rx_clk_present )
 );
 
@@ -75,8 +76,8 @@ generate
         .bit_clk_i     ( bit_clk          ),
         .bit_clk_inv_i ( bit_clk_inv      ),
         .byte_clk_i    ( byte_clk         ),
-        .ref_clk_i     ( ref_clk_i        ),
-        .serdes_rst_i  ( ~rx_clk_present  ),
+        .px_clk_i      ( px_clk_i         ),
+        .serdes_rst_i  ( clk_loss_rst_d2  ),
         .delay_act_i   ( delay_act_i      ),
         .lane_delay_i  ( lane_delay_i[i]  ),
         .dphy_data_p_i ( dphy_data_p_i[i] ),
@@ -99,7 +100,7 @@ generate
       dphy_settle_ignore settle_ignore
       (
         .clk_i           ( ref_clk_i        ),
-        .srst_i          ( clk_loss_rst_d2  ),
+        .srst_i          ( ref_srst_i       ),
         .lp_data_p_i     ( lp_data_p_i[i]   ),
         .lp_data_n_i     ( lp_data_n_i[i]   ),
         .hs_data_valid_o ( hs_data_valid[i] )

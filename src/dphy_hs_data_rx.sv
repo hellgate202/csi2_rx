@@ -2,7 +2,7 @@ module dphy_hs_data_rx
 (
   input          bit_clk_i,
   input          bit_clk_inv_i,
-  input          ref_clk_i,
+  input          px_clk_i,
   input          byte_clk_i,
   input          serdes_rst_i,
   input          delay_act_i,
@@ -12,16 +12,8 @@ module dphy_hs_data_rx
   output [7 : 0] byte_data_o
 );
 
-  logic rst_d1;
-  logic rst_d2;
   logic serial_data;
   logic serial_data_d;
-
-always_ff @( posedge byte_clk_i )
-  begin
-    rst_d1 <= serdes_rst_i;
-    rst_d2 <= rst_d1;
-  end
 
 IBUFDS #(
   .DIFF_TERM    ( "FALSE"       ),
@@ -45,7 +37,7 @@ IDELAYE2 #(
 ) input_delay (
   .DATAOUT               ( serial_data_d ),
   .DATAIN                ( 1'b0          ),
-  .C                     ( ref_clk_i     ),
+  .C                     ( px_clk_i      ),
   .CE                    ( 1'b0          ),
   .INC                   ( 1'b0          ),
   .IDATAIN               ( serial_data   ),
@@ -101,7 +93,7 @@ ISERDESE2 #(
   .DDLY              ( serial_data_d  ),
   .OFB               ( 1'b0           ),
   .OCLKB             ( 1'b0           ),
-  .RST               ( rst_d2         ),
+  .RST               ( serdes_rst_i   ),
   .SHIFTIN1          ( 1'b0           ),
   .SHIFTIN2          ( 1'b0           )
 );
