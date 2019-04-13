@@ -54,7 +54,7 @@ set_property -dict [list                             \
   CONFIG.PCW_TTC1_CLK0_PERIPHERAL_CLKSRC {CPU_1X}    \
   CONFIG.PCW_TTC1_CLK1_PERIPHERAL_CLKSRC {CPU_1X}    \
   CONFIG.PCW_TTC1_CLK2_PERIPHERAL_CLKSRC {CPU_1X}]   \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # DDR Configuration
 set_property -dict [list                                                \
@@ -94,14 +94,14 @@ set_property -dict [list                                                \
   CONFIG.PCW_DDR_LPR_TO_CRITICAL_PRIORITY_LEVEL   {2}                   \
   CONFIG.PCW_DDR_HPR_TO_CRITICAL_PRIORITY_LEVEL   {15}                  \
   CONFIG.PCW_DDR_WRITE_TO_CRITICAL_PRIORITY_LEVEL {2}]                  \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # MIO Configuration
 # Bank Voltages
 set_property -dict [list                         \
   CONFIG.PCW_PRESET_BANK0_VOLTAGE {LVCMOS 3.3V}  \
   CONFIG.PCW_PRESET_BANK1_VOLTAGE {LVCMOS 1.8V}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # QSPI Flash Configuration
 set_property -dict [list                             \
@@ -129,7 +129,7 @@ set_property -dict [list                             \
   CONFIG.PCW_QSPI_GRP_FBCLK_IO         {MIO 8}       \
   CONFIG.PCW_MIO_8_IOTYPE              {LVCMOS 3.3V} \
   CONFIG.PCW_MIO_8_SLEW                {slow}]       \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # Ethernet Controller Configuration
 set_property -dict [list \
@@ -180,7 +180,7 @@ set_property -dict [list \
   CONFIG.PCW_MIO_53_SLEW             {slow}         \
   CONFIG.PCW_MIO_53_PULLUP           {enabled}      \
   CONFIG.PCW_ENET1_PERIPHERAL_ENABLE {0}]           \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
   
 # USB Controller Configuration
 set_property -dict [list                           \
@@ -223,7 +223,7 @@ set_property -dict [list                           \
   CONFIG.PCW_MIO_39_SLEW            {fast}         \
   CONFIG.PCW_MIO_39_PULLUP          {enabled}      \
   CONFIG.PCW_USB1_PERIPHERAL_ENABLE {0}]           \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # SD Controller Configuration
 set_property -dict [list                          \
@@ -255,7 +255,7 @@ set_property -dict [list                          \
   CONFIG.PCW_SD0_GRP_POW_ENABLE    {0}            \
   CONFIG.PCW_SD0_GRP_WP_ENABLE     {0}            \
   CONFIG.PCW_SD1_PERIPHERAL_ENABLE {0}]           \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # UART Controller Configuration
 set_property -dict [list                            \
@@ -269,25 +269,25 @@ set_property -dict [list                            \
   CONFIG.PCW_MIO_49_SLEW             {slow}         \
   CONFIG.PCW_MIO_49_PULLUP           {enabled}      \
   CONFIG.PCW_UART1_GRP_FULL_ENABLE   {0}]           \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # I2C Controller Configuration
 set_property -dict [list                 \
   CONFIG.PCW_I2C0_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_I2C1_PERIPHERAL_ENABLE {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # SPI Controller Configuration
 set_property -dict [list                 \
   CONFIG.PCW_SPI0_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_SPI1_PERIPHERAL_ENABLE {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # CAN Controller Configuration
 set_property -dict [list                 \
   CONFIG.PCW_CAN0_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_CAN1_PERIPHERAL_ENABLE {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # GPIO Configuration
 set_property -dict [list                              \
@@ -339,25 +339,25 @@ set_property -dict [list                              \
   CONFIG.PCW_MIO_46_PULLUP          {enabled}         \
   CONFIG.PCW_USB_RESET_POLARITY     {Active low}      \
   CONFIG.PCW_I2C_RESET_ENABLE       {0}]              \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # APU GPIO
 set_property -dict [list                 \
   CONFIG.PCW_TTC0_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_TTC1_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_WDT_PERIPHERAL_ENABLE  {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # Programmable Logic Test and Debug
 set_property -dict [list                  \
   CONFIG.PCW_TRACE_PERIPHERAL_ENABLE {0}  \
   CONFIG.PCW_PJTAG_PERIPHERAL_ENABLE {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # Fabric Interrupts
 set_property -dict [list               \
   CONFIG.PCW_USE_FABRIC_INTERRUPT {0}] \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
 # PS-PL Configuration
 set_property -dict [list                      \
@@ -396,5 +396,5 @@ set_property -dict [list                      \
   CONFIG.PCW_USE_DMA2                {0}      \
   CONFIG.PCW_USE_DMA3                {0}      \
   CONFIG.PCW_USE_CROSS_TRIGGER       {0}]     \
-[get_bd_cells processing_system7_0]
+[get_bd_cells zynq_ps]
 
