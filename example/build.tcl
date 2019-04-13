@@ -215,11 +215,19 @@ close [ open ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc 
 # Setting this file as target constraint
 set_property target_constrs_file ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc [current_fileset -constrset]
 
-# Saving previous constraints to file
-save_constraints -force
-
 # Timing constraints
 create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
+
+set_false_path -from [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[0].settle_ignore/FSM_onehot_state_reg[4]       \
+                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[1].settle_ignore/FSM_onehot_state_reg[4]}] -to \
+                     [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[0]                                   \
+                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[1]}]
+set_false_path -from [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[0]       \
+                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[1]}] -to \
+                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg]
+
+# Saving previous constraints to file
+save_constraints -force
 
 #set_false_path -from [get_clocks [list                              \
 #  [get_clocks -of_objects                                           \
