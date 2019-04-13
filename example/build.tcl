@@ -1,6 +1,3 @@
-# Start GUI
-start_gui
-
 # Project creation
 create_project csi2_zybo_z7_example . -part xc7z020clg400-1
 
@@ -260,7 +257,7 @@ launch_runs impl_1 -to_step write_bitstream -jobs 4
 wait_on_run impl_1
 
 # Export Hardware
-file mkdir ./zybo_z7_video_proc.sdk
-file copy -force ./zybo_z7_video_proc.runs/impl_1/design_1_wrapper.sysdef ./zybo_z7_video_proc.sdk/design_1_wrapper.hdf
+file mkdir ./csi2_zybo_z7_example.sdk
+file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
 
-#exit
+exit
