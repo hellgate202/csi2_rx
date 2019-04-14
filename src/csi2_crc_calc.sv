@@ -3,28 +3,37 @@ module csi2_crc_calc
   input                 clk_i,
   input                 srst_i,
   axi4_stream_if.slave  csi2_pkt_i,
-  output logic          crc_passed_o,
-  output logic          crc_failed_o
+(* mark_debug = "true" *)  output logic          crc_passed_o,
+(* mark_debug = "true" *)  output logic          crc_failed_o
 );
 
 localparam int CSI2_CRC_POLY = 16'h1021;
 
-
-logic [15 : 0] main_crc;
-logic [15 : 0] crc_8bit;
-logic [15 : 0] crc_16bit;
-logic [15 : 0] crc_24bit;
-logic          payload_in_progress;
-logic          long_pkt_payload_valid;
-logic [31 : 0] long_pkt_payload;
-logic [3 : 0]  long_pkt_payload_be;
-logic          long_pkt_eop;
-logic          long_pkt_eop_d1;
+(* mark_debug = "true" *)logic [15 : 0] main_crc;
+(* mark_debug = "true" *)logic [15 : 0] crc_8bit;
+(* mark_debug = "true" *)logic [15 : 0] crc_16bit;
+(* mark_debug = "true" *)logic [15 : 0] crc_24bit;
+(* mark_debug = "true" *)logic          payload_in_progress;
+(* mark_debug = "true" *)logic          long_pkt_payload_valid;
+(* mark_debug = "true" *)logic [31 : 0] long_pkt_payload;
+(* mark_debug = "true" *)logic [3 : 0]  long_pkt_payload_be;
+(* mark_debug = "true" *)logic          long_pkt_eop;
+(* mark_debug = "true" *)logic          long_pkt_eop_d1;
 
 assign long_pkt_payload       = csi2_pkt_i.tdata;
 assign long_pkt_payload_valid = csi2_pkt_i.tvalid && payload_in_progress;
 assign long_pkt_eop           = csi2_pkt_i.tlast && payload_in_progress;
-assign long_pkt_payload_be            = csi2_pkt_i.tstrb && payload_in_progress;
+assign long_pkt_payload_be    = csi2_pkt_i.tstrb && payload_in_progress;
+
+(* mark_debug = "true" *)logic [31 : 0] tdata;
+(* mark_debug = "true" *)logic [3 : 0]  tstrb;
+(* mark_debug = "true" *)logic          tvalid;
+(* mark_debug = "true" *)logic          tlast;
+
+assign tdata  = csi2_pkt_i.tdata;
+assign tstrb  = csi2_pkt_i.tstrb;
+assign tvalid = csi2_pkt_i.tvalid;
+assign tlast  = csi2_pkt_i.tlast;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )

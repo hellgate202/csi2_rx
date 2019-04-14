@@ -17,8 +17,8 @@ module sccb_master #(
 );
 
 logic [2 : 0]  phy_cmd;
-logic          cmd_done;
 
+logic          cmd_done;
 logic          cci_cmd;
 logic [15 : 0] sub_addr;
 logic [7 : 0]  tx_reg_data;

@@ -89,10 +89,21 @@ logic [6 : 0]        sccb_slave_addr;
 assign lane_delay[0] = lane_0_delay;
 assign lane_delay[1] = lane_1_delay;
 
-assign sccb_sda_i = sccb_sda_io;
-assign sccb_sda_o = sccb_sda_oe ? sccb_sda_o : 1'bz;
-assign sccb_scl_i = sccb_scl_io;
-assign sccb_scl_o = sccb_scl_oe ? sccb_scl_o : 1'bz;
+IOBUF sda_iobuf
+(
+  .I  ( sccb_sda_o   ),
+  .O  ( sccb_sda_i   ),
+  .T  ( !sccb_sda_oe ),
+  .IO ( sccb_sda_io  )
+);
+
+IOBUF scl_iobuf
+(
+  .I  ( sccb_scl_o   ),
+  .O  ( sccb_scl_i   ),
+  .T  ( !sccb_scl_oe ),
+  .IO ( sccb_scl_io  )
+);
 
 axi4_stream_if #(
   .DATA_WIDTH ( 16         ),

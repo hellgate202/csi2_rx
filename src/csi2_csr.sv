@@ -69,17 +69,17 @@ always_ff @( posedge clk_i, posedge srst_i )
         csr_if.rdata <= cr[csr_if.araddr >> ADDR_WORD_BITS];
       else
         if( ( csr_if.araddr >> ADDR_WORD_BITS ) < TOTAL_REGS_CNT )
-          csr_if.rdata <= sr[csr_if.araddr >> ADDR_WORD_BITS];
+          csr_if.rdata <= sr[( csr_if.araddr >> ADDR_WORD_BITS ) - TOTAL_CR_CNT];
         else
           csr_if.rdata <= '0;
 
-assign sr[HEADER_ERR_CNT_SR]      = header_err_cnt_i;
-assign sr[CORR_HEADER_ERR_CNT_SR] = corr_header_err_cnt_i;
-assign sr[CRC_ERR_CNT_SR]         = crc_err_cnt_i;
-assign sr[MAX_LN_PER_FRAME_SR]    = max_ln_per_frame_i;
-assign sr[MIN_LN_PER_FRAME_SR]    = min_ln_per_frame_i;
-assign sr[MAX_PX_PER_LN_SR]       = max_px_per_ln_i;
-assign sr[MIN_PX_PER_LN_SR]       = min_px_per_ln_i;
+assign sr[HEADER_ERR_CNT_SR - TOTAL_CR_CNT]      = header_err_cnt_i;
+assign sr[CORR_HEADER_ERR_CNT_SR - TOTAL_CR_CNT] = corr_header_err_cnt_i;
+assign sr[CRC_ERR_CNT_SR - TOTAL_CR_CNT]         = crc_err_cnt_i;
+assign sr[MAX_LN_PER_FRAME_SR - TOTAL_CR_CNT]    = max_ln_per_frame_i;
+assign sr[MIN_LN_PER_FRAME_SR - TOTAL_CR_CNT]    = min_ln_per_frame_i;
+assign sr[MAX_PX_PER_LN_SR - TOTAL_CR_CNT]       = max_px_per_ln_i;
+assign sr[MIN_PX_PER_LN_SR - TOTAL_CR_CNT]       = min_px_per_ln_i;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )

@@ -229,10 +229,10 @@ set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_
 set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
                      [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg]
 
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to \
+set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to       \
                      [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg]
 
-set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to                             \
+set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to                                 \
                      [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_wr_clk_reg[*]            \
                                  csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]       \
                                  csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]       \
@@ -244,6 +244,8 @@ set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[
                                  csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_mtstb_reg[*] \
                                  csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_wr_clk_reg[*]}]
                                  
+set_false_path -from [get_clocks [get_clocks -of_objects [get_pins csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_phy/clk_divider/O]]] -to \
+                                 [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg]
 
 # Saving previous constraints to file
 save_constraints -force
