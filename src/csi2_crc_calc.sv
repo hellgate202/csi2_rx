@@ -11,19 +11,20 @@ localparam int CSI2_CRC_POLY = 16'h1021;
 
 (* mark_debug = "true" *)logic [15 : 0] main_crc;
 (* mark_debug = "true" *)logic [15 : 0] crc_8bit;
+(* mark_debug = "true" *)logic [15 : 0] crc_8bit_prev;
 (* mark_debug = "true" *)logic [15 : 0] crc_16bit;
+(* mark_debug = "true" *)logic [15 : 0] crc_16bit_prev;
 (* mark_debug = "true" *)logic [15 : 0] crc_24bit;
+(* mark_debug = "true" *)logic [15 : 0] crc_24bit_prev;
 (* mark_debug = "true" *)logic          payload_in_progress;
 (* mark_debug = "true" *)logic          long_pkt_payload_valid;
 (* mark_debug = "true" *)logic [31 : 0] long_pkt_payload;
-(* mark_debug = "true" *)logic [3 : 0]  long_pkt_payload_be;
 (* mark_debug = "true" *)logic          long_pkt_eop;
 (* mark_debug = "true" *)logic          long_pkt_eop_d1;
 
 assign long_pkt_payload       = csi2_pkt_i.tdata;
 assign long_pkt_payload_valid = csi2_pkt_i.tvalid && payload_in_progress;
 assign long_pkt_eop           = csi2_pkt_i.tlast && payload_in_progress;
-assign long_pkt_payload_be    = csi2_pkt_i.tstrb && payload_in_progress;
 
 (* mark_debug = "true" *)logic [31 : 0] tdata;
 (* mark_debug = "true" *)logic [3 : 0]  tstrb;
@@ -72,50 +73,62 @@ crc_calc #(
 
 always_comb
   begin
+    crc_8bit      = main_crc;
+    crc_8bit_prev = main_crc;
     for( int i = 0; i < 8; i++ )
       begin
-        crc_8bit[15] = main_crc[0] ^ long_pkt_payload[i];
+        crc_8bit[15] = crc_8bit_prev[0] ^ long_pkt_payload[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_8bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload[i];
+            crc_8bit[15 - j] = crc_8bit_prev[16 - j] ^ crc_8bit_prev[0] ^ 
+                               long_pkt_payload[i];
           else
-            crc_8bit[15 - j] = main_crc[16 - j];
+            crc_8bit[15 - j] = crc_8bit_prev[16 - j];
+        crc_8bit_prev = crc_8bit;
       end
   end
 
 always_comb
   begin
+    crc_16bit      = main_crc;
+    crc_16bit_prev = main_crc;
     for( int i = 0; i < 16; i++ )
       begin
-        crc_16bit[15] = main_crc[0] ^ long_pkt_payload[i];
+        crc_16bit[15] = crc_16bit_prev[0] ^ long_pkt_payload[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_16bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload[i];
+            crc_16bit[15 - j] = crc_16bit_prev[16 - j] ^ crc_16bit_prev[0] ^ 
+                                long_pkt_payload[i];
           else
-            crc_16bit[15 - j] = main_crc[16 - j];
+            crc_16bit[15 - j] = crc_16bit_prev[16 - j];
+        crc_16bit_prev = crc_16bit;
       end
   end
 
 always_comb
   begin
+    crc_24bit      = main_crc;
+    crc_24bit_prev = main_crc;
     for( int i = 0; i < 24; i++ )
       begin
-        crc_24bit[15] = main_crc[0] ^ long_pkt_payload[i];
+        crc_24bit[15] = crc_24bit_prev[0] ^ long_pkt_payload[i];
         for( int j = 1; j < 16; j++ )
           if( CSI2_CRC_POLY[j] )
-            crc_24bit[15 - j] = main_crc[16 - j] ^ main_crc[0] ^ long_pkt_payload[i];
+            crc_24bit[15 - j] = crc_24bit_prev[16 - j] ^ crc_24bit_prev[0] ^ 
+                               long_pkt_payload[i];
           else
-            crc_24bit[15 - j] = main_crc[16 - j];
+            crc_24bit[15 - j] = crc_24bit_prev[16 - j];
+        crc_24bit_prev = crc_24bit;
       end
   end
 
-assign crc_passed_o = ( long_pkt_eop_d1 &&
-                        ( ( long_pkt_payload_be == 4'b0001 && ~|crc_8bit  ) ||
-                          ( long_pkt_payload_be == 4'b0011 && ~|crc_16bit ) ||
-                          ( long_pkt_payload_be == 4'b0111 && ~|crc_24bit ) ||
-                          ( long_pkt_payload_be == 4'b1111 && ~|main_crc  ) ) );
+assign crc_passed_o = ( long_pkt_eop &&
+                        ( ( csi2_pkt_i.tstrb == 4'b0001 && crc_8bit  == '0 ) ||
+                          ( csi2_pkt_i.tstrb == 4'b0011 && crc_16bit == '0 ) ||
+                          ( csi2_pkt_i.tstrb == 4'b0111 && crc_24bit == '0 ) ||
+                          ( csi2_pkt_i.tstrb == 4'b1111 && main_crc  == '0 ) ) );
 
-assign crc_failed_o = ( long_pkt_eop_d1 && !crc_passed_o );
+assign crc_failed_o = ( long_pkt_eop && !crc_passed_o );
 
 
 endmodule
