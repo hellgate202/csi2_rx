@@ -1,27 +1,30 @@
 module csi2_stat_acc
 (
-  input                clk_i,
-  input                srst_i,
-  input                clear_stat_i,
-  axi4_stream_if.slave video_i,
-  input                header_err_i,
-  input                corr_header_err_i,
-  input                crc_err_i,
-  output [31 : 0]      header_err_cnt_o,
-  output [31 : 0]      corr_header_err_cnt_o,
-  output [31 : 0]      crc_err_cnt_o,
-  output [31 : 0]      max_ln_per_frame_o,
-  output [31 : 0]      min_ln_per_frame_o,
-  output [31 : 0]      max_px_per_ln_o,
-  output [31 : 0]      min_px_per_ln_o  
+  input           clk_i,
+  input           srst_i,
+  input           video_data_val_i,
+  input           video_eol_i,
+  input           video_frame_start_i,
+  input           video_proc_ready_i,
+  input           clear_stat_i,
+  input           header_err_i,
+  input           corr_header_err_i,
+(* mark_debug = "true" *)  input           crc_err_i,
+  output [31 : 0] header_err_cnt_o,
+  output [31 : 0] corr_header_err_cnt_o,
+  output [31 : 0] crc_err_cnt_o,
+  output [31 : 0] max_ln_per_frame_o,
+  output [31 : 0] min_ln_per_frame_o,
+  output [31 : 0] max_px_per_ln_o,
+  output [31 : 0] min_px_per_ln_o  
 );
 
 logic header_err_d1;
 logic header_err_d2;
 logic corr_header_err_d1;
 logic corr_header_err_d2;
-logic crc_err_d1;
-logic crc_err_d2;
+(* mark_debug = "true" *)logic crc_err_d1;
+(* mark_debug = "true" *)logic crc_err_d2;
 
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
@@ -45,7 +48,7 @@ always_ff @( posedge clk_i, posedge srst_i )
 
 logic [31 : 0] header_err_cnt;
 logic [31 : 0] corr_header_err_cnt;
-logic [31 : 0] crc_err_cnt;
+(* mark_debug = "true" *)logic [31 : 0] crc_err_cnt;
 
 logic [31 : 0] px_cnt;
 logic [31 : 0] max_px_per_ln;
@@ -96,8 +99,8 @@ always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     px_cnt <= '0;
   else
-    if( video_i.tvalid && video_i.tready )
-      if( video_i.tlast )
+    if( video_data_val_i && video_proc_ready_i )
+      if( video_eol_i )
         px_cnt <= '0;
       else
         px_cnt <= px_cnt + 1'b1;
@@ -109,7 +112,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       max_px_per_ln <= '0;
     else
-      if( video_i.tvalid && video_i.tready && video_i.tlast )
+      if( video_data_val_i && video_proc_ready_i && video_eol_i )
         if( ( px_cnt + 1'b1 ) > max_px_per_ln )
           max_px_per_ln <= px_cnt + 1'b1;
 
@@ -120,7 +123,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       min_px_per_ln <= '1;
     else
-      if( video_i.tvalid && video_i.tready && video_i.tlast )
+      if( video_data_val_i && video_proc_ready_i && video_eol_i )
         if( ( px_cnt + 1'b1 ) < min_px_per_ln )
           min_px_per_ln <= px_cnt + 1'b1;
 
@@ -128,11 +131,11 @@ always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     ln_cnt <= '0;
   else
-    if( video_i.tvalid && video_i.tready )
-      if( video_i.tuser )
+    if( video_data_val_i && video_proc_ready_i )
+      if( video_frame_start_i )
         ln_cnt <= '0;
       else
-        if( video_i.tlast )
+        if( video_eol_i )
           ln_cnt <= ln_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge srst_i )
@@ -142,7 +145,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       max_ln_per_frame <= '0;
     else
-      if( video_i.tvalid && video_i.tready && video_i.tuser )
+      if( video_data_val_i && video_proc_ready_i && video_frame_start_i )
         if( ln_cnt > max_ln_per_frame )
           max_ln_per_frame <= ln_cnt;
 
@@ -153,7 +156,7 @@ always_ff @( posedge clk_i, posedge srst_i )
     if( clear_stat_i )
       min_ln_per_frame <= '1;
     else
-      if( video_i.tvalid && video_i.tready && video_i.tuser )
+      if( video_data_val_i && video_proc_ready_i && video_frame_start_i )
         min_ln_per_frame <= ln_cnt;
 
 endmodule

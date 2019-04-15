@@ -1,3 +1,10 @@
+proc rd { addr } { 
+  create_hw_axi_txn read_txn -force [get_hw_axis hw_axi_1] -type READ -address $addr -len 1
+  run_hw_axi [get_hw_axi_txns read_txn]
+  return [get_property DATA [get_hw_axi_txns read_txn]]
+}
+proc wr { addr data } { run_hw_axi [create_hw_axi_txn write_txn -force [get_hw_axis hw_axi_1] -type WRITE -address $addr -len 1 -data $data] }
+
 proc count_hex_sym {hex} {
   set x 0
   if {$hex > 0} {
@@ -7,13 +14,6 @@ proc count_hex_sym {hex} {
   }
   return $x
 }
-
-proc rd { addr } { 
-  create_hw_axi_txn read_txn -force [get_hw_axis hw_axi_1] -type READ -address $addr -len 1
-  run_hw_axi [get_hw_axi_txns read_txn]
-  return [get_property DATA [get_hw_axi_txns read_txn]]
-}
-proc wr { addr data } { run_hw_axi [create_hw_axi_txn write_txn -force [get_hw_axis hw_axi_1] -type WRITE -address $addr -len 1 -data $data] }
 
 proc rd_sccb_reg { addr } {
   set sccb_addr [format %x $addr]
@@ -41,9 +41,10 @@ proc init {} {
   if { [format %x $sensor_id_reg_0] != [format %x 0x00000056] ||
        [format %x $sensor_id_reg_1] != [format %x 0x00000040] } { 
     puts "Sensor ID missmatches"
-    return 
+    return 0
   } else {
     puts "Sensor ID matches"
+    return 1
   }
   wr_sccb_reg 0x3103 0x11
   wr_sccb_reg 0x3008 0x82
@@ -96,4 +97,11 @@ proc sensor_settings {} {
   wr_sccb_reg 0x4300 0x00
   wr_sccb_reg 0x501f 0x03
   wr_sccb_reg 0x3008 0x02
+}
+
+proc run {} {
+  wr 0x00010004 0x00000001
+  wr 0x00010008 0x0000003c
+  init
+  sensor_settings
 }
