@@ -1,20 +1,26 @@
 module dphy_hs_data_rx
 (
+  // Serial clk
   input          bit_clk_i,
-  input          bit_clk_inv_i,
-  input          px_clk_i,
-  input          byte_clk_i,
-  input          serdes_rst_i,
-  input          delay_act_i,
-  input  [4 : 0] lane_delay_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
+  // Parallel clk
+  input          byte_clk_i,
+  // Clock loss rst
+  input          serdes_rst_i,
+  // Delay load
+  input          px_clk_i,
+  input          delay_act_i,
+  input  [4 : 0] lane_delay_i,
+  // Parallel data
   output [7 : 0] byte_data_o
 );
 
-  logic serial_data;
-  logic serial_data_d;
+logic serial_data;
+logic serial_data_d;
 
+// Differential to single-ended data
+// conversion
 IBUFDS #(
   .DIFF_TERM    ( "FALSE"       ),
   .IBUF_LOW_PWR ( 0             ),
@@ -25,6 +31,8 @@ IBUFDS #(
   .IB           ( dphy_data_n_i )
 );
 
+// DPHY data can be ahead of DPHY clk,
+// so we can delay it with this block
 IDELAYE2 #(
   .IDELAY_TYPE           ( "VAR_LOAD"    ),
   .DELAY_SRC             ( "IDATAIN"     ),
@@ -49,6 +57,7 @@ IDELAYE2 #(
   .REGRST                ( 1'b0          )
 );
 
+// Deserializer
 ISERDESE2 #(
   .DATA_RATE         ( "DDR"          ),
   .DATA_WIDTH        ( 8              ),
@@ -84,7 +93,7 @@ ISERDESE2 #(
   .CE2               ( 1'b1           ),
   .CLKDIVP           ( 1'b0           ),
   .CLK               ( bit_clk_i      ),
-  .CLKB              ( bit_clk_inv_i  ),
+  .CLKB              ( 1'b0           ),
   .CLKDIV            ( byte_clk_i     ),
   .OCLK              ( 1'b0           ),
   .DYNCLKDIVSEL      ( 1'b0           ),

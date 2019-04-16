@@ -1,56 +1,83 @@
+/*
+  CSI2 Receiver IP-Core
+  Consists of three logical parts
+  DPHY Receiving -> CSI2 Packet Handling -> AXI4 Video Stream
+  Conversion
+  After it has been converted into AXI4-Stream packet it passes CDC
+  to pixel frequency clock domain
+*/
+
 module csi2_rx #(
   parameter int DATA_LANES = 2
 )(
+  // DPHY inputs
   input                       dphy_clk_p_i,
   input                       dphy_clk_n_i,
   input  [DATA_LANES - 1 : 0] dphy_data_p_i,
   input  [DATA_LANES - 1 : 0] dphy_data_n_i,
   input  [DATA_LANES - 1 : 0] lp_data_p_i,
   input  [DATA_LANES - 1 : 0] lp_data_n_i,
+  // 200 MHz refernce clock
   input                       ref_clk_i,
+  input                       ref_rst_i,
+  // 74.25 MHz pixel clock
   input                       px_clk_i,
-  input                       ref_srst_i,
-  input                       px_srst_i,
+  input                       px_rst_i,
+  // Disables synchronizing of DPHY
   input                       enable_i,
+  // IDELAYE2 delay values
   input                       delay_act_i,
   input  [DATA_LANES - 1 : 0] lane_delay_i,
+  // Error signals
   output                      header_err_o,
   output                      corr_header_err_o,
   output                      crc_err_o,
+  // AXI4 Video Stream
   axi4_stream_if.master       video_o
 );
 
+// Structure to pass over CDC
 typedef struct packed {
   bit [31 : 0] tdata;
   bit [3 : 0]  tstrb;
   bit          tlast;
 } axi4_word_t;
 
+// Clock from DPHY
 logic          rx_clk;
-logic          rx_rst;
+// Asserted when clock from DPHY stops
 logic          clk_loss_rst;
-logic          rx_clk_present;
+// DPHY synchronization reset
+// Asserted if header error appears or long
+// packet has ended. Also asserted when enable
+// is deasserted
 logic          phy_rst;
+// Output from DPHY
 logic [31 : 0] phy_data;
 logic          phy_data_valid;
+// First word of long packet or short packet
 logic          header_valid;
+// Bit error in header detected
 logic          header_error;
+// Bit error in header corrected
 logic          header_error_corrected;
+// Header error uncorrected (i.e. we can't be sure how many words
+// are in packet)
 logic          pkt_error;
+// Long packet payload CRC check
 logic          crc_passed;
 logic          crc_failed;
+// Data after header corrector module
 logic [31 : 0] corrected_phy_data;
 logic          corrected_phy_data_valid;
+// Signalize that there is no data in DC FIFO
+// i.e. !valid
 logic          rx_px_cdc_empty;
+// Shor packet with frame start information detected
 logic          frame_start_pkt;
-logic          frame_end_pkt;
-logic          rst_ref_clk_d1;
-logic          rst_rx_clk_d1;
-logic          rst_px_clk_d1;
 
+// rx_clk CDC data
 axi4_word_t    pkt_word_rx_clk;
-axi4_word_t    pkt_word_px_clk;
-
 axi4_stream_if #(
   .DATA_WIDTH ( 32             )
 ) csi2_pkt_rx_clk_if (
@@ -58,28 +85,31 @@ axi4_stream_if #(
   .aresetn    ( !clk_loss_rst  )
 );
 
+// px_clk CDC data
+axi4_word_t    pkt_word_px_clk;
 axi4_stream_if #(
-  .DATA_WIDTH ( 32         )
+  .DATA_WIDTH ( 32        )
 ) csi2_pkt_px_clk_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
+// 32 bit payload without header and CRC
 axi4_stream_if #(
-  .DATA_WIDTH ( 32         )
+  .DATA_WIDTH ( 32        )
 ) payload_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
+// 40 bit payload
 axi4_stream_if #(
-  .DATA_WIDTH ( 40         )
+  .DATA_WIDTH ( 40        )
 ) payload_40b_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
-assign rx_rst            = !rx_clk_present;
 assign pkt_error         = header_error && !header_error_corrected;
 assign header_err_o      = header_valid && header_error;
 assign corr_header_err_o = header_valid && header_error &&
