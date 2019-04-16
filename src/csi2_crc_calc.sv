@@ -3,8 +3,8 @@ module csi2_crc_calc
   input                 clk_i,
   input                 srst_i,
   axi4_stream_if.slave  csi2_pkt_i,
-(* mark_debug = "true" *)  output logic          crc_passed_o,
-(* mark_debug = "true" *)  output logic          crc_failed_o
+  output logic          crc_passed_o,
+  output logic          crc_failed_o
 );
 
 localparam int CSI2_CRC_POLY = 16'h1021;

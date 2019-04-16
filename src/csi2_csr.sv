@@ -1,3 +1,16 @@
+/*
+  Module provides accsess to control and status register
+  of CSI2 IP-cores via AXI4-Lite interface
+  Status registers consists of statisticss gathered by
+  csi2_stat_acc module. Control registers allows to:
+  clear statistics;
+  dphy enable;
+  SCCB slave address;
+  data delay value passed to IDELAYE2;
+  data delay value actualization
+*/
+
+// Package with register names
 import csi2_csr_pkg::*;
 
 module csi2_csr#(
@@ -5,7 +18,7 @@ module csi2_csr#(
   parameter int ADDR_WIDTH = 8
 )(
   input              clk_i,
-  input              srst_i,
+  input              rst_i,
   axi4_lite_if.slave csr_if,
   output             clear_stat_o,
   output             phy_en_o,
@@ -28,6 +41,9 @@ assign csr_if.bresp   = 2'b00;
 assign csr_if.arready = 1'b1;
 assign csr_if.rresp   = 2'b00;
 
+// We don't have response delay so we always provide
+// write response and read data next clock cycle
+// after request
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     begin
@@ -41,14 +57,22 @@ always_ff @( posedge clk_i, posedge srst_i )
     end
 
 localparam int DATA_WIDTH_B   = DATA_WIDTH / 8;
+// How many bits in byte address occupied by one word
 localparam int ADDR_WORD_BITS = $clog2( DATA_WIDTH_B );
 
+// Control registers
 logic [TOTAL_CR_CNT - 1 : 0][DATA_WIDTH - 1 : 0] cr;
+// Status registers
 logic [TOTAL_SR_CNT - 1 : 0][DATA_WIDTH - 1 : 0] sr;
 
+// Delays to provide one clock cycle strobes
+// from control registers
 logic clear_stat_d1;
 logic delay_act_d1;
 
+// We can write only to control registers
+// We assume that awvalid and wvalid will be asserted
+// at the same clock cycle
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     cr <= '0;
@@ -60,6 +84,8 @@ always_ff @( posedge clk_i, posedge srst_i )
             if( csr_if.wstrb[j] )
               cr[i][j * 8 + 7 -: 8] <= csr_if.wdata[j * 8 + 7 -: 8];
 
+// Read logic
+// We need to find out are we reading from control or status registers
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     csr_if.rdata <= '0;
@@ -81,6 +107,7 @@ assign sr[MIN_LN_PER_FRAME_SR - TOTAL_CR_CNT]    = min_ln_per_frame_i;
 assign sr[MAX_PX_PER_LN_SR - TOTAL_CR_CNT]       = max_px_per_ln_i;
 assign sr[MIN_PX_PER_LN_SR - TOTAL_CR_CNT]       = min_px_per_ln_i;
 
+// Delays for strobe generation
 always_ff @( posedge clk_i, posedge srst_i )
   if( srst_i )
     begin
