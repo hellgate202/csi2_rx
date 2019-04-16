@@ -202,9 +202,9 @@ csi2_rx #(
   .lp_data_p_i       ( dphy_lp_data_p_i ),
   .lp_data_n_i       ( dphy_lp_data_n_i ),
   .ref_clk_i         ( ref_clk_i        ),
+  .ref_rst_i         ( ref_rst_i        ),
   .px_clk_i          ( px_clk_i         ),
-  .ref_srst_i        ( ref_rst_i        ),
-  .px_srst_i         ( px_rst_i         ),
+  .px_rst_i          ( px_rst_i         ),
   .enable_i          ( phy_en           ),
   .delay_act_i       ( delay_act        ),
   .lane_delay_i      ( lane_delay       ),
@@ -218,7 +218,7 @@ csi2_rx #(
 csi2_stat_acc csi2_stat_acc 
 (
   .clk_i                 ( px_clk_i            ),
-  .srst_i                ( px_rst_i            ),
+  .rst_i                 ( px_rst_i            ),
   .clear_stat_i          ( clear_stat          ),
   .video_data_val_i      ( video.tvalid        ),
   .video_eol_i           ( video.tlast         ),
@@ -240,7 +240,7 @@ csi2_stat_acc csi2_stat_acc
 csi2_csr csi2_csr
 (
   .clk_i                 ( px_clk_i            ),
-  .srst_i                ( px_rst_i            ),
+  .rst_i                 ( px_rst_i            ),
   .csr_if                ( csi2_csr_if         ),
   .clear_stat_o          ( clear_stat          ),
   .phy_en_o              ( phy_en              ),
