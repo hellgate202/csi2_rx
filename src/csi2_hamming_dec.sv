@@ -1,9 +1,18 @@
+/*
+  First word of each packet contains type of packet,
+  words amount and error correction code. Packet doesn't
+  have delimenters and we need to be sure that we get right
+  amount of words from header. So we have ECC here. If it is ok
+  we passes packet next, else we signalize about error
+*/
+
+// Package containing ROM values
 import csi2_err_bit_pos_pkg::*;
 
 module csi2_hamming_dec
 (
   input                 clk_i,
-  input                 srst_i,
+  input                 rst_i,
   input                 valid_i,
   input        [31 : 0] data_i,
   input                 pkt_done_i,
@@ -14,8 +23,13 @@ module csi2_hamming_dec
   output logic          valid_o
 );
 
+// Our own generated ECC
 logic [5 : 0]         generated_parity;
+// How our ECC differs from received
+// Address for ROM
 logic [5 : 0]         syndrome;
+// Syndrome defines if we can correct error
+// Error position contained in ROM
 logic [4 : 0]         err_bit_pos;
 logic [31 : 0]        data_d;
 logic                 valid_d;
@@ -33,14 +47,14 @@ assign syndrome       = generated_parity ^ data_i[29 : 24];
 assign header_valid   = valid_d && !header_passed && !pkt_done_i;
 assign header_valid_o = header_valid;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     err_bit_pos <= '1;
   else
     err_bit_pos <= err_bit_rom[syndrome];
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     header_passed <= 1'b0;
   else
     if( pkt_done_i )
@@ -49,8 +63,8 @@ always_ff @( posedge clk_i )
       if( header_valid )
         header_passed <= 1'b1;
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     error_detected <= 1'b0;
   else
     if( pkt_done_i )
@@ -61,8 +75,8 @@ always_ff @( posedge clk_i )
       else
         error_detected <= 1'b0;
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       data_d  <= '0;
       valid_d <= '0;
@@ -79,6 +93,7 @@ always_ff @( posedge clk_i )
         valid_d <= valid_i;
       end
 
+// I get this from standard. It works.
 always_comb
   begin
     generated_parity[0] = data_i[0]  ^ data_i[1]  ^ data_i[2]  ^ data_i[4]  ^ data_i[5]  ^
@@ -101,8 +116,8 @@ always_comb
                           data_i[21] ^ data_i[22] ^ data_i[23];
   end
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     error_o <= 1'b0;
   else
     if( pkt_done_i )
@@ -111,8 +126,8 @@ always_ff @( posedge clk_i )
       if( header_valid && error_detected )
         error_o <= 1'b1;
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     error_corrected_o <= 1'b0;
   else
     if( pkt_done_i )
@@ -121,8 +136,8 @@ always_ff @( posedge clk_i )
       if( header_valid && error_detected && err_bit_pos != 5'h1f )
         error_corrected_o <= 1'b1;
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     data_o <= '0;
   else
     begin
@@ -130,11 +145,11 @@ always_ff @( posedge clk_i )
       if( header_valid && error_detected && err_bit_pos != 5'h1f )
         for( int i = 0; i < 24; i++ )
           if( i == err_bit_pos )
-            data_o[i] <= ~data_d[i];
+            data_o[i] <= !data_d[i];
     end
 
-always_ff @( posedge clk_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     valid_o <= 1'b0;
   else
     if( pkt_done_i )

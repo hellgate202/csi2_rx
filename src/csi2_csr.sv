@@ -44,8 +44,8 @@ assign csr_if.rresp   = 2'b00;
 // We don't have response delay so we always provide
 // write response and read data next clock cycle
 // after request
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       csr_if.rvalid <= 1'b0;
       csr_if.bvalid <= 1'b0;
@@ -73,8 +73,8 @@ logic delay_act_d1;
 // We can write only to control registers
 // We assume that awvalid and wvalid will be asserted
 // at the same clock cycle
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     cr <= '0;
   else
     if( csr_if.awvalid && csr_if.wvalid )
@@ -86,8 +86,8 @@ always_ff @( posedge clk_i, posedge srst_i )
 
 // Read logic
 // We need to find out are we reading from control or status registers
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     csr_if.rdata <= '0;
   else
     if( csr_if.arvalid )
@@ -108,8 +108,8 @@ assign sr[MAX_PX_PER_LN_SR - TOTAL_CR_CNT]       = max_px_per_ln_i;
 assign sr[MIN_PX_PER_LN_SR - TOTAL_CR_CNT]       = min_px_per_ln_i;
 
 // Delays for strobe generation
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       clear_stat_d1 <= '0;
       delay_act_d1  <= '0;

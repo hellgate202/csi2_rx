@@ -1,3 +1,5 @@
+start_gui
+
 # Project creation
 create_project csi2_zybo_z7_example . -part xc7z020clg400-1
 
@@ -57,13 +59,13 @@ connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/
 connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/S00_ACLK]
 connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/M00_ACLK]
 connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/M01_ACLK]
-connect_bd_net [get_bd_pins ref_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/ref_srst_i]
+connect_bd_net [get_bd_pins ref_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/ref_rst_i]
 connect_bd_net [get_bd_pins px_clk_rst/peripheral_aresetn] [get_bd_pins jtag_axi/aresetn]
 connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/M00_ARESETN]
 connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/M01_ARESETN]
 connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/S00_ARESETN]
 connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/ARESETN]
-connect_bd_net [get_bd_pins px_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/px_srst_i]
+connect_bd_net [get_bd_pins px_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/px_rst_i]
 connect_bd_intf_net [get_bd_intf_pins jtag_axi/M_AXI] -boundary_type upper [get_bd_intf_pins axi_interconnect/S00_AXI]
 connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_interconnect/M00_AXI] [get_bd_intf_pins csi2_2_lane_rx/sccb_ctrl]
 connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_interconnect/M01_AXI] [get_bd_intf_pins csi2_2_lane_rx/csi2_csr]
@@ -185,9 +187,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports [list \
   sccb_sda_io_0                                 \
   sccb_scl_io_0                                 \
   cam_pwup_o_0]]
-#set_property DIFF_TERM false [get_ports dphy_data_p_i_0[0]]
-#set_property DIFF_TERM false [get_ports dphy_data_p_i_0[1]]
-#set_property DIFF_TERM false [get_ports dphy_clk_p_i_0]
 place_ports dphy_lp_clk_p_i_0       H20
 place_ports dphy_lp_clk_n_i_0       J19
 place_ports {dphy_lp_data_p_i_0[0]} L19
@@ -212,41 +211,41 @@ close [ open ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc 
 # Setting this file as target constraint
 set_property target_constrs_file ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc [current_fileset -constrset]
 
-# Timing constraints
-create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[*].settle_ignore/FSM_onehot_state_reg[4]] -to \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]]
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to       \
-                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg]
-
-set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to                                 \
-                     [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_wr_clk_reg[*]            \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]       \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]       \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_mtstb_reg[*] \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_rd_clk_reg[*]            \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_rd_clk_reg[*]            \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]       \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]       \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_mtstb_reg[*] \
-                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_wr_clk_reg[*]}]
-                                 
-set_false_path -from [get_clocks [get_clocks -of_objects [get_pins csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_phy/clk_divider/O]]] -to \
-                                 [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg]
-
+## Timing constraints
+#create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[*].settle_ignore/FSM_onehot_state_reg[4]] -to \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]]
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to       \
+#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg]
+#
+#set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to                                 \
+#                     [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_wr_clk_reg[*]            \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]       \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]       \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_mtstb_reg[*] \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_rd_clk_reg[*]            \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_rd_clk_reg[*]            \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]       \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]       \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_mtstb_reg[*] \
+#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_wr_clk_reg[*]}]
+#                                 
+#set_false_path -from [get_clocks [get_clocks -of_objects [get_pins csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_phy/clk_divider/O]]] -to \
+#                                 [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg]
+#
 # Saving previous constraints to file
 save_constraints -force
 
@@ -254,12 +253,12 @@ save_constraints -force
 launch_runs synth_1 -jobs 4
 wait_on_run synth_1
 
-# Generate bitstream
-launch_runs impl_1 -to_step write_bitstream -jobs 4
-wait_on_run impl_1
-
-# Export Hardware
-file mkdir ./csi2_zybo_z7_example.sdk
-file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
-
-exit
+## Generate bitstream
+#launch_runs impl_1 -to_step write_bitstream -jobs 4
+#wait_on_run impl_1
+#
+## Export Hardware
+#file mkdir ./csi2_zybo_z7_example.sdk
+#file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
+#
+#exit

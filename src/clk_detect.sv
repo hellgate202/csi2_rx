@@ -33,7 +33,7 @@ always_ff @( posedge obs_clk_i )
   toggle_bit <= !toggle_bit;
 
 // Metastability protection
-always_ff @( posedge ref_clk_i, rst_i )
+always_ff @( posedge ref_clk_i, posedge rst_i )
   begin
     if( rst_i )
       begin

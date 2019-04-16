@@ -1,7 +1,7 @@
 module csi2_crc_calc
 (
   input                 clk_i,
-  input                 srst_i,
+  input                 rst_i,
   axi4_stream_if.slave  csi2_pkt_i,
   output logic          crc_passed_o,
   output logic          crc_failed_o
@@ -38,8 +38,8 @@ assign tstrb  = csi2_pkt_i.tstrb;
 assign tvalid = csi2_pkt_i.tvalid;
 assign tlast  = csi2_pkt_i.tlast;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     payload_in_progress <= '0;
   else
     if( !payload_in_progress && csi2_pkt_i.tvalid &&
@@ -50,8 +50,8 @@ always_ff @( posedge clk_i, posedge srst_i )
           csi2_pkt_i.tlast )
         payload_in_progress <= 1'b0;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     long_pkt_eop_d1 <= 1'b0;
   else
     long_pkt_eop_d1 <= long_pkt_eop;
@@ -66,7 +66,7 @@ crc_calc #(
   .XOR_OUT      ( 16'h0                  )
 ) main_calc (
   .clk_i        ( clk_i                  ),
-  .rst_i        ( srst_i                 ),
+  .rst_i        ( rst_i                  ),
   .soft_reset_i ( long_pkt_eop_d1        ),
   .valid_i      ( long_pkt_payload_valid ),
   .data_i       ( long_pkt_payload       ),
@@ -137,8 +137,8 @@ assign crc_failed = ( long_pkt_eop &&
                         ( csi2_pkt_i.tstrb == 4'b1111 && main_crc  != '0 ) ) );
 
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       crc_passed_o <= '0;
       crc_failed_o <= '0;

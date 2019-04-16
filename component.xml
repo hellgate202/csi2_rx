@@ -369,7 +369,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.REF_CLK_I.ASSOCIATED_RESET">ref_srst_i</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.REF_CLK_I.ASSOCIATED_RESET">ref_rst_i</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -391,7 +391,7 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_RESET">px_srst_i</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.PX_CLK_I.ASSOCIATED_RESET">px_rst_i</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
@@ -400,7 +400,7 @@
       </spirit:parameters>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>ref_srst_i</spirit:name>
+      <spirit:name>ref_rst_i</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -410,13 +410,13 @@
             <spirit:name>RST</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>ref_srst_i</spirit:name>
+            <spirit:name>ref_rst_i</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>px_srst_i</spirit:name>
+      <spirit:name>px_rst_i</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -426,7 +426,7 @@
             <spirit:name>RST</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>px_srst_i</spirit:name>
+            <spirit:name>px_rst_i</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -537,7 +537,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ref_srst_i</spirit:name>
+        <spirit:name>ref_rst_i</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -550,7 +550,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>px_srst_i</spirit:name>
+        <spirit:name>px_rst_i</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>

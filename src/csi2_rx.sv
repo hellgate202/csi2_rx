@@ -136,9 +136,10 @@ dphy_slave #(
   .valid_o          ( phy_data_valid )
 );
 
+// Checks ECC in packet header
 csi2_hamming_dec header_corrector (
   .clk_i             ( rx_clk                   ),
-  .srst_i            ( clk_loss_rst             ),
+  .rst_i             ( clk_loss_rst             ),
   .valid_i           ( phy_data_valid           ),
   .data_i            ( phy_data                 ),
   .pkt_done_i        ( phy_rst                  ),
@@ -149,13 +150,10 @@ csi2_hamming_dec header_corrector (
   .valid_o           ( corrected_phy_data_valid )
 );
 
-assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;
-assign pkt_word_rx_clk.tstrb     = csi2_pkt_rx_clk_if.tstrb;
-assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
-
+// Also generate reset PHY signal
 csi2_to_axi4_stream axi4_conv (
   .clk_i     ( rx_clk                   ),
-  .srst_i    ( clk_loss_rst             ),
+  .rst_i     ( clk_loss_rst             ),
   .enable_i  ( enable_i                 ),
   .data_i    ( corrected_phy_data       ),
   .valid_i   ( corrected_phy_data_valid ),
@@ -164,14 +162,20 @@ csi2_to_axi4_stream axi4_conv (
   .pkt_o     ( csi2_pkt_rx_clk_if       )
 );
 
+assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;
+assign pkt_word_rx_clk.tstrb     = csi2_pkt_rx_clk_if.tstrb;
+assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
+
+// Long packet payload crc calculation
 csi2_crc_calc crc_calc (
   .clk_i        ( rx_clk             ),
-  .srst_i       ( clk_loss_rst       ),
+  .rst_i        ( clk_loss_rst       ),
   .csi2_pkt_i   ( csi2_pkt_rx_clk_if ),
   .crc_passed_o ( crc_passed         ),
   .crc_failed_o ( crc_failed         )
 );
 
+// CDC from rx_clk to px_clk
 dc_fifo #(
   .DATA_WIDTH      ( 37                        ),
   .WORDS_AMOUNT    ( 256                       )
@@ -188,7 +192,7 @@ dc_fifo #(
   .rd_used_words_o (                           ),
   .rd_full_o       (                           ),
   .rd_empty_o      ( rx_px_cdc_empty           ),
-  .rst_i           ( px_srst_i                 )
+  .rst_i           ( px_rst_i                  )
 );
 
 assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
@@ -196,28 +200,32 @@ assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
 assign csi2_pkt_px_clk_if.tlast  = pkt_word_px_clk.tlast;
 assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty;
 
+// Module let only long packets through and
+// detects frame start short packets
 csi2_pkt_handler payload_extractor
 (
   .clk_i         ( px_clk_i           ),
-  .srst_i        ( px_srst_i          ),
+  .rst_i         ( px_rst_i           ),
   .pkt_i         ( csi2_pkt_px_clk_if ),
   .frame_start_o ( frame_start_pkt    ),
   .frame_end_o   (                    ),
   .pkt_o         ( payload_if         )
 );
 
+// Mapper from 32b to 42b
 csi2_raw10_32b_40b_gbx gbx
 (
-  .clk_i  ( px_clk_i       ),
-  .srst_i ( px_srst_i      ),
-  .pkt_i  ( payload_if     ),
-  .pkt_o  ( payload_40b_if )
+  .clk_i ( px_clk_i       ),
+  .rst_i ( px_rst_i       ),
+  .pkt_i ( payload_if     ),
+  .pkt_o ( payload_40b_if )
 );
 
+// 40b to 10b serializer
 csi2_px_serializer px_ser
 (
   .clk_i         ( px_clk_i        ),
-  .srst_i        ( px_srst_i       ),
+  .rst_i         ( px_rst_i        ),
   .frame_start_i ( frame_start_pkt ),
   .pkt_i         ( payload_40b_if  ),
   .pkt_o         ( video_o         )
