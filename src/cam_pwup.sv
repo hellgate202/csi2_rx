@@ -1,8 +1,12 @@
+/*
+  Simple module to form low-level pulse for 100 ms and then
+  became high
+*/
 module cam_pwup #(
   parameter int CLK_FREQ = 74_250_000
 )(
   input  clk_i,
-  input  srst_i,
+  input  rst_i,
   output cam_pwup_o
 );
 
@@ -12,8 +16,8 @@ localparam int CNT_WIDTH      = $clog2( TICKS_IN_PULSE );
 
 logic [CNT_WIDTH - 1 : 0] cnt;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     cnt <= '0;
   else
     if( cnt < TICKS_IN_PULSE )

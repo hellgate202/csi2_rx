@@ -1,3 +1,13 @@
+/*
+  FSM-wrapper over I2C-controller to create SCCB transactions
+  from AXI4-Lite interface to provide simple memory maped interface
+  to sensor registers
+  Device address should be passed from outside (CSR for example)
+  Required address must be contained in first 16 bits of AXI address
+  Write data must be in first 8 bits in AXI data
+*/
+
+// Package with I2C commands
 import i2c_pkg::*;
 
 module sccb_master #(
@@ -5,8 +15,9 @@ module sccb_master #(
   parameter int SCL_FREQ   = 400_000
 )(
   input              clk_i,
-  input              srst_i,
+  input              rst_i,
   axi4_lite_if.slave ctrl_if,
+  // Sensor address from CSR
   input [6 : 0]      slave_addr_i,
   input              sda_i,
   output             sda_o,
@@ -16,21 +27,44 @@ module sccb_master #(
   output             scl_oe
 );
 
+// Command for I2C PHY
 logic [2 : 0]  phy_cmd;
-
+// Competition of command from I2C PHY
 logic          cmd_done;
+// 1 - Read, 0 - Write
 logic          cci_cmd;
+// Register address
 logic [15 : 0] sub_addr;
+// We save write value from AXI here
 logic [7 : 0]  tx_reg_data;
 logic          tx_bit;
+// We save read value from PHY here to send it over AXI
 logic [7 : 0]  rx_reg_data;
 logic          rx_bit;
+// Whatever goes to phy: data or address
 logic [7 : 0]  phy_data;
 
+// Always 8 bit transactions over I2C
 logic [2 : 0]  bit_cnt;
 
 assign tx_bit = phy_data[7];
 
+/*
+  2 Scenarios for read and write
+  One starts with arvalid other starts with awvalid 
+  Same begining for read and write
+  Start -> Device Address -> ACK -> 
+  Register Address MSB -> ACK -> Register Address LSB ->
+  ACK -> 
+  Read:
+  Repeated Start -> Device Address -> ACK ->
+  Receive Data -> NACK -> Stop
+  Write:
+  Write Data -> NACK -> Stop
+  Whenever we get NACK when there is should be an ACK
+  we go to Stop state and if it was read operation we 
+  return zeroes
+*/
 enum logic [3 : 0] { IDLE_S,
                      START_0_S,
                      SLAVE_ADDR_0_S,
@@ -47,8 +81,8 @@ enum logic [3 : 0] { IDLE_S,
                      NACK_S,
                      STOP_S } state, next_state;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     state <= IDLE_S;
   else
     state <= next_state;
@@ -75,7 +109,7 @@ always_comb
       ACK_0_S:
         begin
           if( cmd_done )
-            if( ~rx_bit )
+            if( !rx_bit )
               next_state = SUB_ADDR_MSB_S;
             else
               next_state = STOP_S;
@@ -88,7 +122,7 @@ always_comb
       ACK_1_S:
         begin
           if( cmd_done )
-            if( ~rx_bit )
+            if( !rx_bit )
               next_state = SUB_ADDR_LSB_S;
             else
               next_state = STOP_S;
@@ -101,7 +135,7 @@ always_comb
       ACK_2_S:
         begin
           if( cmd_done )
-            if( ~rx_bit )
+            if( !rx_bit )
               if( cci_cmd )
                 next_state = START_1_S;
               else
@@ -122,7 +156,7 @@ always_comb
       ACK_3_S:
         begin
           if( cmd_done )
-            if( ~rx_bit )
+            if( !rx_bit )
               next_state = RD_DATA_S;
             else
               next_state = STOP_S;
@@ -152,12 +186,13 @@ always_comb
 
 assign ctrl_if.awready = state == IDLE_S;
 assign ctrl_if.wready  = state == IDLE_S;
-assign ctrl_if.bresp   = 2'b00;
 assign ctrl_if.arready = state == IDLE_S;
+assign ctrl_if.bresp   = 2'b00;
 assign ctrl_if.rresp   = 2'b00;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+// Locking I2C PHY commands and data from AXI interface
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       cci_cmd     <= 1'b0;
       sub_addr    <= 16'd0;
@@ -178,12 +213,13 @@ always_ff @( posedge clk_i, posedge srst_i )
             sub_addr   <= ctrl_if.araddr[15 : 0];
           end
 
+// I2C PHY
 i2c_master_phy #(
   .SCL_FREQ   ( SCL_FREQ       ),
   .CLK_FREQ   ( CLK_FREQ       )
 ) i2c_master_phy (
   .clk_i      ( clk_i          ),
-  .rst_i      ( srst_i         ),
+  .rst_i      ( rst_i          ),
   .cmd_i      ( phy_cmd        ),
   .data_i     ( tx_bit         ),
   .data_o     ( rx_bit         ),
@@ -198,8 +234,10 @@ i2c_master_phy #(
   .scl_oe     ( scl_oe         )
 );
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if ( srst_i )
+// On states when we are transmitting byte
+// data we need to count bits
+always_ff @( posedge clk_i, posedge rst_i )
+  if ( rst_i )
     bit_cnt <= '0;
   else
     if( ( state == SLAVE_ADDR_0_S ) ||
@@ -211,10 +249,12 @@ always_ff @( posedge clk_i, posedge srst_i )
       if( cmd_done )
         bit_cnt <= bit_cnt + 1'b1;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     phy_data <= '0;
   else
+    // State transfer conditions when
+    // we need to change transmitted data
     if( state != SLAVE_ADDR_0_S && 
         next_state == SLAVE_ADDR_0_S )
       phy_data <= { slave_addr_i, 1'b0 };
@@ -235,10 +275,12 @@ always_ff @( posedge clk_i, posedge srst_i )
                 next_state == WR_DATA_S )
               phy_data <= tx_reg_data;
             else
+              // NACK == 1
               if( state != NACK_S &&
                   next_state == NACK_S )
                 phy_data <= 8'h80;
               else
+                // Shifting data to PHY MSB first
                 if( ( state == SLAVE_ADDR_0_S ) ||
                     ( state == SUB_ADDR_MSB_S ) ||
                     ( state == SUB_ADDR_LSB_S ) ||
@@ -247,15 +289,19 @@ always_ff @( posedge clk_i, posedge srst_i )
                   if( cmd_done )
                     phy_data <= phy_data << 1;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+// When we complete READ command we get one bit of data
+// We accumulate it in rx_reg_data register
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     rx_reg_data <= '0;
   else
     if( state == RD_DATA_S && cmd_done )
       rx_reg_data <= { rx_reg_data[6 : 0], rx_bit };
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+// If it was read command we return read value
+// just before returning into IDLE state
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       ctrl_if.rvalid <= 1'b0;
       ctrl_if.rdata  <= '0;
@@ -273,18 +319,28 @@ always_ff @( posedge clk_i, posedge srst_i )
           ctrl_if.rdata  <= '0;
         end
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if( srst_i )
+// If it was write command we return write response
+// just before returning into IDLE state
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     ctrl_if.bvalid <= 1'b0;
   else
-    if( state != IDLE_S && next_state == IDLE_S && ~cci_cmd )
+    if( state != IDLE_S && next_state == IDLE_S && !cci_cmd )
       ctrl_if.bvalid <= 1'b1;
     else
       if( ctrl_if.bready )
         ctrl_if.bvalid <= 1'b0;
 
-always_ff @( posedge clk_i, posedge srst_i )
-  if ( srst_i )
+/*
+  We have 4 commands to I2C PHY:
+  READ, WRITE, START and STOP
+  When we write data we are doing
+  WRITE x8. When we read data we are doing
+  READ x8. Aquiring ACK is equal to READ x1,
+  transfering NACK is equal to WRITE x1.
+*/
+always_ff @( posedge clk_i, posedge rst_i )
+  if ( rst_i )
     phy_cmd <= NOP;
   else
     case( next_state )

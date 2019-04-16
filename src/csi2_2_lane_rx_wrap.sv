@@ -1,19 +1,24 @@
 module csi2_2_lane_rx_wrap 
 (
+  // 200 MHz reference clock
   input           ref_clk_i,
+  input           ref_rst_i,
+  // 74.25 MHz pixel Clock
   input           px_clk_i,
-  input           ref_srst_i,
-  input           px_srst_i,
+  input           px_rst_i,
 
+  // DPHY signals
   input           dphy_clk_p_i,
   input           dphy_clk_n_i,
   input           dphy_lp_clk_p_i,
   input           dphy_lp_clk_n_i,
   input  [1 : 0]  dphy_data_p_i,
-  input  [1 : 0]  dphy_lp_data_p_i,
   input  [1 : 0]  dphy_data_n_i,
+  input  [1 : 0]  dphy_lp_data_p_i,
   input  [1 : 0]  dphy_lp_data_n_i,
 
+  // AXI4-Lite interface to accsess sensor registers
+  // via SCCB interface
   input           sccb_ctrl_awvalid_i,
   output          sccb_ctrl_awready_o,
   input  [15 : 0] sccb_ctrl_awaddr_i,
@@ -32,6 +37,7 @@ module csi2_2_lane_rx_wrap
   output [31 : 0] sccb_ctrl_rdata_o,
   output [1 : 0]  sccb_ctrl_rresp_o,
 
+  // AXI4-Lite interface to accsess IP-core registers
   input           csi2_csr_awvalid_i,
   output          csi2_csr_awready_o,
   input  [7 : 0]  csi2_csr_awaddr_i,
@@ -50,44 +56,28 @@ module csi2_2_lane_rx_wrap
   output [31 : 0] csi2_csr_rdata_o,
   output [1 : 0]  csi2_csr_rresp_o,
 
+  // Output AXI4-Stream video interface
   input           video_tready_i,
   output [15 : 0] video_tdata_o,
   output          video_tvalid_o,
   output          video_tuser_o,
   output          video_tlast_o,
 
+  // SCCB signals
   inout           sccb_sda_io,
   inout           sccb_scl_io,
+
+  // Power-up signal
   output          cam_pwup_o
 );
 
+// Tri-state IO-buffer SCCB signals
 logic                sccb_sda_i;
 logic                sccb_sda_o;
 logic                sccb_sda_oe;
 logic                sccb_scl_i;
 logic                sccb_scl_o;
 logic                sccb_scl_oe;
-
-logic                header_err;
-logic                corr_header_err;
-logic                crc_err;
-logic                clear_stat;
-logic                phy_en;
-logic                delay_act;
-logic [4 : 0]        lane_0_delay;
-logic [4 : 0]        lane_1_delay;
-logic [1 : 0][4 : 0] lane_delay;
-logic [31 : 0]       header_err_cnt;
-logic [31 : 0]       corr_header_err_cnt;
-logic [31 : 0]       crc_err_cnt;
-logic [31 : 0]       max_ln_per_frame;
-logic [31 : 0]       min_ln_per_frame;
-logic [31 : 0]       max_px_per_ln;
-logic [31 : 0]       min_px_per_ln;
-logic [6 : 0]        sccb_slave_addr;
-
-assign lane_delay[0] = lane_0_delay;
-assign lane_delay[1] = lane_1_delay;
 
 IOBUF sda_iobuf
 (
@@ -105,13 +95,40 @@ IOBUF scl_iobuf
   .IO ( sccb_scl_io  )
 );
 
+// Error signals
+logic                header_err;
+logic                corr_header_err;
+logic                crc_err;
+
+// User controlled signals from CSR
+logic                clear_stat;
+logic                phy_en;
+logic [6 : 0]        sccb_slave_addr;
+logic [4 : 0]        lane_0_delay;
+logic [4 : 0]        lane_1_delay;
+logic                delay_act;
+
+// Statistics for debug and other purposess
+logic [31 : 0]       header_err_cnt;
+logic [31 : 0]       corr_header_err_cnt;
+logic [31 : 0]       crc_err_cnt;
+logic [31 : 0]       max_ln_per_frame;
+logic [31 : 0]       min_ln_per_frame;
+logic [31 : 0]       max_px_per_ln;
+logic [31 : 0]       min_px_per_ln;
+
+logic [1 : 0][4 : 0] lane_delay;
+assign lane_delay[0] = lane_0_delay;
+assign lane_delay[1] = lane_1_delay;
+
+// Interface declarations
 axi4_stream_if #(
   .DATA_WIDTH ( 16         ),
   .ID_WIDTH   ( 1          ),
   .DEST_WIDTH ( 1          )
 ) video (
   .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aresetn    ( !px_rst_i  )
 );
 
 assign video.tready   = video_tready_i;
@@ -125,7 +142,7 @@ axi4_lite_if #(
   .DATA_WIDTH ( 32         )
 ) sccb_ctrl_if (
   .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aresetn    ( !px_rst_i  )
 );
 
 assign sccb_ctrl_if.awvalid = sccb_ctrl_awvalid_i;
@@ -151,7 +168,7 @@ axi4_lite_if #(
   .DATA_WIDTH ( 32         )
 ) csi2_csr_if (
   .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_srst_i )
+  .aresetn    ( !px_rst_i  )
 );
 
 assign csi2_csr_if.awvalid = csi2_csr_awvalid_i;
@@ -172,6 +189,9 @@ assign csi2_csr_if.rready  = csi2_csr_rready_i;
 assign csi2_csr_rdata_o    = csi2_csr_if.rdata;
 assign csi2_csr_rresp_o    = csi2_csr_if.rresp;
 
+// Main module
+// Transforms DPHY signals into AXI4-Stream
+// video
 csi2_rx #(
   .DATA_LANES        ( 2                )
 ) csi2_rx (
@@ -183,8 +203,8 @@ csi2_rx #(
   .lp_data_n_i       ( dphy_lp_data_n_i ),
   .ref_clk_i         ( ref_clk_i        ),
   .px_clk_i          ( px_clk_i         ),
-  .ref_srst_i        ( ref_srst_i       ),
-  .px_srst_i         ( px_srst_i        ),
+  .ref_srst_i        ( ref_rst_i        ),
+  .px_srst_i         ( px_rst_i         ),
   .enable_i          ( phy_en           ),
   .delay_act_i       ( delay_act        ),
   .lane_delay_i      ( lane_delay       ),
@@ -194,10 +214,11 @@ csi2_rx #(
   .video_o           ( video            )
 );
 
+// Statistics accumulation
 csi2_stat_acc csi2_stat_acc 
 (
   .clk_i                 ( px_clk_i            ),
-  .srst_i                ( px_srst_i           ),
+  .srst_i                ( px_rst_i            ),
   .clear_stat_i          ( clear_stat          ),
   .video_data_val_i      ( video.tvalid        ),
   .video_eol_i           ( video.tlast         ),
@@ -215,10 +236,11 @@ csi2_stat_acc csi2_stat_acc
   .min_px_per_ln_o       ( min_px_per_ln       )
 );
 
+// Control and status registers
 csi2_csr csi2_csr
 (
   .clk_i                 ( px_clk_i            ),
-  .srst_i                ( px_srst_i           ),
+  .srst_i                ( px_rst_i            ),
   .csr_if                ( csi2_csr_if         ),
   .clear_stat_o          ( clear_stat          ),
   .phy_en_o              ( phy_en              ),
@@ -235,9 +257,10 @@ csi2_csr csi2_csr
   .min_px_per_ln_i       ( min_px_per_ln       )
 );
 
+// SCCB master controller
 sccb_master sccb_master (
   .clk_i        ( px_clk_i        ),
-  .srst_i       ( px_srst_i       ),
+  .rst_i        ( px_rst_i        ),
   .ctrl_if      ( sccb_ctrl_if    ),
   .slave_addr_i ( sccb_slave_addr ),
   .sda_i        ( sccb_sda_i      ),
@@ -248,9 +271,10 @@ sccb_master sccb_master (
   .scl_oe       ( sccb_scl_oe     )
 );
 
+// Timer to execute power-up sequence
 cam_pwup cam_pwup (
   .clk_i      ( px_clk_i   ),
-  .srst_i     ( px_srst_i  ),
+  .rst_i      ( px_rst_i  ),
   .cam_pwup_o ( cam_pwup_o )
 );
 
