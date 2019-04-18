@@ -226,6 +226,24 @@ set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]] 11.904
 
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d1_reg] 11.904
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg] 11.904
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg] 5.000
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/crc_calc/crc_failed_o_reg] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg] 11.904
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/corr_header_err_o_reg] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/corr_header_err_d1_reg] 11.904
+
+#set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/header_err_o_reg] -to \
+#                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/header_err_d1_reg] 11.904
+
 # Saving previous constraints to file
 save_constraints -force
 

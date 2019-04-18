@@ -29,8 +29,8 @@ module csi2_rx #(
   input                       delay_act_i,
   input  [DATA_LANES - 1 : 0] lane_delay_i,
   // Error signals
-  output                      header_err_o,
-  output                      corr_header_err_o,
+  output logic                header_err_o,
+  output logic                corr_header_err_o,
   output                      crc_err_o,
   // AXI4 Video Stream
   axi4_stream_if.master       video_o
@@ -111,10 +111,20 @@ axi4_stream_if #(
 );
 
 assign pkt_error         = header_error && !header_error_corrected;
-assign header_err_o      = header_valid && header_error;
-assign corr_header_err_o = header_valid && header_error &&
-                           header_error_corrected;
 assign crc_err_o         = crc_failed;
+
+always_ff @( posedge rx_clk, posedge clk_loss_rst )
+  if( clk_loss_rst )
+    begin
+      header_err_o      <= '0;
+      corr_header_err_o <= '0;
+    end
+  else
+   begin
+     header_err_o       <= header_valid && header_error;
+     corr_header_err_o  <= header_valid && header_error &&
+                           header_error_corrected;
+   end
 
 dphy_slave #(
   .DATA_LANES       ( DATA_LANES     )
@@ -128,6 +138,7 @@ dphy_slave #(
   .delay_act_i      ( delay_act_i    ),
   .lane_delay_i     ( lane_delay_i   ),
   .ref_clk_i        ( ref_clk_i      ),
+  .rst_i            ( ref_rst_i      ),
   .px_clk_i         ( px_clk_i       ),
   .phy_rst_i        ( phy_rst        ),
   .clk_loss_rst_o   ( clk_loss_rst   ),
@@ -168,11 +179,14 @@ assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
 
 // Long packet payload crc calculation
 csi2_crc_calc crc_calc (
-  .clk_i        ( rx_clk             ),
-  .rst_i        ( clk_loss_rst       ),
-  .csi2_pkt_i   ( csi2_pkt_rx_clk_if ),
-  .crc_passed_o ( crc_passed         ),
-  .crc_failed_o ( crc_failed         )
+  .clk_i        ( rx_clk                    ),
+  .rst_i        ( clk_loss_rst              ),
+  .tdata_i      ( csi2_pkt_rx_clk_if.tdata  ),
+  .tstrb_i      ( csi2_pkt_rx_clk_if.tstrb  ),
+  .tvalid_i     ( csi2_pkt_rx_clk_if.tvalid ),
+  .tlast_i      ( csi2_pkt_rx_clk_if.tlast  ),
+  .crc_passed_o ( crc_passed                ),
+  .crc_failed_o ( crc_failed                )
 );
 
 // CDC from rx_clk to px_clk

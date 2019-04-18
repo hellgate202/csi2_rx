@@ -2,7 +2,10 @@ module csi2_crc_calc
 (
   input                 clk_i,
   input                 rst_i,
-  axi4_stream_if.slave  csi2_pkt_i,
+  input  [31 : 0]       tdata_i,
+  input  [3 : 0]        tstrb_i,
+  input                 tvalid_i,
+  input                 tlast_i,
   output logic          crc_passed_o,
   output logic          crc_failed_o
 );
@@ -24,30 +27,20 @@ logic          long_pkt_eop_d1;
 logic          crc_passed;
 logic          crc_failed;
 
-assign long_pkt_payload       = csi2_pkt_i.tdata;
-assign long_pkt_payload_valid = csi2_pkt_i.tvalid && payload_in_progress;
-assign long_pkt_eop           = csi2_pkt_i.tlast && payload_in_progress;
-
-logic [31 : 0] tdata;
-logic [3 : 0]  tstrb;
-logic          tvalid;
-logic          tlast;
-
-assign tdata  = csi2_pkt_i.tdata;
-assign tstrb  = csi2_pkt_i.tstrb;
-assign tvalid = csi2_pkt_i.tvalid;
-assign tlast  = csi2_pkt_i.tlast;
+assign long_pkt_payload       = tdata_i;
+assign long_pkt_payload_valid = tvalid_i && payload_in_progress;
+assign long_pkt_eop           = tlast_i && payload_in_progress;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     payload_in_progress <= '0;
   else
-    if( !payload_in_progress && csi2_pkt_i.tvalid &&
-        csi2_pkt_i.tdata[7 : 0] > 8'hf )
+    if( !payload_in_progress && tvalid_i &&
+        tdata_i[7 : 0] > 8'hf )
       payload_in_progress <= 1'b1;
     else
-      if( payload_in_progress && csi2_pkt_i.tvalid &&
-          csi2_pkt_i.tlast )
+      if( payload_in_progress && tvalid_i &&
+          tlast_i )
         payload_in_progress <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -125,16 +118,16 @@ always_comb
   end
 
 assign crc_passed = ( long_pkt_eop &&
-                      ( ( csi2_pkt_i.tstrb == 4'b0001 && crc_8bit  == '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b0011 && crc_16bit == '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b0111 && crc_24bit == '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b1111 && main_crc  == '0 ) ) );
+                      ( ( tstrb_i == 4'b0001 && crc_8bit  == '0 ) ||
+                        ( tstrb_i == 4'b0011 && crc_16bit == '0 ) ||
+                        ( tstrb_i == 4'b0111 && crc_24bit == '0 ) ||
+                        ( tstrb_i == 4'b1111 && main_crc  == '0 ) ) );
 
 assign crc_failed = ( long_pkt_eop &&
-                      ( ( csi2_pkt_i.tstrb == 4'b0001 && crc_8bit  != '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b0011 && crc_16bit != '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b0111 && crc_24bit != '0 ) ||
-                        ( csi2_pkt_i.tstrb == 4'b1111 && main_crc  != '0 ) ) );
+                      ( ( tstrb_i == 4'b0001 && crc_8bit  != '0 ) ||
+                        ( tstrb_i == 4'b0011 && crc_16bit != '0 ) ||
+                        ( tstrb_i == 4'b0111 && crc_24bit != '0 ) ||
+                        ( tstrb_i == 4'b1111 && main_crc  != '0 ) ) );
 
 
 always_ff @( posedge clk_i, posedge rst_i )

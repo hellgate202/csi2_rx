@@ -13,6 +13,7 @@ module dphy_slave #(
   input  [DATA_LANES - 1 : 0][4 : 0] lane_delay_i,
   // 200 MHz to calibrate IDELAYE2 and clock detection
   input                              ref_clk_i,
+  input                              rst_i,
   // Clock to load delay values from CSR
   input                              px_clk_i,
   // Reset synchronization
@@ -65,7 +66,7 @@ clk_detect #(
 ) clk_detect (
   .ref_clk_i             ( ref_clk_i      ),
   .obs_clk_i             ( byte_clk       ),
-  .rst_i                 ( ref_rst_i      ),
+  .rst_i                 ( rst_i          ),
   .clk_present_o         ( rx_clk_present )
 );
 
@@ -118,7 +119,7 @@ generate
       dphy_settle_ignore settle_ignore
       (
         .clk_i           ( ref_clk_i        ),
-        .rst_i           ( ref_rst_i        ),
+        .rst_i           ( rst_i            ),
         .lp_data_p_i     ( lp_data_p_i[i]   ),
         .lp_data_n_i     ( lp_data_n_i[i]   ),
         .hs_data_valid_o ( hs_data_valid[i] )
