@@ -37,7 +37,7 @@ logic                 header_valid;
 logic                 header_passed;
 logic                 error_detected;
 
-logic [63 : 0][4 : 0] err_bit_rom;
+logic [4 : 0] err_bit_rom [63 : 0];
 
 initial
   for( int i = 0; i < 64; i++ )
