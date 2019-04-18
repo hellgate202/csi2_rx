@@ -76,13 +76,19 @@ clk_detect #(
 // rx_clk_present and hs_data_valid are 
 // synchronous to ref_clk so we need to 
 // synchronize it
-always_ff @( posedge byte_clk )
-  begin
-    clk_loss_rst_d1 <= !rx_clk_present;
-    clk_loss_rst_d2 <= clk_loss_rst_d1;
-  end
+always_ff @( posedge byte_clk, negedge rx_clk_present )
+  if( !rx_clk_present )
+    begin
+      clk_loss_rst_d1 <= 1'b1;
+      clk_loss_rst_d2 <= 1'b1;
+    end
+  else
+    begin
+      clk_loss_rst_d1 <= 1'b0;
+      clk_loss_rst_d2 <= clk_loss_rst_d1;
+    end
 
-always_ff @( posedge byte_clk )
+always_ff @( posedge byte_clk, posedge clk_loss_rst_d2 )
   begin
     hs_data_valid_d1 <= hs_data_valid;
     hs_data_valid_d2 <= hs_data_valid_d1;
