@@ -211,41 +211,21 @@ close [ open ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc 
 # Setting this file as target constraint
 set_property target_constrs_file ./csi2_zybo_z7_example.srcs/constrs_1/new/csi2_zybo_z7_example.xdc [current_fileset -constrset]
 
-## Timing constraints
-#create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[*].settle_ignore/FSM_onehot_state_reg[4]] -to \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]]
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to       \
-#                     [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg]
-#
-#set_false_path -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to                                 \
-#                     [get_cells {csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_wr_clk_reg[*]            \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]       \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]       \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_mtstb_reg[*] \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_rd_clk_reg[*]            \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_rd_clk_reg[*]            \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]       \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]       \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_mtstb_reg[*] \
-#                                 csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_wr_clk_reg[*]}]
-#                                 
-#set_false_path -from [get_clocks [get_clocks -of_objects [get_pins csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_phy/clk_divider/O]]] -to \
-#                                 [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg]
-#
+# Timing constraints
+create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dphy_clk_p_i_0]
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[*].settle_ignore/FSM_onehot_state_reg[4]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]] 5.000
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg] 5.000
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]] 11.904
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]] 11.904
+
 # Saving previous constraints to file
 save_constraints -force
 
