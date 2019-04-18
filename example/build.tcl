@@ -1,3 +1,4 @@
+start_gui
 # Project creation
 create_project csi2_zybo_z7_example . -part xc7z020clg400-1
 
@@ -218,6 +219,9 @@ set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg] 5.000
 
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d2_reg] 5.000
+
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]] 11.904
 
@@ -226,6 +230,9 @@ set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d1_reg] 11.904
+
+set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to \
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d2_reg] 11.904
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg] 11.904
@@ -250,11 +257,11 @@ launch_runs synth_1 -jobs 4
 wait_on_run synth_1
 
 # Generate bitstream
-launch_runs impl_1 -to_step write_bitstream -jobs 4
-wait_on_run impl_1
+#launch_runs impl_1 -to_step write_bitstream -jobs 4
+#wait_on_run impl_1
 
 # Export Hardware
-file mkdir ./csi2_zybo_z7_example.sdk
-file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
+#file mkdir ./csi2_zybo_z7_example.sdk
+#file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
 
-exit
+#exit

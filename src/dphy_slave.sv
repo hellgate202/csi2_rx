@@ -89,10 +89,16 @@ always_ff @( posedge byte_clk, negedge rx_clk_present )
     end
 
 always_ff @( posedge byte_clk, posedge clk_loss_rst_d2 )
-  begin
-    hs_data_valid_d1 <= hs_data_valid;
-    hs_data_valid_d2 <= hs_data_valid_d1;
-  end
+  if( clk_loss_rst_d2 )
+    begin
+      hs_data_valid_d1 <= '0;
+      hs_data_valid_d2 <= '0;
+    end
+  else
+    begin
+      hs_data_valid_d1 <= hs_data_valid;
+      hs_data_valid_d2 <= hs_data_valid_d1;
+    end
 
 // Data deserialization
 generate
