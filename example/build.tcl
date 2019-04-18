@@ -257,11 +257,11 @@ launch_runs synth_1 -jobs 4
 wait_on_run synth_1
 
 # Generate bitstream
-#launch_runs impl_1 -to_step write_bitstream -jobs 4
-#wait_on_run impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 4
+wait_on_run impl_1
 
 # Export Hardware
-#file mkdir ./csi2_zybo_z7_example.sdk
-#file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
+file mkdir ./csi2_zybo_z7_example.sdk
+file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
 
 #exit
