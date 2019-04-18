@@ -40,8 +40,9 @@ logic                 error_detected;
 logic [4 : 0] err_bit_rom [63 : 0];
 
 initial
-  for( int i = 0; i < 64; i++ )
-    err_bit_rom[i] = ROM_INIT[i];
+//  for( int i = 0; i < 64; i++ )
+//    err_bit_rom[i] = ROM_INIT[i];
+  $readmemh( "./err_bit_pos_lut.txt", err_bit_rom );
 
 assign syndrome       = generated_parity ^ data_i[29 : 24];
 assign header_valid   = valid_d && !header_passed && !pkt_done_i;
