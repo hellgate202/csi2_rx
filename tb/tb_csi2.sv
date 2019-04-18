@@ -23,6 +23,8 @@ localparam int CSI2_CRC_POLY = 16'h1021;
 
 bit [DATA_LANES - 1 : 0] dphy_data_p;
 bit [DATA_LANES - 1 : 0] dphy_data_n;
+bit [DATA_LANES - 1 : 0] dphy_lp_data_p;
+bit [DATA_LANES - 1 : 0] dphy_lp_data_n;
 bit                      dphy_clk_p;
 bit                      dphy_clk_n;
 bit                      ref_clk;
@@ -52,10 +54,15 @@ axi4_stream_if #(
   .aresetn    ( !rst   )
 );
 
-assign dphy_data_p = sender_if.hs_data_p;
-assign dphy_data_n = sender_if.hs_data_n;
-assign dphy_clk_p  = sender_if.hs_clk_p;
-assign dphy_clk_n  = sender_if.hs_clk_n;
+assign video.tkeep = '1;
+assign video.tstrb = '1;
+
+assign dphy_data_p    = sender_if.hs_data_p;
+assign dphy_data_n    = sender_if.hs_data_n;
+assign dphy_clk_p     = sender_if.hs_clk_p;
+assign dphy_clk_n     = sender_if.hs_clk_n;
+assign dphy_lp_data_p = sender_if.lp_data_p;
+assign dphy_lp_data_n = sender_if.lp_data_n;
 
 mailbox data_to_send = new();
 mailbox rx_data_mbx  = new();
@@ -205,17 +212,24 @@ dphy_gen.send();
 endtask
 
 csi2_rx #(
-  .DATA_LANES               ( DATA_LANES             ),
-  .DELAY                    ( DELAY                  )
+  .DATA_LANES               ( DATA_LANES             )
 ) dut (
   .dphy_clk_p_i             ( dphy_clk_p             ),
   .dphy_clk_n_i             ( dphy_clk_n             ),
   .dphy_data_p_i            ( dphy_data_p            ),
   .dphy_data_n_i            ( dphy_data_n            ),
+  .lp_data_p_i              ( dphy_lp_data_p         ),
+  .lp_data_n_i              ( dphy_lp_data_n         ),
   .ref_clk_i                ( ref_clk                ),
+  .ref_rst_i                ( rst                    ),
   .px_clk_i                 ( px_clk                 ),
-  .rst_i                    ( rst                    ),
+  .px_rst_i                 ( rst                    ),
   .enable_i                 ( 1'b1                   ),
+  .delay_act_i              ( 1'b0                   ),
+  .lane_delay_i             ( '0                     ),
+  .header_err_o             (                        ),
+  .corr_header_err_o        (                        ),
+  .crc_err_o                (                        ),
   .video_o                  ( video                  )
 );
 

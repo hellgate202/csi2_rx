@@ -23,7 +23,7 @@ logic serial_data_d;
 // Differential to single-ended data
 // conversion
 IBUFDS #(
-  .DIFF_TERM    ( "FALSE"       ),
+  .DIFF_TERM    ( 0             ),
   .IBUF_LOW_PWR ( 0             ),
   .IOSTANDARD   ( "DEFAULT"     )
 ) data_buf (

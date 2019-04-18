@@ -11,29 +11,29 @@ module csi2_rx #(
   parameter int DATA_LANES = 2
 )(
   // DPHY inputs
-  input                       dphy_clk_p_i,
-  input                       dphy_clk_n_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_p_i,
-  input  [DATA_LANES - 1 : 0] dphy_data_n_i,
-  input  [DATA_LANES - 1 : 0] lp_data_p_i,
-  input  [DATA_LANES - 1 : 0] lp_data_n_i,
+  input                              dphy_clk_p_i,
+  input                              dphy_clk_n_i,
+  input  [DATA_LANES - 1 : 0]        dphy_data_p_i,
+  input  [DATA_LANES - 1 : 0]        dphy_data_n_i,
+  input  [DATA_LANES - 1 : 0]        lp_data_p_i,
+  input  [DATA_LANES - 1 : 0]        lp_data_n_i,
   // 200 MHz refernce clock
-  input                       ref_clk_i,
-  input                       ref_rst_i,
+  input                              ref_clk_i,
+  input                              ref_rst_i,
   // 74.25 MHz pixel clock
-  input                       px_clk_i,
-  input                       px_rst_i,
+  input                              px_clk_i,
+  input                              px_rst_i,
   // Disables synchronizing of DPHY
-  input                       enable_i,
+  input                              enable_i,
   // IDELAYE2 delay values
-  input                       delay_act_i,
-  input  [DATA_LANES - 1 : 0] lane_delay_i,
+  input                              delay_act_i,
+  input  [DATA_LANES - 1 : 0][4 : 0] lane_delay_i,
   // Error signals
-  output                      header_err_o,
-  output                      corr_header_err_o,
-  output                      crc_err_o,
+  output                             header_err_o,
+  output                             corr_header_err_o,
+  output                             crc_err_o,
   // AXI4 Video Stream
-  axi4_stream_if.master       video_o
+  axi4_stream_if.master              video_o
 );
 
 // Structure to pass over CDC
@@ -177,6 +177,8 @@ csi2_crc_calc crc_calc (
   .crc_passed_o ( crc_passed                ),
   .crc_failed_o ( crc_failed                )
 );
+
+assign csi2_pkt_rx_clk_if.tready = 1'b1;
 
 // CDC from rx_clk to px_clk
 dc_fifo #(

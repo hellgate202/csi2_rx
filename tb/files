@@ -6,12 +6,16 @@
 ../src/csi2_data_types_pkg.sv
 ../src/dphy_hs_clk_rx.sv
 ../src/dphy_hs_data_rx.sv
+../src/dphy_settle_ignore.sv
 ../src/clk_detect.sv
 ../src/dphy_byte_align.sv
 ../src/dphy_word_align.sv
 ../src/dphy_32b_map.sv
 ../src/dphy_slave.sv
 ../ip/dual_port_ram/src/dual_port_ram.sv
+../ip/crc_calc/src/crc_calc.sv
+../src/csi2_crc_calc.sv
+../src/csi2_err_bit_pos_pkg.sv
 ../src/csi2_hamming_dec.sv
 ../src/csi2_to_axi4_stream.sv
 ../src/csi2_pkt_handler.sv

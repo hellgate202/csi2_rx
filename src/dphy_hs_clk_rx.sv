@@ -11,7 +11,7 @@ logic bit_clk;
 
 // Transform differential clock to bit clk
 IBUFDS #(
-  .DIFF_TERM    ( "FALSE"      ),
+  .DIFF_TERM    ( 0            ),
   .IBUF_LOW_PWR ( 0            ),
   .IOSTANDARD   ( "DEFAULT"    )
 ) clk_diff_input (
