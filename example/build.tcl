@@ -249,6 +249,15 @@ set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/header_corrector/error_o_reg] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/header_err_d1_reg] 11.904
 
+set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
+set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
+
 # Saving previous constraints to file
 save_constraints -force
 
