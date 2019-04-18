@@ -34,12 +34,12 @@ module csi2_stat_acc
 // but errors are collected before CDC
 // so we need to synchronize error signals from
 // rx_clk clock domain
-(* ASYNC_REG = "TRUE" *) logic header_err_d1;
-(* ASYNC_REG = "TRUE" *) logic header_err_d2;
-(* ASYNC_REG = "TRUE" *) logic corr_header_err_d1;
-(* ASYNC_REG = "TRUE" *) logic corr_header_err_d2;
-(* ASYNC_REG = "TRUE" *) logic crc_err_d1;
-(* ASYNC_REG = "TRUE" *) logic crc_err_d2;
+logic header_err_d1;
+logic header_err_d2;
+logic corr_header_err_d1;
+logic corr_header_err_d2;
+logic crc_err_d1;
+logic crc_err_d2;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

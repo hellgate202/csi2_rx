@@ -26,25 +26,25 @@ module dphy_slave #(
 );
 
 // Restored clk from sensor
-                         logic                             bit_clk;
-                         logic                             byte_clk;
-                         logic                             rx_clk_present;
+logic                             bit_clk;
+logic                             byte_clk;
+logic                             rx_clk_present;
 // CDC from ref_clk to rx_clk
-(* ASYNC_REG = "TRUE" *) logic                             clk_loss_rst_d1;
-(* ASYNC_REG = "TRUE" *) logic                             clk_loss_rst_d2;
+logic                             clk_loss_rst_d1;
+logic                             clk_loss_rst_d2;
 // Unaligned data right from deserializer
-                         logic [DATA_LANES - 1 : 0][7 : 0] byte_data;
+logic [DATA_LANES - 1 : 0][7 : 0] byte_data;
 // Shifted aligned bytes
-                         logic [DATA_LANES - 1 : 0][7 : 0] aligned_byte_data;
-                         logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
+logic [DATA_LANES - 1 : 0][7 : 0] aligned_byte_data;
+logic [DATA_LANES - 1 : 0]        aligned_byte_valid;
 // phy_rst or word synchronization failed
-                         logic                             reset_align;
+logic                             reset_align;
 // Word data from word synchronizer
-                         logic [DATA_LANES - 1 : 0][7 : 0] word_data;
-                         logic [DATA_LANES - 1 : 0]        hs_data_valid;
-(* ASYNC_REG = "TRUE" *) logic [DATA_LANES - 1 : 0]        hs_data_valid_d1;
-(* ASYNC_REG = "TRUE" *) logic [DATA_LANES - 1 : 0]        hs_data_valid_d2;
-                         logic                             word_valid;
+logic [DATA_LANES - 1 : 0][7 : 0] word_data;
+logic [DATA_LANES - 1 : 0]        hs_data_valid;
+logic [DATA_LANES - 1 : 0]        hs_data_valid_d1;
+logic [DATA_LANES - 1 : 0]        hs_data_valid_d2;
+logic                             word_valid;
 
 assign clk_o          = byte_clk;
 assign clk_loss_rst_o = clk_loss_rst_d2;

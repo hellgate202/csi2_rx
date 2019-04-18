@@ -1,4 +1,3 @@
-start_gui
 # Project creation
 create_project csi2_zybo_z7_example . -part xc7z020clg400-1
 
@@ -216,47 +215,82 @@ create_clock -period 2.976 -name dphy_clk -waveform {0.000 1.488} [get_ports dph
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/byte_align[*].settle_ignore/FSM_onehot_state_reg[4]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]] 5.000
 
-set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
-                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg] 5.000
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d1_reg[*]]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/hs_data_valid_d2_reg[*]]
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/clk_presence_cnt_reg[*]] -to \
-                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d2_reg] 5.000
+                                   [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst*] 5.000
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d1_reg]
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_loss_rst_d2_reg]
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_wr_clk_reg[*]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]] 11.904
 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_reg[*]]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/wr_ptr_gray_rd_clk_mtstb_reg[*]]
+
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_rd_clk_reg[*]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]] 11.904
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_reg[*]]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rd_ptr_gray_wr_clk_mtstb_reg[*]]
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d1_reg] 11.904
 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d1_reg] 
+
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/px_clk_rst/U0/PR_OUT_DFF[0].FDRE_PER] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d2_reg] 11.904
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_wr_clk_d2_reg] 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_rd_clk_d1_reg] 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/dphy_int_cdc/rst_rd_clk_d2_reg]
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_csr/cr_reg[1][0]] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg] 11.904
 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d1_reg]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/axi4_conv/enable_d2_reg]
+
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_reg] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg] 5.000
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s1_reg]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s2_reg]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/phy/clk_detect/toggle_bit_s3_reg]
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/crc_calc/crc_failed_o_reg] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg] 11.904
 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d1_reg]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/crc_err_d2_reg]
+
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/header_corrector/error_corrected_o_reg] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/corr_header_err_d1_reg] 11.904
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/corr_header_err_d1_reg] 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/corr_header_err_d2_reg] 
 
 set_max_delay -datapath_only -from [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/header_corrector/error_o_reg] -to \
                                    [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/header_err_d1_reg] 11.904
 
-set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
-set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/header_err_d1_reg] 
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_stat_acc/header_err_d2_reg] 
+
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_scl_reg[*]]
+set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_sda_reg[*]]
+
+#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
+#set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
 
 # Saving previous constraints to file
 save_constraints -force
@@ -273,4 +307,4 @@ wait_on_run impl_1
 file mkdir ./csi2_zybo_z7_example.sdk
 file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
 
-#exit
+exit

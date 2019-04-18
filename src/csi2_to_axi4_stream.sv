@@ -24,8 +24,8 @@ logic [15 : 0] byte_cnt, byte_cnt_comb;
 // Synchronized deassertion of enable with end of long packet
 logic          disable_flag;
 // Transfer from px_clk to rx_clk domain
-(* ASYNC_REG = "TRUE" *) logic enable_d1;
-(* ASYNC_REG = "TRUE" *) logic enable_d2;
+logic enable_d1;
+logic enable_d2;
 
 // First word of correct packet
 assign header_valid = valid_i && !valid_d1 && !error_i && 
