@@ -2,6 +2,7 @@ module dphy_hs_data_rx
 (
   // Serial clk
   input          bit_clk_i,
+  input          bit_clk_inv_i,
   input          dphy_data_p_i,
   input          dphy_data_n_i,
   // Parallel clk
@@ -93,7 +94,7 @@ ISERDESE2 #(
   .CE2               ( 1'b1           ),
   .CLKDIVP           ( 1'b0           ),
   .CLK               ( bit_clk_i      ),
-  .CLKB              ( 1'b0           ),
+  .CLKB              ( bit_clk_inv_i  ),
   .CLKDIV            ( byte_clk_i     ),
   .OCLK              ( 1'b0           ),
   .DYNCLKDIVSEL      ( 1'b0           ),

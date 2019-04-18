@@ -49,12 +49,15 @@ module dphy_slave #(
 assign clk_o          = byte_clk;
 assign clk_loss_rst_o = clk_loss_rst_d2;
 
+logic bit_clk_inv;
+
 // DPHY CLK at input bit and byte clk at output
 dphy_hs_clk_rx clk_phy
 (
   .dphy_clk_p_i  ( dphy_clk_p_i ),
   .dphy_clk_n_i  ( dphy_clk_n_i ),
   .bit_clk_o     ( bit_clk      ),
+  .bit_clk_inv_o ( bit_clk_inv  ),
   .byte_clk_o    ( byte_clk     )
 );
 
@@ -91,6 +94,7 @@ generate
     begin: data_lane
       dphy_hs_data_rx data_phy (
         .bit_clk_i     ( bit_clk          ),
+        .bit_clk_inv_i ( bit_clk_inv      ),   
         .byte_clk_i    ( byte_clk         ),
         .px_clk_i      ( px_clk_i         ),
         .serdes_rst_i  ( clk_loss_rst_d2  ),

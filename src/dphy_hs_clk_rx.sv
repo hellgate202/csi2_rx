@@ -3,6 +3,7 @@ module dphy_hs_clk_rx
   input  dphy_clk_p_i,
   input  dphy_clk_n_i,
   output bit_clk_o,
+  output bit_clk_inv_o,
   output byte_clk_o
 );
 
@@ -36,5 +37,7 @@ BUFR #(
   .CLR         ( 1'b0       ),
   .I           ( bit_clk    )
 );
+
+assign bit_clk_inv_o = !bit_clk_o;
 
 endmodule
