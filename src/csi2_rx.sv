@@ -29,8 +29,8 @@ module csi2_rx #(
   input                       delay_act_i,
   input  [DATA_LANES - 1 : 0] lane_delay_i,
   // Error signals
-  output logic                header_err_o,
-  output logic                corr_header_err_o,
+  output                      header_err_o,
+  output                      corr_header_err_o,
   output                      crc_err_o,
   // AXI4 Video Stream
   axi4_stream_if.master       video_o
@@ -113,18 +113,8 @@ axi4_stream_if #(
 assign pkt_error         = header_error && !header_error_corrected;
 assign crc_err_o         = crc_failed;
 
-always_ff @( posedge rx_clk, posedge clk_loss_rst )
-  if( clk_loss_rst )
-    begin
-      header_err_o      <= '0;
-      corr_header_err_o <= '0;
-    end
-  else
-   begin
-     header_err_o       <= header_valid && header_error;
-     corr_header_err_o  <= header_valid && header_error &&
-                           header_error_corrected;
-   end
+assign header_err_o      = header_error;
+assign corr_header_err_o = header_error_corrected;
 
 dphy_slave #(
   .DATA_LANES       ( DATA_LANES     )
@@ -156,7 +146,6 @@ csi2_hamming_dec header_corrector (
   .pkt_done_i        ( phy_rst                  ),
   .error_o           ( header_error             ),
   .error_corrected_o ( header_error_corrected   ),
-  .header_valid_o    ( header_valid             ),
   .data_o            ( corrected_phy_data       ),
   .valid_o           ( corrected_phy_data_valid )
 );

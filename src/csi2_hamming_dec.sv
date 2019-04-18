@@ -18,7 +18,6 @@ module csi2_hamming_dec
   input                 pkt_done_i,
   output logic          error_o,
   output logic          error_corrected_o,
-  output logic          header_valid_o,
   output logic [31 : 0] data_o,
   output logic          valid_o
 );
@@ -42,11 +41,10 @@ logic [4 : 0] err_bit_rom [63 : 0];
 initial
 //  for( int i = 0; i < 64; i++ )
 //    err_bit_rom[i] = ROM_INIT[i];
-  $readmemh( "./err_bit_pos_lut.txt", err_bit_rom );
+  $readmemh( "/home/liv/fpga/csi2/src/err_bit_pos_lut.txt", err_bit_rom );
 
 assign syndrome       = generated_parity ^ data_i[29 : 24];
 assign header_valid   = valid_d && !header_passed && !pkt_done_i;
-assign header_valid_o = header_valid;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -119,23 +117,23 @@ always_comb
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    error_o <= 1'b0;
+    begin
+      error_o           <= 1'b0;
+      error_corrected_o <= 1'b0;
+    end
   else
     if( pkt_done_i )
-      error_o <= 1'b0;
+      begin
+        error_o           <= 1'b0;
+        error_corrected_o <= 1'b0;
+      end
     else
       if( header_valid && error_detected )
-        error_o <= 1'b1;
-
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    error_corrected_o <= 1'b0;
-  else
-    if( pkt_done_i )
-      error_corrected_o <= 1'b0;
-    else
-      if( header_valid && error_detected && err_bit_pos != 5'h1f )
-        error_corrected_o <= 1'b1;
+        begin
+          error_o <= 1'b1;
+          if( err_bit_pos != 5'hf )
+            error_corrected_o <= 1'b1;
+        end
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
