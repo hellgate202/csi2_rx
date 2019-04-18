@@ -4,6 +4,3 @@ tb/vsim_stacktrace.vstf
 tb/work
 tb/vsim.wlf
 tb/transcript
-tb/scripts/img.jpg
-tb/scripts/px_img.bin
-tb/scripts/csi2_img.bin
