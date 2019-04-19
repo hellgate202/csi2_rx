@@ -283,15 +283,6 @@ set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/ins
 set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_scl_reg[*]]
 set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_sda_reg[*]]
 
-#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_n_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_n_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -clock_fall -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -min -add_delay -0.744 [get_ports {dphy_data_p_i_0[*]}]
-#set_input_delay -clock [get_clocks dphy_clk] -max -add_delay 0.744 [get_ports {dphy_data_p_i_0[*]}]
-
 # Saving previous constraints to file
 save_constraints -force
 
