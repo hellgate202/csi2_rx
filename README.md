@@ -1,20 +1,115 @@
-# CSI2
+CSI2 Receiver IP-core
+=====================
 
-2 lanes
+IP-core is designed for educational purposes to receive video data from PCAM-5C to Zybo Z7-20 Development Kit.
 
-420 Mbps each == 210 MHz
+But i honestly believe this core can also work with other MIPI CSI2 camera modules like Pi Camera.
 
-word_clk on 32 bit bus will be 52.5 MHz
+Module can be reviewed as convertor from CSI2 to AXI4-Stream video stream.
 
-which will result in 26.25 MHz because data will be
-available every 2 ticks
+As for CSI2 signals it requires separated DPHY signals for high-speed transmissions and for low-power transmission.
 
-to be sure its 26.25*32 = 840 Mbps
+Hence low-power communication is not supported and low-power signals are used to determine whenever high-speed communication starts.
 
-for FHD@30fps 10 bit raw 1936*1096*10*30 = 636.5568 Mbps required
+I designed and tested this core for two-lane communication, but was keeping in mind to use up to four lanes, which was verified by testbench.
 
-So we are capturing on 52.5 MHz clk and transfer to internal 26.25 Mhz via FIFO
+All following description relates only to two-lane mode of operation.
 
-Pixels are aranged by 40 bit packs or 4 pixels, so we captue (32/40)*4 = 3.2 pixels per word
+Structure
+---------
 
-It will resul in 3.2*26.25 = 84 MHz pixel clock
+```text
+                 +----------------+                                                    
+  CAM_PWUP       |                |                                                    
+<----------------| Power-UP timer |                                                    
+                 |                |                                                    
+                 +----------------+                                                    
+ SCCB Signals    +----------------+                                                    
+<--------------->|                |                                                    
+ SCCB AXI4-Lite  |  sccb_master   |                                                    
+<--------------->|                |                                                    
+                 +----------------+                                                    
+                 +----------------+       +---------------+                            
+ DPHY Signals    |                |       |               | AXI4-Stream Video          
+---------------->|    csi2_rx     |------>|   stat_acc    |------------------->        
+                 |                |       |               |                            
+                 +----------------+       +---------------+                            
+                          ^                       |                                    
+                          |                       |                                    
+                          v                       v                                    
+                 +----------------------------------------+                            
+ CSR AXI4-Lite   |                                        |                            
+<--------------->|                  CSR                   |                            
+                 |                                        |                            
+                 +----------------------------------------+      
+```
+
+As shown above design wrapper contains:
+
+  * AXI4-Lite SCCB master for communication with sensor
+  * Error and video output statistics accumulator
+  * AXI4-Lite CSR for core tuning and debug
+  * Power-up sequence module
+  * CSI-2 receiver
+
+CSR Description
+---------------
+
+```text
+ ________________________________________________________________________________________
+|                     |                                     |              |             |
+|         Name        |              Description            | Byte Address |   Accsess   |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| CLEAR_STAT          | Clear statistics gathered by the    |     0x00     |     R/W     |
+|                     | core. 0-to-1 transition sensitive   |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| PHY_ENABLE          | When set to 0 byte synchronization  |     0x04     |     R/W     |
+|                     | is disabled and no video output is  |              |             |
+|                     | provided. Enabled otherwis          |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| SCCB_SLAVE_ADDR     | Sensor device ID on SCCB bus        |     0x08     |     R/W     |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| LANE_0_DELAY        | Data-to-clock additional delay for  |     0x0c     |     R/W     |
+|                     | lane 0                              |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| LANE_1_DELAY        | Data-to-clock additional delay for  |     0x10     |     R/W     |
+|                     | lane 1                              |              |             |  
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| DELAY_ACT           | Actualize additional lane delays.   |     0x14     |     R/W     |
+|                     | 0-to-1 transition sensitive         |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| HEADER_ERR_CNT      | Amount of header errors (droped     |     0x18     |      R      |
+|                     | packetS)                            |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| CORR_HEADER_ERR_CNT | Amount of corrected header errors   |     0x1c     |      R      |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| CRC_ERR_CNT         | Amount of corrupted long packets    |     0x20     |      R      |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| MAX_LN_PER_FRAME    | Maximum amount of long packets      |     0x24     |      R      |
+|                     | between FRAME START short packets   |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| MIN_LN_PER_FRAME    | Minimum amount of long packets      |     0x28     |      R      |
+|                     | between FRAME START short packets   |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| MAX_PX_PER_LN       | Maximum amount of pixels in one     |     0x2c     |      R      |
+|                     | long packet                         |              |             |
+|_____________________|_____________________________________|______________|_____________|
+|                     |                                     |              |             |
+| MIN_PX_PER_LN       | Minimum amount of pixels in one     |     0x30     |      R      |
+|                     | long packet                         |              |             |
+|_____________________|_____________________________________|______________|_____________|
+
+```
+
