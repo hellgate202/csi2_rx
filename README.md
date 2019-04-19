@@ -150,3 +150,12 @@ It will add some handy commands to accsess sensor and core registers:
 In this example design SCCB registers has offset of 0x00000000 and core CSR has offset of 0x00010000
 
 PCAM-5C has 0x3c device ID on SCCB bus
+
+Testbench description
+---------------------
+
+To run testbench move to ./tb directory and run
+
+    vsim -do make.tcl
+
+By default make.tcl is written of QuestaSim and you need to disbale vopt in it to run it by ModelSim
