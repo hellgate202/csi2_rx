@@ -112,4 +112,41 @@ CSR Description
 |_____________________|_____________________________________|______________|_____________|
 
 ```
+Example project description
+---------------------------
 
+To create example project for ZYBO Z7-20 and PCAM-5C move to ./example directory and run:
+
+    make build
+
+It will create QSPI boot image for ZYNQ Processing System with FPGA firmware in it.
+
+Connect your ZYBO Z7-20 board to PC and run:
+
+    make prog
+
+After competition you can run:
+
+    make dbg
+
+to run vivado in TCL mode and connect to the board automaticaly or you can do it manuly from gui and running
+config script:
+
+    source ./dbg.tcl
+
+It will add some handy commands to accsess sensor and core registers:
+
+  * wr 32b_hex_addr_value 32b_hex_data_value
+    To set sensor device ID to 0x3c
+    wr 0x00010008 0x0000003c
+
+  * rd 32b_hex_addr_value
+    To read amount of CRC errors
+    rd 0x00010020
+
+  * run
+    Initiaize sensor to 1080p30
+
+In this example design SCCB registers has offset of 0x00000000 and core CSR has offset of 0x00010000
+
+PCAM-5C has 0x3c device ID on SCCB bus

@@ -9,5 +9,5 @@ set_property PROBES.FILE {./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_exampl
 set_property FULL_PROBES.FILE {./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.ltx} [get_hw_devices xc7z020_1]
 current_hw_device [get_hw_devices xc7z020_1]
 refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
-source ./ov5640_jtag_setup.tcl
+source ./dbg.tcl
 
