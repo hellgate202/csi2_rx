@@ -247,6 +247,8 @@ initial
       px_clk_gen;
       apply_rst;
     join_none
+    repeat( 1000 )
+      @( posedge ref_clk );
     @( posedge ref_clk );
     repeat( 1 )
       begin
