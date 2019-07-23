@@ -110,6 +110,13 @@ axi4_stream_if #(
   .aresetn    ( !px_rst_i )
 );
 
+axi4_stream_if #(
+  .DATA_WIDTH ( 16        )
+) intermittent_video (
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
+);
+
 assign pkt_error         = header_error && !header_error_corrected;
 assign crc_err_o         = crc_failed;
 
@@ -229,11 +236,29 @@ csi2_raw10_32b_40b_gbx gbx
 // 40b to 10b serializer
 csi2_px_serializer px_ser
 (
-  .clk_i         ( px_clk_i        ),
-  .rst_i         ( px_rst_i        ),
-  .frame_start_i ( frame_start_pkt ),
-  .pkt_i         ( payload_40b_if  ),
-  .pkt_o         ( video_o         )
+  .clk_i         ( px_clk_i           ),
+  .rst_i         ( px_rst_i           ),
+  .frame_start_i ( frame_start_pkt    ),
+  .pkt_i         ( payload_40b_if     ),
+  .pkt_o         ( intermittent_video )
+);
+
+// Output smart-fifo to filter large false packets and to made packets
+// continious
+axi4_stream_fifo #(
+  .DATA_WIDTH    ( 16                 ),
+  .WORDS_AMOUNT  ( 2048               ),
+  .SMART         ( 1                  )
+) filter_fifo (
+  .clk_i         ( px_clk_i           ),
+  .rst_i         ( px_rst_i           ),
+  .full_o        (                    ),
+  .empty_o       (                    ),
+  .drop_o        (                    ),
+  .used_words_o  (                    ),
+  .pkts_amount_o (                    ),
+  .pkt_i         ( intermittent_video ),
+  .pkt_o         ( video_o            )
 );
 
 endmodule

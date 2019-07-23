@@ -137,4 +137,7 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 assign pkt_i.tready = ( state == PX_0_S ) ? 1'b1 : 1'b0;
 
+assign pkt_o.tkeep = 2'b11;
+assign pkt_o.tstrb = 2'b11;
+
 endmodule

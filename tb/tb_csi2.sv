@@ -54,9 +54,6 @@ axi4_stream_if #(
   .aresetn    ( !rst   )
 );
 
-assign video.tkeep = '1;
-assign video.tstrb = '1;
-
 assign dphy_data_p    = sender_if.hs_data_p;
 assign dphy_data_n    = sender_if.hs_data_n;
 assign dphy_clk_p     = sender_if.hs_clk_p;
