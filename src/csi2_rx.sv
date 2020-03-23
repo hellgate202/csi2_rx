@@ -8,7 +8,8 @@
 */
 
 module csi2_rx #(
-  parameter int DATA_LANES = 2
+  parameter int DATA_LANES       = 2,
+  parameter int CONTINIOUS_VALID = 1
 )(
   // DPHY inputs
   input                              dphy_clk_p_i,
@@ -79,42 +80,42 @@ logic          frame_start_pkt;
 // rx_clk CDC data
 axi4_word_t    pkt_word_rx_clk;
 axi4_stream_if #(
-  .DATA_WIDTH ( 32             )
+  .TDATA_WIDTH ( 32             )
 ) csi2_pkt_rx_clk_if (
-  .aclk       ( rx_clk         ),
-  .aresetn    ( !clk_loss_rst  )
+  .aclk        ( rx_clk         ),
+  .aresetn     ( !clk_loss_rst  )
 );
 
 // px_clk CDC data
 axi4_word_t    pkt_word_px_clk;
 axi4_stream_if #(
-  .DATA_WIDTH ( 32        )
+  .TDATA_WIDTH ( 32        )
 ) csi2_pkt_px_clk_if (
-  .aclk       ( px_clk_i  ),
-  .aresetn    ( !px_rst_i )
+  .aclk        ( px_clk_i  ),
+  .aresetn     ( !px_rst_i )
 );
 
 // 32 bit payload without header and CRC
 axi4_stream_if #(
-  .DATA_WIDTH ( 32        )
+  .TDATA_WIDTH ( 32        )
 ) payload_if (
-  .aclk       ( px_clk_i  ),
-  .aresetn    ( !px_rst_i )
+  .aclk        ( px_clk_i  ),
+  .aresetn     ( !px_rst_i )
 );
 
 // 40 bit payload
 axi4_stream_if #(
-  .DATA_WIDTH ( 40        )
+  .TDATA_WIDTH ( 40        )
 ) payload_40b_if (
-  .aclk       ( px_clk_i  ),
-  .aresetn    ( !px_rst_i )
+  .aclk        ( px_clk_i  ),
+  .aresetn     ( !px_rst_i )
 );
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 16        )
+  .TDATA_WIDTH ( 16        )
 ) intermittent_video (
-  .aclk       ( px_clk_i  ),
-  .aresetn    ( !px_rst_i )
+  .aclk        ( px_clk_i  ),
+  .aresetn     ( !px_rst_i )
 );
 
 assign pkt_error         = header_error && !header_error_corrected;
@@ -243,22 +244,41 @@ csi2_px_serializer px_ser
   .pkt_o         ( intermittent_video )
 );
 
-// Output smart-fifo to filter large false packets and to made packets
-// continious
-axi4_stream_fifo #(
-  .DATA_WIDTH    ( 16                 ),
-  .WORDS_AMOUNT  ( 2048               ),
-  .SMART         ( 1                  )
-) filter_fifo (
-  .clk_i         ( px_clk_i           ),
-  .rst_i         ( px_rst_i           ),
-  .full_o        (                    ),
-  .empty_o       (                    ),
-  .drop_o        (                    ),
-  .used_words_o  (                    ),
-  .pkts_amount_o (                    ),
-  .pkt_i         ( intermittent_video ),
-  .pkt_o         ( video_o            )
-);
+generate
+  if( CONTINIOUS_VALID )
+    begin : output_smart_fifo
+      // Output smart-fifo to filter large false packets and to made packets
+      // continious
+      axi4_stream_fifo #(
+        .TDATA_WIDTH    ( 16                 ),
+        .WORDS_AMOUNT   ( 2048               ),
+        .SMART          ( 1                  ),
+        .SHOW_PKT_SIZE  ( 0                  )
+      ) filter_fifo (
+        .clk_i          ( px_clk_i           ),
+        .rst_i          ( px_rst_i           ),
+        .full_o         (                    ),
+        .empty_o        (                    ),
+        .drop_o         (                    ),
+        .used_words_o   (                    ),
+        .pkts_amount_o  (                    ),
+        .pkt_size_o     (                    ),
+        .pkt_i          ( intermittent_video ),
+        .pkt_o          ( video_o            )
+      );
+    end
+  else
+    begin : disconitinious_valid
+      assign video_o.tdata             = intermittent_video.tdata;
+      assign video_o.tvalid            = intermittent_video.tvalid;
+      assign video_o.tstrb             = intermittent_video.tstrb;
+      assign video_o.tkeep             = intermittent_video.tkeep;
+      assign video_o.tlast             = intermittent_video.tlast;
+      assign video_o.tdest             = intermittent_video.tdest;
+      assign video_o.tid               = intermittent_video.tid;
+      assign video_o.tuser             = intermittent_video.tuser;
+      assign intermittent_video.tready = video_o.tready;
+    end
+endgenerate
 
 endmodule

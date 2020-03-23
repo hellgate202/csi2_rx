@@ -1,5 +1,6 @@
-module csi2_2_lane_rx_wrap 
-(
+module csi2_2_lane_rx_wrap #(
+  parameter int CONTINIOUS_VALID = 0
+)(
   // 200 MHz reference clock
   input           ref_clk_i,
   input           ref_rst_i,
@@ -123,12 +124,12 @@ assign lane_delay[1] = lane_1_delay;
 
 // Interface declarations
 axi4_stream_if #(
-  .DATA_WIDTH ( 16         ),
-  .ID_WIDTH   ( 1          ),
-  .DEST_WIDTH ( 1          )
+  .TDATA_WIDTH ( 16         ),
+  .TID_WIDTH   ( 1          ),
+  .TDEST_WIDTH ( 1          )
 ) video (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_rst_i  )
+  .aclk        ( px_clk_i   ),
+  .aresetn     ( !px_rst_i  )
 );
 
 assign video.tready   = video_tready_i;
@@ -193,7 +194,8 @@ assign csi2_csr_rresp_o    = csi2_csr_if.rresp;
 // Transforms DPHY signals into AXI4-Stream
 // video
 csi2_rx #(
-  .DATA_LANES        ( 2                )
+  .DATA_LANES        ( 2                ),
+  .CONTINIOUS_VALID  ( CONTINIOUS_VALID )
 ) csi2_rx (
   .dphy_clk_p_i      ( dphy_clk_p_i     ),
   .dphy_clk_n_i      ( dphy_clk_n_i     ),

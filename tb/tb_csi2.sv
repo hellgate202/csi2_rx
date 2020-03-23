@@ -48,10 +48,10 @@ dphy_if #(
 ) sender_if ();
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 16     )
+  .TDATA_WIDTH ( 16     )
 ) video (
-  .aclk       ( px_clk ),
-  .aresetn    ( !rst   )
+  .aclk        ( px_clk ),
+  .aresetn     ( !rst   )
 );
 
 assign dphy_data_p    = sender_if.hs_data_p;
@@ -72,7 +72,7 @@ DPHYSender #(
                 );
 
 AXI4StreamSlave #(
-  .DATA_WIDTH ( 16 )
+  .TDATA_WIDTH ( 16 )
 ) axi4_stream_receiver;
 
 task automatic ref_clk_gen();
