@@ -8,7 +8,7 @@
 */
 
 // Package with I2C commands
-import i2c_pkg::*;
+import i2c_master_pkg::*;
 
 module sccb_master #(
   parameter int CLK_FREQ   = 74_250_000,
