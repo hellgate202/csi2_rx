@@ -132,7 +132,7 @@ axi4_stream_if #(
   .aresetn     ( !px_rst_i  )
 );
 
-assign video.tready   = video_tready_i;
+assign video.tready   = 1'b1;
 assign video_tdata_o  = video.tdata;
 assign video_tvalid_o = video.tvalid;
 assign video_tuser_o  = video.tuser;
