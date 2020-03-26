@@ -31,7 +31,7 @@ bit                      ref_clk;
 bit                      px_clk;
 bit                      rst;
 bit [9 : 0]              tx_img [PX_AMOUNT - 1 : 0];
-bit [9 : 0]              rx_img [PX_AMOUNT - 1 : 0];
+bit [15 : 0]             rx_img [PX_AMOUNT - 1 : 0];
 bit [7 : 0]              tx_q   [BYTES_AMOUNT - 1 : 0];
 bit [7 : 0]              rx_pkt_q [$];
 
@@ -265,7 +265,11 @@ initial
                         .data_field     ( 6'h0 )
                       );
       end
-    repeat(1000)
+    repeat(2000)
+      @( posedge ref_clk );
+    while( video.tvalid )
+      @( posedge ref_clk );
+    repeat(2000)
       @( posedge ref_clk );
     mem_ptr = 0;
     file = $fopen("./rx_img.bin","wb");
