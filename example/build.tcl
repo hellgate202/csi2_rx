@@ -283,6 +283,9 @@ set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/ins
 set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_scl_reg[*]]
 set_property ASYNC_REG TRUE [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/sccb_master/i2c_master_phy/mstb_sda_reg[*]]
 
+set_property WRITE_MODE_A READ_FIRST [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/output_smart_fifo.filter_fifo/ram/ram_reg_0]
+set_property WRITE_MODE_A READ_FIRST [get_cells csi2_zybo_z7_example_i/csi2_2_lane_rx/inst/csi2_rx/output_smart_fifo.filter_fifo/ram/ram_reg_1]
+
 # Saving previous constraints to file
 save_constraints -force
 
