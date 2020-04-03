@@ -28,7 +28,7 @@ always_comb
     case( state )
       FIRST_WORD_S:
         begin
-          if( pkt_i.tvalid && pkt_i.tready )
+          if( pkt_i.tvalid && pkt_i.tready && !pkt_i.tlast )
             next_state = SECOND_WORD_S;
         end
       SECOND_WORD_S:
