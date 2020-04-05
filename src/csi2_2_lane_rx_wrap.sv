@@ -241,7 +241,7 @@ assign ext_sccb_ctrl_if.rresp   = sccb_masters[1].rresp;
 axi4_lite_if #(
   .ADDR_WIDTH ( 8          ),
   .DATA_WIDTH ( 32         )
-) ext_csi2_csr_if (
+) ext_csr_if (
   .aclk       ( px_clk_i   ),
   .aresetn    ( !px_rst_i  )
 );
@@ -270,23 +270,23 @@ axi4_lite_if #(
   .aresetn    ( !px_rst_i  )
 );
 
-assign ext_csi2_csr_if.awvalid = csi2_csr_awvalid_i;
-assign csi2_csr_awready_o      = ext_csi2_csr_if.awready;
-assign ext_csi2_csr_if.awaddr  = csi2_csr_awaddr_i;
-assign ext_csi2_csr_if.wvalid  = csi2_csr_wvalid_i;
-assign csi2_csr_wready_o       = ext_csi2_csr_if.wready;
-assign ext_csi2_csr_if.wdata   = csi2_csr_wdata_i;
-assign ext_csi2_csr_if.wstrb   = csi2_csr_wstrb_i;
-assign csi2_csr_bvalid_o       = ext_csi2_csr_if.bvalid;
-assign ext_csi2_csr_if.bready  = csi2_csr_bready_i;
-assign csi2_csr_bresp_o        = ext_csi2_csr_if.bresp;
-assign ext_csi2_csr_if.arvalid = csi2_csr_arvalid_i;
-assign csi2_csr_arready_o      = ext_csi2_csr_if.arready;
-assign ext_csi2_csr_if.araddr  = csi2_csr_araddr_i;
-assign csi2_csr_rvalid_o       = ext_csi2_csr_if.rvalid;
-assign ext_csi2_csr_if.rready  = csi2_csr_rready_i;
-assign csi2_csr_rdata_o        = ext_csi2_csr_if.rdata;
-assign csi2_csr_rresp_o        = ext_csi2_csr_if.rresp;
+assign ext_csr_if.awvalid = csi2_csr_awvalid_i;
+assign csi2_csr_awready_o = ext_csr_if.awready;
+assign ext_csr_if.awaddr  = csi2_csr_awaddr_i;
+assign ext_csr_if.wvalid  = csi2_csr_wvalid_i;
+assign csi2_csr_wready_o  = ext_csr_if.wready;
+assign ext_csr_if.wdata   = csi2_csr_wdata_i;
+assign ext_csr_if.wstrb   = csi2_csr_wstrb_i;
+assign csi2_csr_bvalid_o  = ext_csr_if.bvalid;
+assign ext_csr_if.bready  = csi2_csr_bready_i;
+assign csi2_csr_bresp_o   = ext_csr_if.bresp;
+assign ext_csr_if.arvalid = csi2_csr_arvalid_i;
+assign csi2_csr_arready_o = ext_csr_if.arready;
+assign ext_csr_if.araddr  = csi2_csr_araddr_i;
+assign csi2_csr_rvalid_o  = ext_csr_if.rvalid;
+assign ext_csr_if.rready  = csi2_csr_rready_i;
+assign csi2_csr_rdata_o   = ext_csr_if.rdata;
+assign csi2_csr_rresp_o   = ext_csr_if.rresp;
 
 assign csr_masters[0].awvalid = csr_pwup.awvalid;
 assign csr_pwup.awready       = csr_masters[0].awready;
@@ -306,23 +306,23 @@ assign csr_masters[0].rready  = csr_pwup.rready;
 assign csr_pwup.rdata         = csr_masters[0].rdata;
 assign csr_pwup.rresp         = csr_masters[0].rresp;
 
-assign csr_masters[1].awvalid  = ext_csr_ctrl_if.awvalid;
-assign ext_csr_ctrl_if.awready = csr_masters[1].awready;
-assign csr_masters[1].awaddr   = ext_csr_ctrl_if.awaddr;
-assign csr_masters[1].wvalid   = ext_csr_ctrl_if.wvalid;
-assign ext_csr_ctrl_if.wready  = csr_masters[1].wready;
-assign csr_masters[1].wdata    = ext_csr_ctrl_if.wdata;
-assign csr_masters[1].wstrb    = ext_csr_ctrl_if.wstrb;
-assign ext_csr_ctrl_if.bvalid  = csr_masters[1].bvalid;
-assign csr_masters[1].bready   = ext_csr_ctrl_if.bready;
-assign ext_csr_ctrl_if.bresp   = csr_masters[1].bresp;
-assign csr_masters[1].arvalid  = ext_csr_ctrl_if.arvalid;
-assign ext_csr_ctrl_if.arready = csr_masters[1].arready;
-assign csr_masters[1].araddr   = ext_csr_ctrl_if.araddr;
-assign ext_csr_ctrl_if.rvalid  = csr_masters[1].rvalid;
-assign csr_masters[1].rready   = ext_csr_ctrl_if.rready;
-assign ext_csr_ctrl_if.rdata   = csr_masters[1].rdata;
-assign ext_csr_ctrl_if.rresp   = csr_masters[1].rresp;
+assign csr_masters[1].awvalid = ext_csr_if.awvalid;
+assign ext_csr_if.awready     = csr_masters[1].awready;
+assign csr_masters[1].awaddr  = ext_csr_if.awaddr;
+assign csr_masters[1].wvalid  = ext_csr_if.wvalid;
+assign ext_csr_if.wready      = csr_masters[1].wready;
+assign csr_masters[1].wdata   = ext_csr_if.wdata;
+assign csr_masters[1].wstrb   = ext_csr_if.wstrb;
+assign ext_csr_if.bvalid      = csr_masters[1].bvalid;
+assign csr_masters[1].bready  = ext_csr_if.bready;
+assign ext_csr_if.bresp       = csr_masters[1].bresp;
+assign csr_masters[1].arvalid = ext_csr_if.arvalid;
+assign ext_csr_if.arready     = csr_masters[1].arready;
+assign csr_masters[1].araddr  = ext_csr_if.araddr;
+assign ext_csr_if.rvalid      = csr_masters[1].rvalid;
+assign csr_masters[1].rready  = ext_csr_if.rready;
+assign ext_csr_if.rdata       = csr_masters[1].rdata;
+assign ext_csr_if.rresp       = csr_masters[1].rresp;
 
 axi4_lite_simple_mux #(
   .ADDR_WIDTH     ( 8            ),
@@ -424,7 +424,7 @@ cam_pwup cam_pwup (
   .clk_i       ( px_clk_i   ),
   .rst_i       ( px_rst_i   ),
   .cam_pwup_o  ( cam_pwup_o ),
-  .init_done_o ( init_done  )
+  .init_done_o ( init_done  ),
   .sccb_pwup   ( sccb_pwup  ),
   .csr_pwup    ( csr_pwup   )
 );

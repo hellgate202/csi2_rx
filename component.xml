@@ -474,7 +474,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>21be9a9d</spirit:value>
+            <spirit:value>e4de1025</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -490,7 +490,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>21be9a9d</spirit:value>
+            <spirit:value>e4de1025</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -504,7 +504,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f92e9879</spirit:value>
+            <spirit:value>9347af95</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1342,20 +1342,27 @@
         </spirit:wire>
       </spirit:port>
     </spirit:ports>
+    <spirit:modelParameters>
+      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="int">
+        <spirit:name>CONTINIOUS_VALID</spirit:name>
+        <spirit:displayName>Continious Valid</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.CONTINIOUS_VALID">1</spirit:value>
+      </spirit:modelParameter>
+    </spirit:modelParameters>
   </spirit:model>
   <spirit:fileSets>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>lib/axi4_lib/src/utility/axi4_lite_adapter.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>lib/axi4_lib/src/utility/axi4_lite_simple_mux.sv</spirit:name>
-        <spirit:fileType>systemVerilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib/axi4_lib/src/utility/axi4_lite_adapter.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1371,15 +1378,15 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/cam_pwup.sv</spirit:name>
-        <spirit:fileType>systemVerilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>src/ov5640_init_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>src/ov5640_1080p30_pkg.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/cam_pwup.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1493,21 +1500,21 @@
       <spirit:file>
         <spirit:name>src/csi2_2_lane_rx_wrap.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_3b29ebca</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_993f8914</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>lib/axi4_lib/src/utility/axi4_lite_adapter.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>lib/axi4_lib/src/utility/axi4_lite_simple_mux.sv</spirit:name>
-        <spirit:fileType>systemVerilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>lib/axi4_lib/src/utility/axi4_lite_adapter.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1523,15 +1530,15 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/cam_pwup.sv</spirit:name>
-        <spirit:fileType>systemVerilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>src/ov5640_init_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>src/ov5640_1080p30_pkg.sv</spirit:name>
+        <spirit:fileType>systemVerilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>src/cam_pwup.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1652,7 +1659,7 @@
       <spirit:file>
         <spirit:name>xgui/csi2_2_lane_rx_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f92e9879</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_9347af95</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1662,6 +1669,11 @@
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
       <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">csi2_2_lane_rx_wrap_v1_0</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>CONTINIOUS_VALID</spirit:name>
+      <spirit:displayName>Continious Valid</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.CONTINIOUS_VALID">1</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1685,8 +1697,8 @@
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
       <xilinx:vendorURL>https://github.com/hellgate202</xilinx:vendorURL>
-      <xilinx:coreRevision>13</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-03-27T14:26:16Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>17</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2020-04-05T18:06:03Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@31b27a58_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@8cafe23_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
@@ -1799,15 +1811,71 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@71667db8_ARCHIVE_LOCATION">/home/liv/fpga/csi2_rx</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@fafadab_ARCHIVE_LOCATION">/home/liv/fpga/csi2_rx</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@69fd27ce_ARCHIVE_LOCATION">/home/liv/fpga/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@766c48b2_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29d18a2d_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@44416019_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15a5716b_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@353be0b7_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12170288_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@479673b7_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@668170d2_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31f94eae_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ddbb7cb_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68e07dba_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fe8e9af_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@678050eb_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@599d388c_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@726a1e1_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@199440f_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54235762_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fa9bfbe_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6929ea51_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f882d06_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@41b4e0fc_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ab5bc57_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ea22846_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d360fc4_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@59396ca7_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78a722b8_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a2f4ea_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e057451_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@17c50d31_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a8fdd72_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31ed1909_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@8d8042a_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@364cf1c5_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f93e8a7_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@348d2e94_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c93455c_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@55ab6231_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@264059f3_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@e225b00_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e3d1b6c_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f292dcc_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@b702651_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7581e4f5_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@c278c51_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7bac29a2_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21b8cc1_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4bc66b31_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ff74a45_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@586ba5a0_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@72312861_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e9af1bf_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@354df225_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67063b95_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b3482d1_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1cf1b839_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="9c1e0da6"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="d3cfb502"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4cf3d2f3"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="5a7bf2ef"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="891fde35"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="69502da3"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="8b79e0c6"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="31de6e0c"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
