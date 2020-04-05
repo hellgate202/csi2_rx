@@ -118,6 +118,8 @@ logic [31 : 0]       min_ln_per_frame;
 logic [31 : 0]       max_px_per_ln;
 logic [31 : 0]       min_px_per_ln;
 
+logic                init_done;
+
 logic [1 : 0][4 : 0] lane_delay;
 assign lane_delay[0] = lane_0_delay;
 assign lane_delay[1] = lane_1_delay;
@@ -141,28 +143,124 @@ assign video_tlast_o  = video.tlast;
 axi4_lite_if #(
   .ADDR_WIDTH ( 16         ),
   .DATA_WIDTH ( 32         )
+) ext_sccb_ctrl_if (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 16         ),
+  .DATA_WIDTH ( 32         )
+) sccb_pwup (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 16         ),
+  .DATA_WIDTH ( 32         )
+) sccb_masters[1 : 0] (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 16         ),
+  .DATA_WIDTH ( 32         )
 ) sccb_ctrl_if (
   .aclk       ( px_clk_i   ),
   .aresetn    ( !px_rst_i  )
 );
 
-assign sccb_ctrl_if.awvalid = sccb_ctrl_awvalid_i;
-assign sccb_ctrl_awready_o  = sccb_ctrl_if.awready;
-assign sccb_ctrl_if.awaddr  = sccb_ctrl_awaddr_i;
-assign sccb_ctrl_if.wvalid  = sccb_ctrl_wvalid_i;
-assign sccb_ctrl_wready_o   = sccb_ctrl_if.wready;
-assign sccb_ctrl_if.wdata   = sccb_ctrl_wdata_i;
-assign sccb_ctrl_if.wstrb   = sccb_ctrl_wstrb_i;
-assign sccb_ctrl_bvalid_o   = sccb_ctrl_if.bvalid;
-assign sccb_ctrl_if.bready  = sccb_ctrl_bready_i;
-assign sccb_ctrl_bresp_o    = sccb_ctrl_if.bresp;
-assign sccb_ctrl_if.arvalid = sccb_ctrl_arvalid_i;
-assign sccb_ctrl_arready_o  = sccb_ctrl_if.arready;
-assign sccb_ctrl_if.araddr  = sccb_ctrl_araddr_i;
-assign sccb_ctrl_rvalid_o   = sccb_ctrl_if.rvalid;
-assign sccb_ctrl_if.rready  = sccb_ctrl_rready_i;
-assign sccb_ctrl_rdata_o    = sccb_ctrl_if.rdata;
-assign sccb_ctrl_rresp_o    = sccb_ctrl_if.rresp;
+axi4_lite_simple_mux #(
+  .ADDR_WIDTH     ( 16           ),
+  .DATA_WIDTH     ( 32           ),
+  .MASTERS_AMOUNT ( 2            )
+) sccb_mux (
+  .clk_i          ( px_clk_i     ),
+  .rst_i          ( !px_rst_i    ),
+  .dir_i          ( init_done    ),
+  .axi4_lite_i    ( sccb_masters ),
+  .axi4_lite_o    ( sccb_ctrl_if )
+);
+
+assign ext_sccb_ctrl_if.awvalid = sccb_ctrl_awvalid_i;
+assign sccb_ctrl_awready_o      = ext_sccb_ctrl_if.awready;
+assign ext_sccb_ctrl_if.awaddr  = sccb_ctrl_awaddr_i;
+assign ext_sccb_ctrl_if.wvalid  = sccb_ctrl_wvalid_i;
+assign sccb_ctrl_wready_o       = ext_sccb_ctrl_if.wready;
+assign ext_sccb_ctrl_if.wdata   = sccb_ctrl_wdata_i;
+assign ext_sccb_ctrl_if.wstrb   = sccb_ctrl_wstrb_i;
+assign sccb_ctrl_bvalid_o       = ext_sccb_ctrl_if.bvalid;
+assign ext_sccb_ctrl_if.bready  = sccb_ctrl_bready_i;
+assign sccb_ctrl_bresp_o        = ext_sccb_ctrl_if.bresp;
+assign ext_sccb_ctrl_if.arvalid = sccb_ctrl_arvalid_i;
+assign sccb_ctrl_arready_o      = ext_sccb_ctrl_if.arready;
+assign ext_sccb_ctrl_if.araddr  = sccb_ctrl_araddr_i;
+assign sccb_ctrl_rvalid_o       = ext_sccb_ctrl_if.rvalid;
+assign ext_sccb_ctrl_if.rready  = sccb_ctrl_rready_i;
+assign sccb_ctrl_rdata_o        = ext_sccb_ctrl_if.rdata;
+assign sccb_ctrl_rresp_o        = ext_sccb_ctrl_if.rresp;
+
+assign sccb_masters[0].awvalid = sccb_pwup.awvalid;
+assign sccb_pwup.awready       = sccb_masters[0].awready;
+assign sccb_masters[0].awaddr  = sccb_pwup.awaddr;
+assign sccb_masters[0].wvalid  = sccb_pwup.wvalid;
+assign sccb_pwup.wready        = sccb_masters[0].wready;
+assign sccb_masters[0].wdata   = sccb_pwup.wdata;
+assign sccb_masters[0].wstrb   = sccb_pwup.wstrb;
+assign sccb_pwup.bvalid        = sccb_masters[0].bvalid;
+assign sccb_masters[0].bready  = sccb_pwup.bready;
+assign sccb_pwup.bresp         = sccb_masters[0].bresp;
+assign sccb_masters[0].arvalid = sccb_pwup.arvalid;
+assign sccb_pwup.arready       = sccb_masters[0].arready;
+assign sccb_masters[0].araddr  = sccb_pwup.araddr;
+assign sccb_pwup.rvalid        = sccb_masters[0].rvalid;
+assign sccb_masters[0].rready  = sccb_pwup.rready;
+assign sccb_pwup.rdata         = sccb_masters[0].rdata;
+assign sccb_pwup.rresp         = sccb_masters[0].rresp;
+
+assign sccb_masters[1].awvalid  = ext_sccb_ctrl_if.awvalid;
+assign ext_sccb_ctrl_if.awready = sccb_masters[1].awready;
+assign sccb_masters[1].awaddr   = ext_sccb_ctrl_if.awaddr;
+assign sccb_masters[1].wvalid   = ext_sccb_ctrl_if.wvalid;
+assign ext_sccb_ctrl_if.wready  = sccb_masters[1].wready;
+assign sccb_masters[1].wdata    = ext_sccb_ctrl_if.wdata;
+assign sccb_masters[1].wstrb    = ext_sccb_ctrl_if.wstrb;
+assign ext_sccb_ctrl_if.bvalid  = sccb_masters[1].bvalid;
+assign sccb_masters[1].bready   = ext_sccb_ctrl_if.bready;
+assign ext_sccb_ctrl_if.bresp   = sccb_masters[1].bresp;
+assign sccb_masters[1].arvalid  = ext_sccb_ctrl_if.arvalid;
+assign ext_sccb_ctrl_if.arready = sccb_masters[1].arready;
+assign sccb_masters[1].araddr   = ext_sccb_ctrl_if.araddr;
+assign ext_sccb_ctrl_if.rvalid  = sccb_masters[1].rvalid;
+assign sccb_masters[1].rready   = ext_sccb_ctrl_if.rready;
+assign ext_sccb_ctrl_if.rdata   = sccb_masters[1].rdata;
+assign ext_sccb_ctrl_if.rresp   = sccb_masters[1].rresp;
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 8          ),
+  .DATA_WIDTH ( 32         )
+) ext_csi2_csr_if (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 8          ),
+  .DATA_WIDTH ( 32         )
+) csr_pwup (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
+
+axi4_lite_if #(
+  .ADDR_WIDTH ( 8          ),
+  .DATA_WIDTH ( 32         )
+) csr_masters[1 : 0] (
+  .aclk       ( px_clk_i   ),
+  .aresetn    ( !px_rst_i  )
+);
 
 axi4_lite_if #(
   .ADDR_WIDTH ( 8          ),
@@ -172,23 +270,71 @@ axi4_lite_if #(
   .aresetn    ( !px_rst_i  )
 );
 
-assign csi2_csr_if.awvalid = csi2_csr_awvalid_i;
-assign csi2_csr_awready_o  = csi2_csr_if.awready;
-assign csi2_csr_if.awaddr  = csi2_csr_awaddr_i;
-assign csi2_csr_if.wvalid  = csi2_csr_wvalid_i;
-assign csi2_csr_wready_o   = csi2_csr_if.wready;
-assign csi2_csr_if.wdata   = csi2_csr_wdata_i;
-assign csi2_csr_if.wstrb   = csi2_csr_wstrb_i;
-assign csi2_csr_bvalid_o   = csi2_csr_if.bvalid;
-assign csi2_csr_if.bready  = csi2_csr_bready_i;
-assign csi2_csr_bresp_o    = csi2_csr_if.bresp;
-assign csi2_csr_if.arvalid = csi2_csr_arvalid_i;
-assign csi2_csr_arready_o  = csi2_csr_if.arready;
-assign csi2_csr_if.araddr  = csi2_csr_araddr_i;
-assign csi2_csr_rvalid_o   = csi2_csr_if.rvalid;
-assign csi2_csr_if.rready  = csi2_csr_rready_i;
-assign csi2_csr_rdata_o    = csi2_csr_if.rdata;
-assign csi2_csr_rresp_o    = csi2_csr_if.rresp;
+assign ext_csi2_csr_if.awvalid = csi2_csr_awvalid_i;
+assign csi2_csr_awready_o      = ext_csi2_csr_if.awready;
+assign ext_csi2_csr_if.awaddr  = csi2_csr_awaddr_i;
+assign ext_csi2_csr_if.wvalid  = csi2_csr_wvalid_i;
+assign csi2_csr_wready_o       = ext_csi2_csr_if.wready;
+assign ext_csi2_csr_if.wdata   = csi2_csr_wdata_i;
+assign ext_csi2_csr_if.wstrb   = csi2_csr_wstrb_i;
+assign csi2_csr_bvalid_o       = ext_csi2_csr_if.bvalid;
+assign ext_csi2_csr_if.bready  = csi2_csr_bready_i;
+assign csi2_csr_bresp_o        = ext_csi2_csr_if.bresp;
+assign ext_csi2_csr_if.arvalid = csi2_csr_arvalid_i;
+assign csi2_csr_arready_o      = ext_csi2_csr_if.arready;
+assign ext_csi2_csr_if.araddr  = csi2_csr_araddr_i;
+assign csi2_csr_rvalid_o       = ext_csi2_csr_if.rvalid;
+assign ext_csi2_csr_if.rready  = csi2_csr_rready_i;
+assign csi2_csr_rdata_o        = ext_csi2_csr_if.rdata;
+assign csi2_csr_rresp_o        = ext_csi2_csr_if.rresp;
+
+assign csr_masters[0].awvalid = csr_pwup.awvalid;
+assign csr_pwup.awready       = csr_masters[0].awready;
+assign csr_masters[0].awaddr  = csr_pwup.awaddr;
+assign csr_masters[0].wvalid  = csr_pwup.wvalid;
+assign csr_pwup.wready        = csr_masters[0].wready;
+assign csr_masters[0].wdata   = csr_pwup.wdata;
+assign csr_masters[0].wstrb   = csr_pwup.wstrb;
+assign csr_pwup.bvalid        = csr_masters[0].bvalid;
+assign csr_masters[0].bready  = csr_pwup.bready;
+assign csr_pwup.bresp         = csr_masters[0].bresp;
+assign csr_masters[0].arvalid = csr_pwup.arvalid;
+assign csr_pwup.arready       = csr_masters[0].arready;
+assign csr_masters[0].araddr  = csr_pwup.araddr;
+assign csr_pwup.rvalid        = csr_masters[0].rvalid;
+assign csr_masters[0].rready  = csr_pwup.rready;
+assign csr_pwup.rdata         = csr_masters[0].rdata;
+assign csr_pwup.rresp         = csr_masters[0].rresp;
+
+assign csr_masters[1].awvalid  = ext_csr_ctrl_if.awvalid;
+assign ext_csr_ctrl_if.awready = csr_masters[1].awready;
+assign csr_masters[1].awaddr   = ext_csr_ctrl_if.awaddr;
+assign csr_masters[1].wvalid   = ext_csr_ctrl_if.wvalid;
+assign ext_csr_ctrl_if.wready  = csr_masters[1].wready;
+assign csr_masters[1].wdata    = ext_csr_ctrl_if.wdata;
+assign csr_masters[1].wstrb    = ext_csr_ctrl_if.wstrb;
+assign ext_csr_ctrl_if.bvalid  = csr_masters[1].bvalid;
+assign csr_masters[1].bready   = ext_csr_ctrl_if.bready;
+assign ext_csr_ctrl_if.bresp   = csr_masters[1].bresp;
+assign csr_masters[1].arvalid  = ext_csr_ctrl_if.arvalid;
+assign ext_csr_ctrl_if.arready = csr_masters[1].arready;
+assign csr_masters[1].araddr   = ext_csr_ctrl_if.araddr;
+assign ext_csr_ctrl_if.rvalid  = csr_masters[1].rvalid;
+assign csr_masters[1].rready   = ext_csr_ctrl_if.rready;
+assign ext_csr_ctrl_if.rdata   = csr_masters[1].rdata;
+assign ext_csr_ctrl_if.rresp   = csr_masters[1].rresp;
+
+axi4_lite_simple_mux #(
+  .ADDR_WIDTH     ( 8            ),
+  .DATA_WIDTH     ( 32           ),
+  .MASTERS_AMOUNT ( 2            )
+) csr_mux (
+  .clk_i          ( px_clk_i     ),
+  .rst_i          ( !px_rst_i    ),
+  .dir_i          ( init_done    ),
+  .axi4_lite_i    ( csr_masters  ),
+  .axi4_lite_o    ( csi2_csr_if  )
+);
 
 // Main module
 // Transforms DPHY signals into AXI4-Stream
@@ -275,9 +421,12 @@ sccb_master sccb_master (
 
 // Timer to execute power-up sequence
 cam_pwup cam_pwup (
-  .clk_i      ( px_clk_i   ),
-  .rst_i      ( px_rst_i  ),
-  .cam_pwup_o ( cam_pwup_o )
+  .clk_i       ( px_clk_i   ),
+  .rst_i       ( px_rst_i   ),
+  .cam_pwup_o  ( cam_pwup_o ),
+  .init_done_o ( init_done  )
+  .sccb_pwup   ( sccb_pwup  ),
+  .csr_pwup    ( csr_pwup   )
 );
 
 endmodule
