@@ -9,7 +9,8 @@
 
 module csi2_rx #(
   parameter int DATA_LANES       = 2,
-  parameter int CONTINIOUS_VALID = 1
+  parameter int CONTINIOUS_VALID = 1,
+  parameter int FRAMES_TO_IGNORE = 20
 )(
   // DPHY inputs
   input                              dphy_clk_p_i,
@@ -159,15 +160,17 @@ csi2_hamming_dec header_corrector (
 );
 
 // Also generate reset PHY signal
-csi2_to_axi4_stream axi4_conv (
-  .clk_i     ( rx_clk                   ),
-  .rst_i     ( clk_loss_rst             ),
-  .enable_i  ( enable_i                 ),
-  .data_i    ( corrected_phy_data       ),
-  .valid_i   ( corrected_phy_data_valid ),
-  .error_i   ( pkt_error                ),
-  .phy_rst_o ( phy_rst                  ),
-  .pkt_o     ( csi2_pkt_rx_clk_if       )
+csi2_to_axi4_stream #(
+  .FRAMES_TO_IGNORE ( FRAMES_TO_IGNORE         )
+) axi4_conv (
+  .clk_i            ( rx_clk                   ),
+  .rst_i            ( clk_loss_rst             ),
+  .enable_i         ( enable_i                 ),
+  .data_i           ( corrected_phy_data       ),
+  .valid_i          ( corrected_phy_data_valid ),
+  .error_i          ( pkt_error                ),
+  .phy_rst_o        ( phy_rst                  ),
+  .pkt_o            ( csi2_pkt_rx_clk_if       )
 );
 
 assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;

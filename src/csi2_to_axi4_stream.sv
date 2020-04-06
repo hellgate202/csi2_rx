@@ -1,5 +1,8 @@
-module csi2_to_axi4_stream
-(
+import csi2_data_types_pkg::*;
+
+module csi2_to_axi4_stream #(
+  parameter int FRAMES_TO_IGNORE = 20
+)(
   input                 clk_i,
   input                 rst_i,
   // Core enable from CSR
@@ -12,20 +15,26 @@ module csi2_to_axi4_stream
   axi4_stream_if.master pkt_o
 );
 
-logic          valid_d1;
+localparam int FRAME_CNT_WIDTH = $clog2( FRAMES_TO_IGNORE ) + 1;
+
+logic                           valid_d1;
 // Long packet payload
-logic          pkt_running;
-logic          last_word;
-logic          header_valid;
+logic                           pkt_running;
+logic                           last_word;
+logic                           header_valid;
 // One word packet
-logic          short_pkt;
-logic          long_pkt;
-logic [15 : 0] byte_cnt, byte_cnt_comb;
+logic                           short_pkt;
+logic                           long_pkt;
+logic [15 : 0]                  byte_cnt, byte_cnt_comb;
 // Synchronized deassertion of enable with end of long packet
-logic          disable_flag;
+logic                           disable_flag;
 // Transfer from px_clk to rx_clk domain
-logic enable_d1;
-logic enable_d2;
+logic                           enable_d1;
+logic                           enable_d2;
+
+logic                           frame_start;
+logic                           stream_stable;
+logic [FRAME_CNT_WIDTH - 1 : 0] ignore_cnt;
 
 // First word of correct packet
 assign header_valid = valid_i && !valid_d1 && !error_i && 
@@ -34,6 +43,7 @@ assign long_pkt     = header_valid && data_i[5 : 0] >= 6'h10;
 assign short_pkt    = header_valid && data_i[5 : 0] <  6'h10;
 assign last_word    = pkt_running && byte_cnt_comb == '0;
 assign phy_rst_o    = short_pkt || last_word || error_i || disable_flag;
+assign frame_start  = header_valid && data_i[5 : 0] == FRAME_START;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -94,12 +104,24 @@ always_comb
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
+    ignore_cnt <= '0;
+  else
+    if( disable_flag )
+      ignore_cnt <= '0;
+    else
+      if( frame_start && ignore_cnt < FRAMES_TO_IGNORE )
+        ignore_cnt <= ignore_cnt + 1'b1;
+
+assign stream_stable = ignore_cnt == FRAMES_TO_IGNORE;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
     begin
       pkt_o.tvalid <= '0;
       pkt_o.tdata  <= '0;
     end
   else
-    if( header_valid || pkt_running && valid_i )
+    if( header_valid || pkt_running && valid_i && stream_stable )
       begin
         pkt_o.tvalid <= 1'b1;
         pkt_o.tdata  <= data_i;

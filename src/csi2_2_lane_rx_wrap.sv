@@ -1,5 +1,6 @@
 module csi2_2_lane_rx_wrap #(
-  parameter int CONTINIOUS_VALID = 1
+  parameter CONTINIOUS_VALID = 1,
+  parameter FRAMES_TO_IGNORE = 20
 )(
   // 200 MHz reference clock
   input           ref_clk_i,

@@ -474,7 +474,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e4de1025</spirit:value>
+            <spirit:value>ca981747</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -490,7 +490,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e4de1025</spirit:value>
+            <spirit:value>ca981747</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -504,7 +504,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9347af95</spirit:value>
+            <spirit:value>14bbcae2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1343,10 +1343,15 @@
       </spirit:port>
     </spirit:ports>
     <spirit:modelParameters>
-      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="int">
+      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
         <spirit:name>CONTINIOUS_VALID</spirit:name>
         <spirit:displayName>Continious Valid</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.CONTINIOUS_VALID">1</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>FRAMES_TO_IGNORE</spirit:name>
+        <spirit:displayName>Frames To Ignore</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.FRAMES_TO_IGNORE">20</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -1500,7 +1505,7 @@
       <spirit:file>
         <spirit:name>src/csi2_2_lane_rx_wrap.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_993f8914</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_daa55b09</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1659,7 +1664,7 @@
       <spirit:file>
         <spirit:name>xgui/csi2_2_lane_rx_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_9347af95</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_14bbcae2</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1674,6 +1679,11 @@
       <spirit:name>CONTINIOUS_VALID</spirit:name>
       <spirit:displayName>Continious Valid</spirit:displayName>
       <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.CONTINIOUS_VALID">1</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>FRAMES_TO_IGNORE</spirit:name>
+      <spirit:displayName>Frames To Ignore</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.FRAMES_TO_IGNORE">20</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1697,8 +1707,8 @@
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
       <xilinx:vendorURL>https://github.com/hellgate202</xilinx:vendorURL>
-      <xilinx:coreRevision>17</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-04-05T18:06:03Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>18</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2020-04-06T12:48:03Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@31b27a58_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@8cafe23_ARCHIVE_LOCATION">/home/liv/fpga/csi2</xilinx:tag>
@@ -1866,16 +1876,27 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@67063b95_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@6b3482d1_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@1cf1b839_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@61bcbb3b_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4066cdb1_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68d18e5f_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33f68450_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24b56731_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@535b9e4e_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16d69bbd_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@85794c0_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@785a61ba_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f5c8092_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d9ab886_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/ip/csi2_rx</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="9c1e0da6"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="d3cfb502"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="5a7bf2ef"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f7ed1183"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="891fde35"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="8b79e0c6"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="31de6e0c"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="10317e12"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="3899fb82"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
