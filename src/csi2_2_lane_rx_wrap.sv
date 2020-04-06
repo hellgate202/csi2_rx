@@ -119,6 +119,7 @@ logic [31 : 0]       max_px_per_ln;
 logic [31 : 0]       min_px_per_ln;
 
 logic                init_done;
+logic                cam_rst_stb;
 
 logic [1 : 0][4 : 0] lane_delay;
 assign lane_delay[0] = lane_0_delay;
@@ -141,44 +142,44 @@ assign video_tuser_o  = video.tuser;
 assign video_tlast_o  = video.tlast;
 
 axi4_lite_if #(
-  .ADDR_WIDTH ( 16         ),
-  .DATA_WIDTH ( 32         )
+  .ADDR_WIDTH ( 16        ),
+  .DATA_WIDTH ( 8         )
 ) ext_sccb_ctrl_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_rst_i  )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
 axi4_lite_if #(
-  .ADDR_WIDTH ( 16         ),
-  .DATA_WIDTH ( 32         )
+  .ADDR_WIDTH ( 16        ),
+  .DATA_WIDTH ( 8         )
 ) sccb_pwup (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_rst_i  )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
 axi4_lite_if #(
-  .ADDR_WIDTH ( 16         ),
-  .DATA_WIDTH ( 32         )
+  .ADDR_WIDTH ( 16        ),
+  .DATA_WIDTH ( 8         )
 ) sccb_masters[1 : 0] (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_rst_i  )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
 axi4_lite_if #(
-  .ADDR_WIDTH ( 16         ),
-  .DATA_WIDTH ( 32         )
+  .ADDR_WIDTH ( 16        ),
+  .DATA_WIDTH ( 8         )
 ) sccb_ctrl_if (
-  .aclk       ( px_clk_i   ),
-  .aresetn    ( !px_rst_i  )
+  .aclk       ( px_clk_i  ),
+  .aresetn    ( !px_rst_i )
 );
 
 axi4_lite_simple_mux #(
   .ADDR_WIDTH     ( 16           ),
-  .DATA_WIDTH     ( 32           ),
+  .DATA_WIDTH     ( 8            ),
   .MASTERS_AMOUNT ( 2            )
 ) sccb_mux (
   .clk_i          ( px_clk_i     ),
-  .rst_i          ( !px_rst_i    ),
+  .rst_i          ( px_rst_i    ),
   .dir_i          ( init_done    ),
   .axi4_lite_i    ( sccb_masters ),
   .axi4_lite_o    ( sccb_ctrl_if )
@@ -189,7 +190,7 @@ assign sccb_ctrl_awready_o      = ext_sccb_ctrl_if.awready;
 assign ext_sccb_ctrl_if.awaddr  = sccb_ctrl_awaddr_i;
 assign ext_sccb_ctrl_if.wvalid  = sccb_ctrl_wvalid_i;
 assign sccb_ctrl_wready_o       = ext_sccb_ctrl_if.wready;
-assign ext_sccb_ctrl_if.wdata   = sccb_ctrl_wdata_i;
+assign ext_sccb_ctrl_if.wdata   = sccb_ctrl_wdata_i[7 : 0];
 assign ext_sccb_ctrl_if.wstrb   = sccb_ctrl_wstrb_i;
 assign sccb_ctrl_bvalid_o       = ext_sccb_ctrl_if.bvalid;
 assign ext_sccb_ctrl_if.bready  = sccb_ctrl_bready_i;
@@ -199,7 +200,7 @@ assign sccb_ctrl_arready_o      = ext_sccb_ctrl_if.arready;
 assign ext_sccb_ctrl_if.araddr  = sccb_ctrl_araddr_i;
 assign sccb_ctrl_rvalid_o       = ext_sccb_ctrl_if.rvalid;
 assign ext_sccb_ctrl_if.rready  = sccb_ctrl_rready_i;
-assign sccb_ctrl_rdata_o        = ext_sccb_ctrl_if.rdata;
+assign sccb_ctrl_rdata_o        = 32'( ext_sccb_ctrl_if.rdata );
 assign sccb_ctrl_rresp_o        = ext_sccb_ctrl_if.rresp;
 
 assign sccb_masters[0].awvalid = sccb_pwup.awvalid;
@@ -330,7 +331,7 @@ axi4_lite_simple_mux #(
   .MASTERS_AMOUNT ( 2            )
 ) csr_mux (
   .clk_i          ( px_clk_i     ),
-  .rst_i          ( !px_rst_i    ),
+  .rst_i          ( px_rst_i    ),
   .dir_i          ( init_done    ),
   .axi4_lite_i    ( csr_masters  ),
   .axi4_lite_o    ( csi2_csr_if  )
@@ -402,7 +403,8 @@ csi2_csr csi2_csr
   .max_ln_per_frame_i    ( max_ln_per_frame    ),
   .min_ln_per_frame_i    ( min_ln_per_frame    ),
   .max_px_per_ln_i       ( max_px_per_ln       ),
-  .min_px_per_ln_i       ( min_px_per_ln       )
+  .min_px_per_ln_i       ( min_px_per_ln       ),
+  .cam_rst_stb_o         ( cam_rst_stb         )
 );
 
 // SCCB master controller
@@ -421,12 +423,13 @@ sccb_master sccb_master (
 
 // Timer to execute power-up sequence
 cam_pwup cam_pwup (
-  .clk_i       ( px_clk_i   ),
-  .rst_i       ( px_rst_i   ),
-  .cam_pwup_o  ( cam_pwup_o ),
-  .init_done_o ( init_done  ),
-  .sccb_pwup   ( sccb_pwup  ),
-  .csr_pwup    ( csr_pwup   )
+  .clk_i         ( px_clk_i    ),
+  .rst_i         ( px_rst_i    ),
+  .cam_rst_stb_i ( cam_rst_stb ),
+  .cam_pwup_o    ( cam_pwup_o  ),
+  .init_done_o   ( init_done   ),
+  .sccb_pwup     ( sccb_pwup   ),
+  .csr_pwup      ( csr_pwup    )
 );
 
 endmodule

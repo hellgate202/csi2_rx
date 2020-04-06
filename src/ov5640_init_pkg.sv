@@ -1,6 +1,6 @@
 package ov5640_init_pkg;
 
-parameter bit [62 : 0][23 : 0] INIT_ROM = {
+parameter bit [63 : 0][23 : 0] INIT_ROM = {
   24'h5001_03,
   24'h5000_07,
   24'h3824_01,
@@ -8,6 +8,7 @@ parameter bit [62 : 0][23 : 0] INIT_ROM = {
   24'h460b_35,
   24'h440e_00,
   24'h4407_04,
+  24'h4818_01,
   24'h4713_03,
   24'h501f_01,
   24'h4300_6f,
@@ -62,10 +63,10 @@ parameter bit [62 : 0][23 : 0] INIT_ROM = {
   24'h3034_18,
   24'h3018_00,
   24'h3017_00,
-  24'h3101_03,
+  24'h3103_03,
   24'h3008_42
 };
 
-parameter int TOTAL_INIT_OPS = 63;
+parameter int TOTAL_INIT_OPS = 64;
 
 endpackage

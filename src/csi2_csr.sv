@@ -32,7 +32,8 @@ module csi2_csr#(
   input  [31 : 0]    max_ln_per_frame_i,
   input  [31 : 0]    min_ln_per_frame_i,
   input  [31 : 0]    max_px_per_ln_i,
-  input  [31 : 0]    min_px_per_ln_i
+  input  [31 : 0]    min_px_per_ln_i,
+  output             cam_rst_stb_o
 );
 
 assign csr_if.awready = 1'b1;
@@ -69,6 +70,7 @@ logic [TOTAL_SR_CNT - 1 : 0][DATA_WIDTH - 1 : 0] sr;
 // from control registers
 logic clear_stat_d1;
 logic delay_act_d1;
+logic cam_rst_stb_d1;
 
 // We can write only to control registers
 // We assume that awvalid and wvalid will be asserted
@@ -111,13 +113,15 @@ assign sr[MIN_PX_PER_LN_SR - TOTAL_CR_CNT]       = min_px_per_ln_i;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      clear_stat_d1 <= '0;
-      delay_act_d1  <= '0;
+      clear_stat_d1  <= '0;
+      delay_act_d1   <= '0;
+      cam_rst_stb_d1 <= '0;
     end
   else
     begin
-      clear_stat_d1 <= cr[CLEAR_STAT_CR][0];
-      delay_act_d1  <= cr[DELAY_ACT_CR][0];
+      clear_stat_d1  <= cr[CLEAR_STAT_CR][0];
+      delay_act_d1   <= cr[DELAY_ACT_CR][0];
+      cam_rst_stb_d1 <= cr[CAM_RST_STB_CR][0];
     end
 
 assign clear_stat_o      = cr[CLEAR_STAT_CR][0] && !clear_stat_d1;
@@ -126,5 +130,6 @@ assign sccb_slave_addr_o = cr[SCCB_SLAVE_ADDR_CR][6 : 0];
 assign lane_0_delay_o    = cr[LANE_0_DELAY_CR][4 : 0];
 assign lane_1_delay_o    = cr[LANE_1_DELAY_CR][4 : 0];
 assign delay_act_o       = cr[DELAY_ACT_CR][0] && !delay_act_d1;
+assign cam_rst_stb_o     = cr[CAM_RST_STB_CR][0] && !cam_rst_stb_d1;
 
 endmodule

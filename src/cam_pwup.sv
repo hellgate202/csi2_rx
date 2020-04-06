@@ -37,7 +37,6 @@ logic [7 : 0]                  csr_addr;
 logic                          csr_wr_stb;
 logic                          csr_done;
 
-
 logic [23 : 0] init_rom [TOTAL_INIT_OPS - 1 : 0];
 
 initial
@@ -198,13 +197,13 @@ always_comb
   case( state )
     SET_SLAVE_ADDR_S:
       begin
-        csr_addr    = 8'h4;
-        csr_wr_data = 32'h1;
+        csr_addr    = 8'h8;
+        csr_wr_data = 32'h3c;
       end
     RUN_DPHY_S:
       begin
-        csr_addr    = 8'h8;
-        csr_wr_data = 32'h3c;
+        csr_addr    = 8'h4;
+        csr_wr_data = 32'h1;
       end
     default:
       begin
