@@ -1,6 +1,9 @@
 package ov5640_1080p30_pkg;
 
-parameter bit [36 : 0][23 : 0] MODE_ROM = {
+parameter bit [39 : 0][23 : 0] MODE_ROM = {
+  24'h350b_90,
+  24'h3501_46,
+  24'h3503_03,
   24'h3008_02,
   24'h501f_03,
   24'h4300_00,
@@ -39,6 +42,6 @@ parameter bit [36 : 0][23 : 0] MODE_ROM = {
   24'h3036_69,
   24'h3035_21 };
   
-parameter int TOTAL_MODE_OPS = 37;
+parameter int TOTAL_MODE_OPS = 40;
 
 endpackage
