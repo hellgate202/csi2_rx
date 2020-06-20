@@ -423,7 +423,7 @@ sccb_master sccb_master (
 );
 
 // Timer to execute power-up sequence
-cam_pwup cam_pwup (
+imx477_pwup cam_pwup (
   .clk_i         ( px_clk_i    ),
   .rst_i         ( px_rst_i    ),
   .cam_rst_stb_i ( cam_rst_stb ),
