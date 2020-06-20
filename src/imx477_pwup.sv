@@ -1,7 +1,7 @@
-import ov5640_init_pkg::*;
-import ov5640_1080p30_pkg::*;
+import imx477_init_pkg::*;
+import imx477_1080p30_pkg::*;
 
-module cam_pwup #(
+module imx477_pwup #(
   parameter int CLK_FREQ = 74_250_000
 )(
   input               clk_i,
@@ -198,7 +198,7 @@ always_comb
     SET_SLAVE_ADDR_S:
       begin
         csr_addr    = 8'h8;
-        csr_wr_data = 32'h3c;
+        csr_wr_data = 32'h1a;
       end
     RUN_DPHY_S:
       begin
