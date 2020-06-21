@@ -1,5 +1,5 @@
 module dphy_settle_ignore #(
-  parameter int T_SETTLE = 300_000,
+  parameter int T_SETTLE = 150_000,
   parameter int T_CLK    = 5_000
 )(
   input  clk_i,

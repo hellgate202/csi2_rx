@@ -81,7 +81,7 @@ always_comb
       SET_SLAVE_ADDR_S:
         begin
           if( csr_done )
-            next_state = CFG_INIT_S;
+            next_state = WAIT_10MS_S;
         end
         /*
       SYS_INPUT_CLK_S:
@@ -94,12 +94,12 @@ always_comb
           if( sccb_done )
             next_state = WAIT_10MS_S;
         end
+        */
       WAIT_10MS_S:
         begin
           if( wait_cnt == TICKS_IN_10MS )
             next_state = CFG_INIT_S;
         end
-        */
       CFG_INIT_S:
         begin
           if( init_cmd_num == ( TOTAL_INIT_OPS - 1 ) && sccb_done )
