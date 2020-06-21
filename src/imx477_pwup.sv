@@ -15,30 +15,24 @@ module imx477_pwup #(
 
 localparam int CLK_T          = 64'd1_000_000_000_000 / CLK_FREQ;
 localparam int TICKS_IN_100MS = 64'd100_000_000_000 / CLK_T;
-localparam int TICKS_IN_150MS = 64'd500_000_000_000 / CLK_T;
-localparam int PWUP_CNT_WIDTH = $clog2( TICKS_IN_150MS );
+localparam int TICKS_IN_300MS = 64'd300_000_000_000 / CLK_T;
+localparam int PWUP_CNT_WIDTH = $clog2( TICKS_IN_300MS );
 localparam int INIT_CNT_WIDTH = $clog2( TOTAL_INIT_OPS );
 localparam int MODE_CNT_WIDTH = $clog2( TOTAL_MODE_OPS );
-localparam int TICKS_IN_10MS  = 64'd10_000_000_000 / CLK_T;
-localparam int WAIT_CNT_WIDTH = $clog2( TICKS_IN_10MS );
 
-(* MARK_DEBUG = "TRUE" *) logic [PWUP_CNT_WIDTH - 1 : 0] pwup_cnt;
-(* MARK_DEBUG = "TRUE" *) logic [WAIT_CNT_WIDTH - 1 : 0] wait_cnt;
-(* MARK_DEBUG = "TRUE" *) logic [INIT_CNT_WIDTH - 1 : 0] init_cmd_num;
-(* MARK_DEBUG = "TRUE" *) logic [MODE_CNT_WIDTH - 1 : 0] mode_cmd_num;
-(* MARK_DEBUG = "TRUE" *) logic [7 : 0]                  sccb_wr_data;
-(* MARK_DEBUG = "TRUE" *) logic [15 : 0]                 sccb_addr;
-(* MARK_DEBUG = "TRUE" *) logic                          sccb_wr_stb;
-(* MARK_DEBUG = "TRUE" *) logic                          sccb_done;
-(* MARK_DEBUG = "TRUE" *) logic [23 : 0]                 init_cmd;
-(* MARK_DEBUG = "TRUE" *) logic [23 : 0]                 mode_cmd;
-(* MARK_DEBUG = "TRUE" *) logic [31 : 0]                 csr_wr_data;
-(* MARK_DEBUG = "TRUE" *) logic [7 : 0]                  csr_addr;
-(* MARK_DEBUG = "TRUE" *) logic                          csr_wr_stb;
-(* MARK_DEBUG = "TRUE" *) logic                          csr_done;
-
-(* MARK_DEBUG = "TRUE" *) logic xclr;
-assign xclr = cam_pwup_o;
+logic [PWUP_CNT_WIDTH - 1 : 0] pwup_cnt;
+logic [INIT_CNT_WIDTH - 1 : 0] init_cmd_num;
+logic [MODE_CNT_WIDTH - 1 : 0] mode_cmd_num;
+logic [7 : 0]                  sccb_wr_data;
+logic [15 : 0]                 sccb_addr;
+logic                          sccb_wr_stb;
+logic                          sccb_done;
+logic [23 : 0]                 init_cmd;
+logic [23 : 0]                 mode_cmd;
+logic [31 : 0]                 csr_wr_data;
+logic [7 : 0]                  csr_addr;
+logic                          csr_wr_stb;
+logic                          csr_done;
 
 logic [23 : 0] init_rom [TOTAL_INIT_OPS - 1 : 0];
 
@@ -56,9 +50,8 @@ initial
 
 assign mode_cmd = mode_rom[mode_cmd_num];
 
-(* MARK_DEBUG = "TRUE" *) enum logic [2 : 0] { CAM_RST_S,
+enum logic [2 : 0] { CAM_RST_S,
                      SET_SLAVE_ADDR_S,
-                     WAIT_10MS_S,
                      CFG_INIT_S,
                      SET_MODE_S,
                      RUN_DPHY_S,
@@ -76,17 +69,12 @@ always_comb
     case( state )
       CAM_RST_S:
         begin
-          if( pwup_cnt == PWUP_CNT_WIDTH'( TICKS_IN_150MS ) )
+          if( pwup_cnt == PWUP_CNT_WIDTH'( TICKS_IN_300MS ) )
             next_state = SET_SLAVE_ADDR_S;
         end
       SET_SLAVE_ADDR_S:
         begin
           if( csr_done )
-            next_state = WAIT_10MS_S;
-        end
-      WAIT_10MS_S:
-        begin
-          if( wait_cnt == TICKS_IN_10MS )
             next_state = CFG_INIT_S;
         end
       CFG_INIT_S:
@@ -116,22 +104,11 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pwup_cnt <= '0;
   else
-    /*
     if( state == RUN_S && cam_rst_stb_i )
       pwup_cnt <= '0;
-    else */
-      if( pwup_cnt < TICKS_IN_150MS )
-        pwup_cnt <= pwup_cnt + 1'b1;
-
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    wait_cnt <= '0;
-  else
-    if( state == RUN_S && cam_rst_stb_i )
-      wait_cnt <= '0;
     else
-      if( wait_cnt < TICKS_IN_10MS && state == WAIT_10MS_S )
-        wait_cnt <= wait_cnt + 1'b1;
+      if( pwup_cnt < TICKS_IN_300MS )
+        pwup_cnt <= pwup_cnt + 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
