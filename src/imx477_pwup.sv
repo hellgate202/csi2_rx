@@ -15,11 +15,11 @@ module imx477_pwup #(
 
 localparam int CLK_T          = 64'd1_000_000_000_000 / CLK_FREQ;
 localparam int TICKS_IN_100MS = 64'd100_000_000_000 / CLK_T;
-localparam int TICKS_IN_150MS = 64'd150_000_000_000 / CLK_T;
+localparam int TICKS_IN_150MS = 64'd500_000_000_000 / CLK_T;
 localparam int PWUP_CNT_WIDTH = $clog2( TICKS_IN_150MS );
 localparam int INIT_CNT_WIDTH = $clog2( TOTAL_INIT_OPS );
 localparam int MODE_CNT_WIDTH = $clog2( TOTAL_MODE_OPS );
-localparam int TICKS_IN_10MS  = 64'd100_000_000_000 / CLK_T;
+localparam int TICKS_IN_10MS  = 64'd10_000_000_000 / CLK_T;
 localparam int WAIT_CNT_WIDTH = $clog2( TICKS_IN_10MS );
 
 (* MARK_DEBUG = "TRUE" *) logic [PWUP_CNT_WIDTH - 1 : 0] pwup_cnt;
@@ -56,10 +56,8 @@ initial
 
 assign mode_cmd = mode_rom[mode_cmd_num];
 
-(* MARK_DEBUG = "TRUE" *) enum logic [4 : 0] { CAM_RST_S,
+(* MARK_DEBUG = "TRUE" *) enum logic [2 : 0] { CAM_RST_S,
                      SET_SLAVE_ADDR_S,
-                     SYS_INPUT_CLK_S,
-                     SOFT_RST_S,
                      WAIT_10MS_S,
                      CFG_INIT_S,
                      SET_MODE_S,
@@ -86,18 +84,6 @@ always_comb
           if( csr_done )
             next_state = WAIT_10MS_S;
         end
-        /*
-      SYS_INPUT_CLK_S:
-        begin
-          if( sccb_done )
-            next_state = SOFT_RST_S;
-        end
-      SOFT_RST_S:
-        begin
-          if( sccb_done )
-            next_state = WAIT_10MS_S;
-        end
-        */
       WAIT_10MS_S:
         begin
           if( wait_cnt == TICKS_IN_10MS )
@@ -130,9 +116,10 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     pwup_cnt <= '0;
   else
+    /*
     if( state == RUN_S && cam_rst_stb_i )
       pwup_cnt <= '0;
-    else
+    else */
       if( pwup_cnt < TICKS_IN_150MS )
         pwup_cnt <= pwup_cnt + 1'b1;
 
@@ -168,16 +155,6 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 always_comb
   case( state )
-    SYS_INPUT_CLK_S:
-      begin
-        sccb_addr    = 16'h3103;
-        sccb_wr_data = 8'h11;
-      end
-    SOFT_RST_S:
-      begin
-        sccb_addr    = 16'h3008;
-        sccb_wr_data = 8'h82;
-      end
     CFG_INIT_S:
       begin
         sccb_addr    = init_cmd[23 : 8];
@@ -195,8 +172,7 @@ always_comb
       end
   endcase
 
-assign sccb_wr_stb = state == SYS_INPUT_CLK_S || state == SOFT_RST_S || 
-                     state == CFG_INIT_S || state == SET_MODE_S;
+assign sccb_wr_stb = state == CFG_INIT_S || state == SET_MODE_S;
 
 always_comb
   case( state )
