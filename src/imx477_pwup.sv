@@ -19,23 +19,26 @@ localparam int TICKS_IN_150MS = 64'd150_000_000_000 / CLK_T;
 localparam int PWUP_CNT_WIDTH = $clog2( TICKS_IN_150MS );
 localparam int INIT_CNT_WIDTH = $clog2( TOTAL_INIT_OPS );
 localparam int MODE_CNT_WIDTH = $clog2( TOTAL_MODE_OPS );
-localparam int TICKS_IN_10MS  = 64'd10_000_000_000 / CLK_T;
+localparam int TICKS_IN_10MS  = 64'd100_000_000_000 / CLK_T;
 localparam int WAIT_CNT_WIDTH = $clog2( TICKS_IN_10MS );
 
-logic [PWUP_CNT_WIDTH - 1 : 0] pwup_cnt;
-logic [WAIT_CNT_WIDTH - 1 : 0] wait_cnt;
-logic [INIT_CNT_WIDTH - 1 : 0] init_cmd_num;
-logic [MODE_CNT_WIDTH - 1 : 0] mode_cmd_num;
-logic [7 : 0]                  sccb_wr_data;
-logic [15 : 0]                 sccb_addr;
-logic                          sccb_wr_stb;
-logic                          sccb_done;
-logic [23 : 0]                 init_cmd;
-logic [23 : 0]                 mode_cmd;
-logic [31 : 0]                 csr_wr_data;
-logic [7 : 0]                  csr_addr;
-logic                          csr_wr_stb;
-logic                          csr_done;
+(* MARK_DEBUG = "TRUE" *) logic [PWUP_CNT_WIDTH - 1 : 0] pwup_cnt;
+(* MARK_DEBUG = "TRUE" *) logic [WAIT_CNT_WIDTH - 1 : 0] wait_cnt;
+(* MARK_DEBUG = "TRUE" *) logic [INIT_CNT_WIDTH - 1 : 0] init_cmd_num;
+(* MARK_DEBUG = "TRUE" *) logic [MODE_CNT_WIDTH - 1 : 0] mode_cmd_num;
+(* MARK_DEBUG = "TRUE" *) logic [7 : 0]                  sccb_wr_data;
+(* MARK_DEBUG = "TRUE" *) logic [15 : 0]                 sccb_addr;
+(* MARK_DEBUG = "TRUE" *) logic                          sccb_wr_stb;
+(* MARK_DEBUG = "TRUE" *) logic                          sccb_done;
+(* MARK_DEBUG = "TRUE" *) logic [23 : 0]                 init_cmd;
+(* MARK_DEBUG = "TRUE" *) logic [23 : 0]                 mode_cmd;
+(* MARK_DEBUG = "TRUE" *) logic [31 : 0]                 csr_wr_data;
+(* MARK_DEBUG = "TRUE" *) logic [7 : 0]                  csr_addr;
+(* MARK_DEBUG = "TRUE" *) logic                          csr_wr_stb;
+(* MARK_DEBUG = "TRUE" *) logic                          csr_done;
+
+(* MARK_DEBUG = "TRUE" *) logic xclr;
+assign xclr = cam_pwup_o;
 
 logic [23 : 0] init_rom [TOTAL_INIT_OPS - 1 : 0];
 
@@ -53,7 +56,7 @@ initial
 
 assign mode_cmd = mode_rom[mode_cmd_num];
 
-enum logic [4 : 0] { CAM_RST_S,
+(* MARK_DEBUG = "TRUE" *) enum logic [4 : 0] { CAM_RST_S,
                      SET_SLAVE_ADDR_S,
                      SYS_INPUT_CLK_S,
                      SOFT_RST_S,
