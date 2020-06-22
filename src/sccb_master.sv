@@ -47,9 +47,6 @@ logic [7 : 0]  phy_data;
 // Always 8 bit transactions over I2C
 logic [2 : 0]  bit_cnt;
 
-(* MARK_DEBUG = "TRUE" *) logic sda_dbg;
-(* MARK_DEBUG = "TRUE" *) logic scl_dbg;
-
 assign sda_dbg = sda_i;
 assign scl_dbg = scl_i;
 
