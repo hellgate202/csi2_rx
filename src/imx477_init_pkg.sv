@@ -1,11 +1,16 @@
 package imx477_init_pkg;
 
-parameter bit [307 : 0][23 : 0] INIT_ROM = {
+parameter bit [312 : 0][23 : 0] INIT_ROM = {
   24'hbcf1_02,
   24'h0350_00,
   24'h0114_01,
-  24'h0113_0c,
-  24'h0112_0c,
+  24'h00ff_0a,
+  24'h00fe_0a,
+  24'h00fd_0a,
+  24'h00fc_0a,
+  24'h3f0d_00,
+  24'h0113_0a,
+  24'h0112_0a,
   24'hb35e_08,
   24'hb35c_00,
   24'hb21f_04,
@@ -311,6 +316,6 @@ parameter bit [307 : 0][23 : 0] INIT_ROM = {
   24'h0100_00
 };
 
-parameter int TOTAL_INIT_OPS = 308;
+parameter int TOTAL_INIT_OPS = 313;
 
 endpackage
