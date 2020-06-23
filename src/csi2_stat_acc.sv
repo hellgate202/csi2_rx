@@ -21,13 +21,15 @@ module csi2_stat_acc
   input           header_err_i,
   input           corr_header_err_i,
   input           crc_err_i,
+  input           dphy_byte_clk_i,
   output [31 : 0] header_err_cnt_o,
   output [31 : 0] corr_header_err_cnt_o,
   output [31 : 0] crc_err_cnt_o,
   output [31 : 0] max_ln_per_frame_o,
   output [31 : 0] min_ln_per_frame_o,
   output [31 : 0] max_px_per_ln_o,
-  output [31 : 0] min_px_per_ln_o  
+  output [31 : 0] min_px_per_ln_o, 
+  output [31 : 0] dphy_byte_freq_o
 );
 
 // This module works in px_clk clock domain
@@ -180,5 +182,14 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       if( video_data_val_i && video_proc_ready_i && video_frame_start_i )
         min_ln_per_frame <= ln_cnt;
+
+freq_meas #(
+  .REF_CLK_FREQ ( 74_250_000       )
+) dphy_byte_clk_meas (
+  .meas_clk_i   ( dphy_byte_clk_i  ),
+  .rst_i        ( rst_i            ),
+  .ref_clk_i    ( clk_i            ),
+  .freq_o       ( dphy_byte_freq_o )
+);
 
 endmodule

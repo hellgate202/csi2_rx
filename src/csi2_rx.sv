@@ -34,6 +34,7 @@ module csi2_rx #(
   output                             header_err_o,
   output                             corr_header_err_o,
   output                             crc_err_o,
+  output                             byte_clk_o,
   // AXI4 Video Stream
   axi4_stream_if.master              video_o
 );
@@ -191,16 +192,18 @@ csi2_crc_calc crc_calc (
 
 assign csi2_pkt_rx_clk_if.tready = 1'b1;
 
+(* MARK_DEBUG = "TRUE" *) logic cdc_full;
+
 // CDC from rx_clk to px_clk
 dc_fifo #(
   .DATA_WIDTH      ( 37                        ),
-  .WORDS_AMOUNT    ( 256                       )
+  .WORDS_AMOUNT    ( 1024                      )
 ) dphy_int_cdc (
   .wr_clk_i        ( rx_clk                    ),
   .wr_data_i       ( pkt_word_rx_clk           ),
   .wr_i            ( csi2_pkt_rx_clk_if.tvalid ),
   .wr_used_words_o (                           ),
-  .wr_full_o       (                           ),
+  .wr_full_o       ( cdc_full                  ),
   .wr_empty_o      (                           ),
   .rd_clk_i        ( px_clk_i                  ),
   .rd_data_o       ( pkt_word_px_clk           ),
@@ -283,5 +286,7 @@ generate
       assign intermittent_video.tready = video_o.tready;
     end
 endgenerate
+
+assign byte_clk_o = rx_clk;
 
 endmodule

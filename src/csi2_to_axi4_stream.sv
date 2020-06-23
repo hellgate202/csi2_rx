@@ -17,24 +17,30 @@ module csi2_to_axi4_stream #(
 
 localparam int FRAME_CNT_WIDTH = $clog2( FRAMES_TO_IGNORE ) + 1;
 
-logic                           valid_d1;
+(* MARK_DEBUG = "TRUE" *) logic                           valid_d1;
 // Long packet payload
-logic                           pkt_running;
-logic                           last_word;
-logic                           header_valid;
+(* MARK_DEBUG = "TRUE" *) logic                           pkt_running;
+(* MARK_DEBUG = "TRUE" *) logic                           last_word;
+(* MARK_DEBUG = "TRUE" *) logic                           header_valid;
 // One word packet
-logic                           short_pkt;
-logic                           long_pkt;
-logic [15 : 0]                  byte_cnt, byte_cnt_comb;
+(* MARK_DEBUG = "TRUE" *) logic                           short_pkt;
+(* MARK_DEBUG = "TRUE" *) logic                           long_pkt;
+(* MARK_DEBUG = "TRUE" *) logic [15 : 0]                  byte_cnt, byte_cnt_comb;
 // Synchronized deassertion of enable with end of long packet
-logic                           disable_flag;
+(* MARK_DEBUG = "TRUE" *) logic                           disable_flag;
 // Transfer from px_clk to rx_clk domain
 logic                           enable_d1;
 logic                           enable_d2;
 
-logic                           frame_start;
-logic                           stream_stable;
-logic [FRAME_CNT_WIDTH - 1 : 0] ignore_cnt;
+(* MARK_DEBUG = "TRUE" *) logic                           frame_start;
+(* MARK_DEBUG = "TRUE" *) logic                           stream_stable;
+(* MARK_DEBUG = "TRUE" *) logic [FRAME_CNT_WIDTH - 1 : 0] ignore_cnt;
+
+(* MARK_DEBUG = "TRUE" *) logic [31 : 0] data_dbg;
+(* MARK_DEBUG = "TRUE" *) logic          valid_dbg;
+
+assign data_dbg  = data_i;
+assign valid_dbg = valid_i;
 
 // First word of correct packet
 assign header_valid = valid_i && !valid_d1 && !error_i && 

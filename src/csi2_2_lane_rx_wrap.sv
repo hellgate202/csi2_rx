@@ -118,9 +118,12 @@ logic [31 : 0]       max_ln_per_frame;
 logic [31 : 0]       min_ln_per_frame;
 logic [31 : 0]       max_px_per_ln;
 logic [31 : 0]       min_px_per_ln;
+logic [31 : 0]       dphy_byte_freq; 
 
 logic                init_done;
 logic                cam_rst_stb;
+
+logic                dphy_byte_clk;
 
 logic [1 : 0][4 : 0] lane_delay;
 assign lane_delay[0] = lane_0_delay;
@@ -361,6 +364,7 @@ csi2_rx #(
   .header_err_o      ( header_err       ),
   .corr_header_err_o ( corr_header_err  ),
   .crc_err_o         ( crc_err          ),
+  .byte_clk_o        ( dphy_byte_clk    ),
   .video_o           ( video            )
 );
 
@@ -377,13 +381,15 @@ csi2_stat_acc csi2_stat_acc
   .header_err_i          ( header_err          ),
   .corr_header_err_i     ( corr_header_err     ),
   .crc_err_i             ( crc_err             ),
+  .dphy_byte_clk_i       ( dphy_byte_clk       ),
   .header_err_cnt_o      ( header_err_cnt      ),
   .corr_header_err_cnt_o ( corr_header_err_cnt ),
   .crc_err_cnt_o         ( crc_err_cnt         ),
   .max_ln_per_frame_o    ( max_ln_per_frame    ),
   .min_ln_per_frame_o    ( min_ln_per_frame    ),
   .max_px_per_ln_o       ( max_px_per_ln       ),
-  .min_px_per_ln_o       ( min_px_per_ln       )
+  .min_px_per_ln_o       ( min_px_per_ln       ),
+  .dphy_byte_freq_o      ( dphy_byte_freq      )
 );
 
 // Control and status registers
@@ -405,6 +411,7 @@ csi2_csr csi2_csr
   .min_ln_per_frame_i    ( min_ln_per_frame    ),
   .max_px_per_ln_i       ( max_px_per_ln       ),
   .min_px_per_ln_i       ( min_px_per_ln       ),
+  .dphy_byte_freq_i      ( dphy_byte_freq      ),
   .cam_rst_stb_o         ( cam_rst_stb         )
 );
 

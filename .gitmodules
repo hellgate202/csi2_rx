@@ -16,3 +16,6 @@
 [submodule "lib/i2c_lib"]
 	path = lib/i2c_lib
 	url = https://github.com/hellgate202/i2c_lib
+[submodule "ip/freq_meas"]
+	path = ip/freq_meas
+	url = https://github.com/hellgate202/freq_meas
