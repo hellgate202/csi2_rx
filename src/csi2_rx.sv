@@ -192,8 +192,6 @@ csi2_crc_calc crc_calc (
 
 assign csi2_pkt_rx_clk_if.tready = 1'b1;
 
-(* MARK_DEBUG = "TRUE" *) logic cdc_full;
-
 // CDC from rx_clk to px_clk
 dc_fifo #(
   .DATA_WIDTH      ( 37                        ),
@@ -203,7 +201,7 @@ dc_fifo #(
   .wr_data_i       ( pkt_word_rx_clk           ),
   .wr_i            ( csi2_pkt_rx_clk_if.tvalid ),
   .wr_used_words_o (                           ),
-  .wr_full_o       ( cdc_full                  ),
+  .wr_full_o       (                           ),
   .wr_empty_o      (                           ),
   .rd_clk_i        ( px_clk_i                  ),
   .rd_data_o       ( pkt_word_px_clk           ),
