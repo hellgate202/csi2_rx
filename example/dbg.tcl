@@ -115,19 +115,19 @@ proc get_crc_err {} {
 }
 
 proc get_max_ln {} {
-  puts "Maximum frame size was [format %d 0x[rd_csr 0x24]] lines"
+  puts "Maximum frame size was [format %d 0x[rd_csr 0x28]] lines"
 }
 
 proc get_min_ln {} {
-  puts "Minimum frame size was [format %d 0x[rd_csr 0x28]] lines"
+  puts "Minimum frame size was [format %d 0x[rd_csr 0x2c]] lines"
 }
 
 proc get_max_px {} {
-  puts "Maximum line size was [format %d 0x[rd_csr 0x2c]] pixels"
+  puts "Maximum line size was [format %d 0x[rd_csr 0x30]] pixels"
 }
 
 proc get_min_px {} {
-  puts "Minimum line size was [format %d 0x[rd_csr 0x30]] pixels"
+  puts "Minimum line size was [format %d 0x[rd_csr 0x34]] pixels"
 }
 
 proc init {} {

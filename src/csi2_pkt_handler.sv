@@ -4,20 +4,29 @@ module csi2_pkt_handler
 (
   input                 clk_i,
   input                 rst_i,
+  input                 sop_i,
   axi4_stream_if.slave  pkt_i,
-  output logic          frame_start_o,
-  output logic          frame_end_o,
   axi4_stream_if.master pkt_o
 );
 
 assign pkt_i.tready = pkt_o.tready;
 
-enum logic [1 : 0] { IDLE_S,
+(* MARK_DEBUG = "TRUE" *) enum logic [1 : 0] { IDLE_S,
                      RUN_S,
                      IGNORE_CRC_S } state, next_state;
 
-logic [15 : 0] byte_cnt, byte_cnt_comb;
-logic [15 : 0] pkt_size;
+(* MARK_DEBUG = "TRUE" *) logic [15 : 0] byte_cnt, byte_cnt_comb;
+(* MARK_DEBUG = "TRUE" *) logic [15 : 0] pkt_size;
+
+(* MARK_DEBUG = "TRUE" *) logic [31 : 0] pkt_i_tdata  = pkt_i.tdata;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tvalid = pkt_i.tvalid;
+(* MARK_DEBUG = "TRUE" *) logic [3 : 0]  pkt_i_tstrb  = pkt_i.tstrb;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tready = pkt_i.tready;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tlast  = pkt_i.tlast;
+(* MARK_DEBUG = "TRUE" *) logic [31 : 0] pkt_o_tdata  = pkt_o.tdata;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tvalid = pkt_o.tvalid;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tready = pkt_o.tready;
+(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tlast  = pkt_o.tlast;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -32,14 +41,14 @@ always_comb
       // First word is always a header
       IDLE_S:
         begin
-          if( pkt_i.tvalid && pkt_i.tready &&
+          if( pkt_i.tvalid && pkt_i.tready && sop_i &&
               pkt_i.tdata[5 : 0] == RAW_10 )
             next_state = RUN_S;
         end
       RUN_S:
         begin
           if( pkt_i.tready &&
-              byte_cnt >= pkt_size )
+              byte_cnt_comb >= pkt_size )
             // If last word has only crc bytes - we ignore it
             if( pkt_size[1 : 0] == 2'd0 || pkt_size[1 : 0] == 2'd3 )
               next_state = IGNORE_CRC_S;
@@ -59,7 +68,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     pkt_size <= '0;
   else
     if( state == IDLE_S && pkt_i.tvalid && pkt_i.tready &&
-        pkt_i.tdata[5 : 0] == RAW_10 )
+        pkt_i.tdata[5 : 0] == RAW_10 && sop_i )
       pkt_size <= pkt_i.tdata[23 : 8];
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -81,26 +90,6 @@ always_comb
     else
       byte_cnt_comb = '0;
   end
-
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    frame_start_o <= '0;
-  else
-    if( pkt_i.tvalid && pkt_i.tready )
-      if( pkt_i.tdata[5 : 0] == FRAME_START && state == IDLE_S )
-        frame_start_o <= 1'b1;
-      else
-        frame_start_o <= 1'b0;
-
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    frame_end_o <= '0;
-  else
-    if( pkt_i.tvalid && pkt_i.tready  )
-      if( pkt_i.tdata[5 : 0] == FRAME_END && state == IDLE_S )
-        frame_end_o <= 1'b1;
-      else
-        frame_end_o <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

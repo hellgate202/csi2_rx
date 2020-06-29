@@ -12,7 +12,7 @@ parameter int REF_CLK_T    = 4762;
 parameter int PX_CLK_T     = 13423;
 
 parameter int Y_RES        = 1096;
-parameter int X_RES        = 1936;
+parameter int X_RES        = 2028;
 parameter int PX_AMOUNT    = X_RES * Y_RES;
 parameter int BYTES_AMOUNT = PX_AMOUNT + PX_AMOUNT / 4;
 
@@ -209,7 +209,8 @@ dphy_gen.send();
 endtask
 
 csi2_rx #(
-  .DATA_LANES               ( DATA_LANES             )
+  .DATA_LANES               ( DATA_LANES             ),
+  .FRAMES_TO_IGNORE         ( 0                      )
 ) dut (
   .dphy_clk_p_i             ( dphy_clk_p             ),
   .dphy_clk_n_i             ( dphy_clk_n             ),
@@ -256,7 +257,7 @@ initial
         repeat( 1096 )
           begin
             send_long_pkt( .data_identifier ( 6'h2b  ),
-                           .word_cnt        ( 16'd2420 )
+                           .word_cnt        ( 16'h9e7 )
                          );
             #( LINE_PERIOD - LINE_TIME );
           end

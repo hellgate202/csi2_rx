@@ -44,6 +44,9 @@ typedef struct packed {
   bit [31 : 0] tdata;
   bit [3 : 0]  tstrb;
   bit          tlast;
+  bit          sof;
+  bit          eof;
+  bit          sop;
 } axi4_word_t;
 
 // Clock from DPHY
@@ -76,8 +79,15 @@ logic          corrected_phy_data_valid;
 // Signalize that there is no data in DC FIFO
 // i.e. !valid
 logic          rx_px_cdc_empty;
-// Shor packet with frame start information detected
-logic          frame_start_pkt;
+
+logic          frame_start_rx_clk;
+logic          frame_end_rx_clk;
+logic          sop_rx_clk;
+(* MARK_DEBUG = "TRUE" *) logic          frame_start_px_clk;
+(* MARK_DEBUG = "TRUE" *) logic          frame_end_px_clk;
+(* MARK_DEBUG = "TRUE" *) logic          sop_px_clk;
+
+logic          push_cdc;
 
 // rx_clk CDC data
 axi4_word_t    pkt_word_rx_clk;
@@ -171,12 +181,18 @@ csi2_to_axi4_stream #(
   .valid_i          ( corrected_phy_data_valid ),
   .error_i          ( pkt_error                ),
   .phy_rst_o        ( phy_rst                  ),
-  .pkt_o            ( csi2_pkt_rx_clk_if       )
+  .pkt_o            ( csi2_pkt_rx_clk_if       ),
+  .frame_start_o    ( frame_start_rx_clk       ),
+  .frame_end_o      ( frame_end_rx_clk         ),
+  .header_o         ( sop_rx_clk               )
 );
 
 assign pkt_word_rx_clk.tdata     = csi2_pkt_rx_clk_if.tdata;
 assign pkt_word_rx_clk.tstrb     = csi2_pkt_rx_clk_if.tstrb;
 assign pkt_word_rx_clk.tlast     = csi2_pkt_rx_clk_if.tlast;
+assign pkt_word_rx_clk.sof       = frame_start_rx_clk;
+assign pkt_word_rx_clk.eof       = frame_end_rx_clk;
+assign pkt_word_rx_clk.sop       = sop_rx_clk;
 
 // Long packet payload crc calculation
 csi2_crc_calc crc_calc (
@@ -190,16 +206,18 @@ csi2_crc_calc crc_calc (
   .crc_failed_o ( crc_failed                )
 );
 
+assign push_cdc = csi2_pkt_rx_clk_if.tvalid || frame_start_rx_clk || frame_end_rx_clk;
+
 assign csi2_pkt_rx_clk_if.tready = 1'b1;
 
 // CDC from rx_clk to px_clk
 dc_fifo #(
-  .DATA_WIDTH      ( 37                        ),
+  .DATA_WIDTH      ( $bits( axi4_word_t )      ),
   .WORDS_AMOUNT    ( 1024                      )
 ) dphy_int_cdc (
   .wr_clk_i        ( rx_clk                    ),
   .wr_data_i       ( pkt_word_rx_clk           ),
-  .wr_i            ( csi2_pkt_rx_clk_if.tvalid ),
+  .wr_i            ( push_cdc                  ),
   .wr_used_words_o (                           ),
   .wr_full_o       (                           ),
   .wr_empty_o      (                           ),
@@ -215,7 +233,7 @@ dc_fifo #(
 assign csi2_pkt_px_clk_if.tdata  = pkt_word_px_clk.tdata;
 assign csi2_pkt_px_clk_if.tstrb  = pkt_word_px_clk.tstrb;
 assign csi2_pkt_px_clk_if.tlast  = pkt_word_px_clk.tlast;
-assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty;
+assign csi2_pkt_px_clk_if.tvalid = !rx_px_cdc_empty && !pkt_word_px_clk.eof && !pkt_word_px_clk.sof;
 
 // Module let only long packets through and
 // detects frame start short packets
@@ -223,11 +241,14 @@ csi2_pkt_handler payload_extractor
 (
   .clk_i         ( px_clk_i           ),
   .rst_i         ( px_rst_i           ),
+  .sop_i         ( sop_px_clk         ),
   .pkt_i         ( csi2_pkt_px_clk_if ),
-  .frame_start_o ( frame_start_pkt    ),
-  .frame_end_o   (                    ),
   .pkt_o         ( payload_if         )
 );
+
+assign frame_start_px_clk = pkt_word_px_clk.sof && !rx_px_cdc_empty;
+assign frame_end_px_clk   = pkt_word_px_clk.eof && !rx_px_cdc_empty;
+assign sop_px_clk         = pkt_word_px_clk.sop && !rx_px_cdc_empty;
 
 // Mapper from 32b to 42b
 csi2_raw10_32b_40b_gbx gbx
@@ -243,7 +264,7 @@ csi2_px_serializer px_ser
 (
   .clk_i         ( px_clk_i           ),
   .rst_i         ( px_rst_i           ),
-  .frame_start_i ( frame_start_pkt    ),
+  .frame_start_i ( frame_start_px_clk ),
   .pkt_i         ( payload_40b_if     ),
   .pkt_o         ( intermittent_video )
 );

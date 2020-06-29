@@ -12,7 +12,10 @@ module csi2_to_axi4_stream #(
   // If there was uncorrectable header error
   input                 error_i,
   output                phy_rst_o,
-  axi4_stream_if.master pkt_o
+  axi4_stream_if.master pkt_o,
+  output                frame_start_o,
+  output                frame_end_o,
+  output                header_o
 );
 
 localparam int FRAME_CNT_WIDTH = $clog2( FRAMES_TO_IGNORE ) + 1;
@@ -31,19 +34,23 @@ logic                           disable_flag;
 // Transfer from px_clk to rx_clk domain
 logic                           enable_d1;
 logic                           enable_d2;
-
 logic                           frame_start;
+logic                           frame_end;
 logic                           stream_stable;
 logic [FRAME_CNT_WIDTH - 1 : 0] ignore_cnt;
+logic                           sop;
 
 // First word of correct packet
-assign header_valid = valid_i && !valid_d1 && !error_i && 
-                      !pkt_running;
-assign long_pkt     = header_valid && data_i[5 : 0] >= 6'h10;
-assign short_pkt    = header_valid && data_i[5 : 0] <  6'h10;
-assign last_word    = pkt_running && byte_cnt_comb == '0;
-assign phy_rst_o    = short_pkt || last_word || error_i || disable_flag;
-assign frame_start  = header_valid && data_i[5 : 0] == FRAME_START;
+assign header_valid  = valid_i && !valid_d1 && !error_i && 
+                       !pkt_running;
+assign long_pkt      = header_valid && data_i[5 : 0] >= 6'h10;
+assign short_pkt     = header_valid && data_i[5 : 0] <  6'h10;
+assign last_word     = pkt_running && byte_cnt_comb == '0;
+assign phy_rst_o     = short_pkt || last_word || error_i || disable_flag;
+assign frame_start   = header_valid && data_i[5 : 0] == FRAME_START;
+assign frame_end     = header_valid && data_i[5 : 0] == FRAME_END;
+assign frame_start_o = frame_start;
+assign frame_end_o   = frame_end;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -153,5 +160,15 @@ always_ff @( posedge clk_i, posedge rst_i )
       pkt_o.tlast <= 1'b1;
     else
       pkt_o.tlast <= 1'b0;
+
+assign pkt_o.tkeep = pkt_o.tstrb;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    sop <= 1'b0;
+  else
+    sop <= header_valid;
+
+assign header_o = sop;
 
 endmodule
