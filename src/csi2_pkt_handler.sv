@@ -11,22 +11,22 @@ module csi2_pkt_handler
 
 assign pkt_i.tready = pkt_o.tready;
 
-(* MARK_DEBUG = "TRUE" *) enum logic [1 : 0] { IDLE_S,
+enum logic [1 : 0] { IDLE_S,
                      RUN_S,
                      IGNORE_CRC_S } state, next_state;
 
-(* MARK_DEBUG = "TRUE" *) logic [15 : 0] byte_cnt, byte_cnt_comb;
-(* MARK_DEBUG = "TRUE" *) logic [15 : 0] pkt_size;
+logic [15 : 0] byte_cnt, byte_cnt_comb;
+logic [15 : 0] pkt_size;
 
-(* MARK_DEBUG = "TRUE" *) logic [31 : 0] pkt_i_tdata  = pkt_i.tdata;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tvalid = pkt_i.tvalid;
-(* MARK_DEBUG = "TRUE" *) logic [3 : 0]  pkt_i_tstrb  = pkt_i.tstrb;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tready = pkt_i.tready;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_i_tlast  = pkt_i.tlast;
-(* MARK_DEBUG = "TRUE" *) logic [31 : 0] pkt_o_tdata  = pkt_o.tdata;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tvalid = pkt_o.tvalid;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tready = pkt_o.tready;
-(* MARK_DEBUG = "TRUE" *) logic          pkt_o_tlast  = pkt_o.tlast;
+logic [31 : 0] pkt_i_tdata  = pkt_i.tdata;
+logic          pkt_i_tvalid = pkt_i.tvalid;
+logic [3 : 0]  pkt_i_tstrb  = pkt_i.tstrb;
+logic          pkt_i_tready = pkt_i.tready;
+logic          pkt_i_tlast  = pkt_i.tlast;
+logic [31 : 0] pkt_o_tdata  = pkt_o.tdata;
+logic          pkt_o_tvalid = pkt_o.tvalid;
+logic          pkt_o_tready = pkt_o.tready;
+logic          pkt_o_tlast  = pkt_o.tlast;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

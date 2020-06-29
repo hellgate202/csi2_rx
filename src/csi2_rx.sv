@@ -83,9 +83,9 @@ logic          rx_px_cdc_empty;
 logic          frame_start_rx_clk;
 logic          frame_end_rx_clk;
 logic          sop_rx_clk;
-(* MARK_DEBUG = "TRUE" *) logic          frame_start_px_clk;
-(* MARK_DEBUG = "TRUE" *) logic          frame_end_px_clk;
-(* MARK_DEBUG = "TRUE" *) logic          sop_px_clk;
+logic          frame_start_px_clk;
+logic          frame_end_px_clk;
+logic          sop_px_clk;
 
 logic          push_cdc;
 
