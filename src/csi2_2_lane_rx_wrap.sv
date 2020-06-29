@@ -118,7 +118,8 @@ logic [31 : 0]       max_ln_per_frame;
 logic [31 : 0]       min_ln_per_frame;
 logic [31 : 0]       max_px_per_ln;
 logic [31 : 0]       min_px_per_ln;
-logic [31 : 0]       dphy_byte_freq; 
+logic [31 : 0]       dphy_byte_freq;
+logic [31 : 0]       fps;
 
 logic                init_done;
 logic                cam_rst_stb;
@@ -389,7 +390,8 @@ csi2_stat_acc csi2_stat_acc
   .min_ln_per_frame_o    ( min_ln_per_frame    ),
   .max_px_per_ln_o       ( max_px_per_ln       ),
   .min_px_per_ln_o       ( min_px_per_ln       ),
-  .dphy_byte_freq_o      ( dphy_byte_freq      )
+  .dphy_byte_freq_o      ( dphy_byte_freq      ),
+  .fps_o                 ( fps                 )
 );
 
 // Control and status registers
@@ -411,6 +413,7 @@ csi2_csr csi2_csr
   .min_ln_per_frame_i    ( min_ln_per_frame    ),
   .max_px_per_ln_i       ( max_px_per_ln       ),
   .min_px_per_ln_i       ( min_px_per_ln       ),
+  .fps_i                 ( fps                 ),
   .dphy_byte_freq_i      ( dphy_byte_freq      ),
   .cam_rst_stb_o         ( cam_rst_stb         )
 );

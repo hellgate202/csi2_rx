@@ -8,9 +8,11 @@
   minimum pixels amount in one line;
   maximum lines in one frame;
   minimum lines in one frame;
+  fps;
 */
-module csi2_stat_acc
-(
+module csi2_stat_acc #(
+  parameter int PX_CLK_FREQ = 74_250_000
+)(
   input           clk_i,
   input           rst_i,
   input           video_data_val_i,
@@ -29,8 +31,11 @@ module csi2_stat_acc
   output [31 : 0] min_ln_per_frame_o,
   output [31 : 0] max_px_per_ln_o,
   output [31 : 0] min_px_per_ln_o, 
-  output [31 : 0] dphy_byte_freq_o
+  output [31 : 0] dphy_byte_freq_o,
+  output [31 : 0] fps_o
 );
+
+localparam int SEC_CNT_WIDTH = $clog2( PX_CLK_FREQ + 1 );
 
 // This module works in px_clk clock domain
 // but errors are collected before CDC
@@ -191,5 +196,39 @@ freq_meas #(
   .ref_clk_i    ( clk_i            ),
   .freq_o       ( dphy_byte_freq_o )
 );
+
+logic [SEC_CNT_WIDTH - 1 : 0] sec_cnt;
+logic                         sec_stb;
+logic [31 : 0]                fps_cnt;
+logic [31 : 0]                fps_lock;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    sec_cnt <= '0;
+  else
+    if( sec_stb )
+      sec_cnt <= '0;
+    else
+      sec_cnt <= sec_cnt + 1'b1;
+
+assign sec_stb = sec_cnt == PX_CLK_FREQ;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    begin
+      fps_cnt  <= 32'd0;
+      fps_lock <= 32'd0;
+    end
+  else
+    if( sec_stb )
+      begin
+        fps_cnt  <= 32'd0;
+        fps_lock <= fps_cnt;
+      end
+    else
+      if( video_data_val_i && video_proc_ready_i && video_frame_start_i )
+        fps_cnt <= fps_cnt + 1'b1;
+
+assign fps_o = fps_lock;
 
 endmodule

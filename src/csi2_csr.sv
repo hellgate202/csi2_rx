@@ -34,6 +34,7 @@ module csi2_csr#(
   input  [31 : 0]    max_px_per_ln_i,
   input  [31 : 0]    min_px_per_ln_i,
   input  [31 : 0]    dphy_byte_freq_i,
+  input  [31 : 0]    fps_i,
   output             cam_rst_stb_o
 );
 
@@ -110,6 +111,7 @@ assign sr[MIN_LN_PER_FRAME_SR - TOTAL_CR_CNT]    = min_ln_per_frame_i;
 assign sr[MAX_PX_PER_LN_SR - TOTAL_CR_CNT]       = max_px_per_ln_i;
 assign sr[MIN_PX_PER_LN_SR - TOTAL_CR_CNT]       = min_px_per_ln_i;
 assign sr[DPHY_BYTE_CLK_SR - TOTAL_CR_CNT]       = dphy_byte_freq_i;
+assign sr[FPS_SR - TOTAL_CR_CNT]                 = fps_i;
 
 // Delays for strobe generation
 always_ff @( posedge clk_i, posedge rst_i )

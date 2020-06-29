@@ -18,9 +18,10 @@ parameter int MIN_LN_PER_FRAME_SR    = 11; //0x002c
 parameter int MAX_PX_PER_LN_SR       = 12; //0x0030
 parameter int MIN_PX_PER_LN_SR       = 13; //0x0034
 parameter int DPHY_BYTE_CLK_SR       = 14; //0x0038
+parameter int FPS_SR                 = 15; //0x003c
 
-parameter int TOTAL_SR_CNT           = 8;
+parameter int TOTAL_SR_CNT           = 9;
 
-parameter int TOTAL_REGS_CNT         = 15;
+parameter int TOTAL_REGS_CNT         = 16;
 
 endpackage
