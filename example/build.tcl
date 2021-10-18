@@ -308,8 +308,11 @@ wait_on_run synth_1
 launch_runs impl_1 -to_step write_bitstream -jobs 4
 wait_on_run impl_1
 
+open_run impl_1
+write_hw_platform -fixed -include_bit -force -file /home/liv/fpga/csi2_rx/example/csi2_zybo_z7_example_wrapper.xsa
+
 # Export Hardware
 file mkdir ./csi2_zybo_z7_example.sdk
-file copy -force ./csi2_zybo_z7_example.runs/impl_1/csi2_zybo_z7_example_wrapper.sysdef ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
+file copy -force ./csi2_zybo_z7_example_wrapper.xsa ./csi2_zybo_z7_example.sdk/csi2_zybo_z7_example_wrapper.hdf
 
 exit
