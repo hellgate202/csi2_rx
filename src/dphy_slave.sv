@@ -1,5 +1,6 @@
 module dphy_slave #(
-  parameter int DATA_LANES = 2
+  parameter int DATA_LANES          = 2,
+  parameter     COMPENSATION_METHOD = "PLL"
 )(
   // DPHY signals
   input                              dphy_clk_p_i,
@@ -52,13 +53,14 @@ assign clk_loss_rst_o = clk_loss_rst_d2;
 logic bit_clk_inv;
 
 // DPHY CLK at input bit and byte clk at output
-dphy_hs_clk_rx clk_phy
-(
-  .dphy_clk_p_i  ( dphy_clk_p_i ),
-  .dphy_clk_n_i  ( dphy_clk_n_i ),
-  .bit_clk_o     ( bit_clk      ),
-  .bit_clk_inv_o ( bit_clk_inv  ),
-  .byte_clk_o    ( byte_clk     )
+dphy_hs_clk_rx #(
+  .COMPENSATION_METHOD ( COMPENSATION_METHOD )
+) clk_phy (
+  .dphy_clk_p_i        ( dphy_clk_p_i        ),
+  .dphy_clk_n_i        ( dphy_clk_n_i        ),
+  .bit_clk_o           ( bit_clk             ),
+  .bit_clk_inv_o       ( bit_clk_inv         ),
+  .byte_clk_o          ( byte_clk            )
 );
 
 // DPHY clock detection if it is not

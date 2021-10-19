@@ -8,9 +8,10 @@
 */
 
 module csi2_rx #(
-  parameter int DATA_LANES       = 2,
-  parameter int CONTINIOUS_VALID = 1,
-  parameter int FRAMES_TO_IGNORE = 20
+  parameter int DATA_LANES          = 2,
+  parameter int CONTINIOUS_VALID    = 1,
+  parameter int FRAMES_TO_IGNORE    = 20,
+  parameter     COMPENSATION_METHOD = "PLL"
 )(
   // DPHY inputs
   input                              dphy_clk_p_i,
@@ -137,24 +138,25 @@ assign header_err_o      = header_error;
 assign corr_header_err_o = header_error_corrected;
 
 dphy_slave #(
-  .DATA_LANES       ( DATA_LANES     )
+  .DATA_LANES          ( DATA_LANES          ),
+  .COMPENSATION_METHOD ( COMPENSATION_METHOD )
 ) phy (
-  .dphy_clk_p_i     ( dphy_clk_p_i   ),
-  .dphy_clk_n_i     ( dphy_clk_n_i   ),
-  .dphy_data_p_i    ( dphy_data_p_i  ),
-  .dphy_data_n_i    ( dphy_data_n_i  ),
-  .lp_data_p_i      ( lp_data_p_i    ),
-  .lp_data_n_i      ( lp_data_n_i    ),
-  .delay_act_i      ( delay_act_i    ),
-  .lane_delay_i     ( lane_delay_i   ),
-  .ref_clk_i        ( ref_clk_i      ),
-  .rst_i            ( ref_rst_i      ),
-  .px_clk_i         ( px_clk_i       ),
-  .phy_rst_i        ( phy_rst        ),
-  .clk_loss_rst_o   ( clk_loss_rst   ),
-  .data_o           ( phy_data       ),
-  .clk_o            ( rx_clk         ),
-  .valid_o          ( phy_data_valid )
+  .dphy_clk_p_i        ( dphy_clk_p_i        ),
+  .dphy_clk_n_i        ( dphy_clk_n_i        ),
+  .dphy_data_p_i       ( dphy_data_p_i       ),
+  .dphy_data_n_i       ( dphy_data_n_i       ),
+  .lp_data_p_i         ( lp_data_p_i         ),
+  .lp_data_n_i         ( lp_data_n_i         ),
+  .delay_act_i         ( delay_act_i         ),
+  .lane_delay_i        ( lane_delay_i        ),
+  .ref_clk_i           ( ref_clk_i           ),
+  .rst_i               ( ref_rst_i           ),
+  .px_clk_i            ( px_clk_i            ),
+  .phy_rst_i           ( phy_rst             ),
+  .clk_loss_rst_o      ( clk_loss_rst        ),
+  .data_o              ( phy_data            ),
+  .clk_o               ( rx_clk              ),
+  .valid_o             ( phy_data_valid      )
 );
 
 // Checks ECC in packet header

@@ -1,6 +1,5 @@
 module dphy_hs_clk_rx #(
-  parameter int USE_PLL  = 1,
-  parameter int USE_MMCM = 0
+  parameter COMPENSATION_METHOD = "PLL"
 )(
   input  dphy_clk_p_i,
   input  dphy_clk_n_i,
@@ -23,7 +22,7 @@ IBUFDS #(
 );
 
 generate
-  if( USE_PLL == 1 )
+  if( COMPENSATION_METHOD == "PLL" )
     begin : pll_compensation
       logic clk_fb_pre_bufg;
       logic clk_fb_post_bufg;
@@ -90,7 +89,7 @@ generate
 
     end
   else
-    if( USE_MMCM == 1 )
+    if( COMPENSATION_METHOD == "MMCM" )
       begin : mmcm_compensation
         logic clk_fb_pre_bufg;
         logic clk_fb_post_bufg;

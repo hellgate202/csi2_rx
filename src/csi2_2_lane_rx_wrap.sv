@@ -1,6 +1,7 @@
 module csi2_2_lane_rx_wrap #(
-  parameter CONTINIOUS_VALID = 1,
-  parameter FRAMES_TO_IGNORE = 20
+  parameter CONTINIOUS_VALID    = 1,
+  parameter FRAMES_TO_IGNORE    = 20,
+  parameter COMPENSATION_METHOD = "PLL"
 )(
   // 200 MHz reference clock
   input           ref_clk_i,
@@ -38,7 +39,7 @@ module csi2_2_lane_rx_wrap #(
   input           sccb_ctrl_rready_i,
   output [31 : 0] sccb_ctrl_rdata_o,
   output [1 : 0]  sccb_ctrl_rresp_o,
-
+  
   // AXI4-Lite interface to accsess IP-core registers
   input           csi2_csr_awvalid_i,
   output          csi2_csr_awready_o,
@@ -346,27 +347,28 @@ axi4_lite_simple_mux #(
 // Transforms DPHY signals into AXI4-Stream
 // video
 csi2_rx #(
-  .DATA_LANES        ( 2                ),
-  .CONTINIOUS_VALID  ( CONTINIOUS_VALID )
+  .DATA_LANES          ( 2                   ),
+  .CONTINIOUS_VALID    ( CONTINIOUS_VALID    ),
+  .COMPENSATION_METHOD ( COMPENSATION_METHOD )
 ) csi2_rx (
-  .dphy_clk_p_i      ( dphy_clk_p_i     ),
-  .dphy_clk_n_i      ( dphy_clk_n_i     ),
-  .dphy_data_p_i     ( dphy_data_p_i    ),
-  .dphy_data_n_i     ( dphy_data_n_i    ),
-  .lp_data_p_i       ( dphy_lp_data_p_i ),
-  .lp_data_n_i       ( dphy_lp_data_n_i ),
-  .ref_clk_i         ( ref_clk_i        ),
-  .ref_rst_i         ( ref_rst_i        ),
-  .px_clk_i          ( px_clk_i         ),
-  .px_rst_i          ( px_rst_i         ),
-  .enable_i          ( phy_en           ),
-  .delay_act_i       ( delay_act        ),
-  .lane_delay_i      ( lane_delay       ),
-  .header_err_o      ( header_err       ),
-  .corr_header_err_o ( corr_header_err  ),
-  .crc_err_o         ( crc_err          ),
-  .byte_clk_o        ( dphy_byte_clk    ),
-  .video_o           ( video            )
+  .dphy_clk_p_i        ( dphy_clk_p_i        ),
+  .dphy_clk_n_i        ( dphy_clk_n_i        ),
+  .dphy_data_p_i       ( dphy_data_p_i       ),
+  .dphy_data_n_i       ( dphy_data_n_i       ),
+  .lp_data_p_i         ( dphy_lp_data_p_i    ),
+  .lp_data_n_i         ( dphy_lp_data_n_i    ),
+  .ref_clk_i           ( ref_clk_i           ),
+  .ref_rst_i           ( ref_rst_i           ),
+  .px_clk_i            ( px_clk_i            ),
+  .px_rst_i            ( px_rst_i            ),
+  .enable_i            ( phy_en              ),
+  .delay_act_i         ( delay_act           ),
+  .lane_delay_i        ( lane_delay          ),
+  .header_err_o        ( header_err          ),
+  .corr_header_err_o   ( corr_header_err     ),
+  .crc_err_o           ( crc_err             ),
+  .byte_clk_o          ( dphy_byte_clk       ),
+  .video_o             ( video               )
 );
 
 // Statistics accumulation
