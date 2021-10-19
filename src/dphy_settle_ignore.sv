@@ -2,11 +2,11 @@ module dphy_settle_ignore #(
   parameter int T_SETTLE = 150_000,
   parameter int T_CLK    = 5_000
 )(
-  input  clk_i,
-  input  rst_i,
-  input  lp_data_p_i,
-  input  lp_data_n_i,
-  output hs_data_valid_o
+  input        clk_i,
+  input        rst_i,
+  input        lp_data_p_i,
+  input        lp_data_n_i,
+  output logic hs_data_valid_o
 );
 
 localparam int IGNORE_TICKS = T_SETTLE / T_CLK;
@@ -96,6 +96,10 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       ignore_cnt <= '0;
 
-assign hs_data_valid_o = state == HS_S;
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    hs_data_valid_o <= 1'b0;
+  else
+    hs_data_valid_o <= state == HS_S;
 
 endmodule
