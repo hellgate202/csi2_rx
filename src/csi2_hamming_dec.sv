@@ -13,34 +13,36 @@ module csi2_hamming_dec
 (
   input                 clk_i,
   input                 rst_i,
-  input                 valid_i,
-  input        [31 : 0] data_i,
-  input                 pkt_done_i,
-  output logic          error_o,
-  output logic          error_corrected_o,
-  output logic [31 : 0] data_o,
-  output logic          valid_o
+  (* MARK_DEBUG = "TRUE" *) input                 valid_i,
+  (* MARK_DEBUG = "TRUE" *) input        [31 : 0] data_i,
+  (* MARK_DEBUG = "TRUE" *) input                 pkt_done_i,
+  (* MARK_DEBUG = "TRUE" *) output logic          error_o,
+  (* MARK_DEBUG = "TRUE" *) output logic          error_corrected_o,
+  (* MARK_DEBUG = "TRUE" *) output logic [31 : 0] data_o,
+  (* MARK_DEBUG = "TRUE" *) output logic          valid_o
 );
 
 // Our own generated ECC
-logic [5 : 0]         generated_parity;
+(* MARK_DEBUG = "TRUE" *) logic [5 : 0]         generated_parity;
 // How our ECC differs from received
 // Address for ROM
-logic [5 : 0]         syndrome;
+(* MARK_DEBUG = "TRUE" *) logic [5 : 0]         syndrome;
 // Syndrome defines if we can correct error
 // Error position contained in ROM
-logic [4 : 0]         err_bit_pos;
-logic [31 : 0]        data_d;
-logic                 valid_d;
-logic                 header_valid;
-logic                 header_passed;
-logic                 error_detected;
+(* MARK_DEBUG = "TRUE" *) logic [4 : 0]         err_bit_pos;
+(* MARK_DEBUG = "TRUE" *) logic [31 : 0]        data_d;
+(* MARK_DEBUG = "TRUE" *) logic                 valid_d;
+(* MARK_DEBUG = "TRUE" *) logic                 header_valid;
+(* MARK_DEBUG = "TRUE" *) logic                 header_passed;
+(* MARK_DEBUG = "TRUE" *) logic                 error_detected;
 
-logic [4 : 0] err_bit_rom [63 : 0];
+logic [63 : 0][4 : 0] err_bit_rom = ROM_INIT;
 
+/*
 initial
   for( int i = 0; i < 64; i++ )
     err_bit_rom[i] = ROM_INIT[i];
+*/
 
 assign syndrome       = generated_parity ^ data_i[29 : 24];
 assign header_valid   = valid_d && !header_passed && !pkt_done_i;
@@ -130,7 +132,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( header_valid && error_detected )
         begin
           error_o <= 1'b1;
-          if( err_bit_pos != 5'hf )
+          if( err_bit_pos != 5'h1f )
             error_corrected_o <= 1'b1;
         end
 

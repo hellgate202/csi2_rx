@@ -1,6 +1,6 @@
 package csi2_err_bit_pos_pkg;
 
-parameter bit [63 : 0][7 : 0] ROM_INIT = {
+parameter bit [63 : 0][4 : 0] ROM_INIT = {
   5'h1F,
   5'h1F,
   5'h1F,
