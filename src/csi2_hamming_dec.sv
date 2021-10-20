@@ -13,28 +13,28 @@ module csi2_hamming_dec
 (
   input                 clk_i,
   input                 rst_i,
-  (* MARK_DEBUG = "TRUE" *) input                 valid_i,
-  (* MARK_DEBUG = "TRUE" *) input        [31 : 0] data_i,
-  (* MARK_DEBUG = "TRUE" *) input                 pkt_done_i,
-  (* MARK_DEBUG = "TRUE" *) output logic          error_o,
-  (* MARK_DEBUG = "TRUE" *) output logic          error_corrected_o,
-  (* MARK_DEBUG = "TRUE" *) output logic [31 : 0] data_o,
-  (* MARK_DEBUG = "TRUE" *) output logic          valid_o
+  input                 valid_i,
+  input        [31 : 0] data_i,
+  input                 pkt_done_i,
+  output logic          error_o,
+  output logic          error_corrected_o,
+  output logic [31 : 0] data_o,
+  output logic          valid_o
 );
 
 // Our own generated ECC
-(* MARK_DEBUG = "TRUE" *) logic [5 : 0]         generated_parity;
+logic [5 : 0]         generated_parity;
 // How our ECC differs from received
 // Address for ROM
-(* MARK_DEBUG = "TRUE" *) logic [5 : 0]         syndrome;
+logic [5 : 0]         syndrome;
 // Syndrome defines if we can correct error
 // Error position contained in ROM
-(* MARK_DEBUG = "TRUE" *) logic [4 : 0]         err_bit_pos;
-(* MARK_DEBUG = "TRUE" *) logic [31 : 0]        data_d;
-(* MARK_DEBUG = "TRUE" *) logic                 valid_d;
-(* MARK_DEBUG = "TRUE" *) logic                 header_valid;
-(* MARK_DEBUG = "TRUE" *) logic                 header_passed;
-(* MARK_DEBUG = "TRUE" *) logic                 error_detected;
+logic [4 : 0]         err_bit_pos;
+logic [31 : 0]        data_d;
+logic                 valid_d;
+logic                 header_valid;
+logic                 header_passed;
+logic                 error_detected;
 
 logic [63 : 0][4 : 0] err_bit_rom = ROM_INIT;
 
