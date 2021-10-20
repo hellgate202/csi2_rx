@@ -43,9 +43,8 @@ always_ff @( posedge clk_i, posedge rst_i )
 //                300 ns   hs_data_valid
 //                ignore
 // This refers to DPHY standard states
-enum logic [2 : 0] { IDLE_S,
+enum logic [1 : 0] { IDLE_S,
                      LP_11_S,
-                     LP_01_S,
                      LP_00_S,
                      HS_S } state, next_state;
 
@@ -65,11 +64,6 @@ always_comb
             next_state = LP_11_S;
         end
       LP_11_S:
-        begin
-          if( !lp_data_p_d2 && lp_data_n_d2 )
-            next_state = LP_01_S;
-        end
-      LP_01_S:
         begin
           if( !lp_data_p_d2 && !lp_data_n_d2 )
             next_state = LP_00_S;
